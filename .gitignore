@@ -10,3 +10,6 @@ dist-ssr
 .tanstack
 .nitro
 .vercel
+.claude/settings.local.json
+.mcp.json
+test-results/
