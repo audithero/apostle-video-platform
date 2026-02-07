@@ -40,7 +40,7 @@ export const adminRouter = createTRPCRouter({
     .input(
       z.object({
         userId: z.string(),
-        role: z.string(),
+        role: z.enum(["user", "creator", "admin"]),
       })
     )
     .mutation(async ({ input }) => {

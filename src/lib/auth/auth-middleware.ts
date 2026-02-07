@@ -4,7 +4,6 @@ import { authClient } from "@/lib/auth/auth-client";
 
 export const authMiddleware = createMiddleware({
   type: "request",
-  validateClient: false,
 }).server(async ({ next }) => {
   const { data: session } = await authClient.getSession({
     fetchOptions: {

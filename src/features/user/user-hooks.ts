@@ -73,7 +73,7 @@ export const useCreateUser = () => {
         email,
         password,
         name,
-        role: role || 'user',
+        role: (role || 'user') as "user" | "admin",
       });
 
       if (result.error) {
@@ -146,7 +146,7 @@ export const useSetUserRole = () => {
     mutationFn: async ({ userId, role }: { userId: string; role: string }) => {
       const result = await authClient.admin.setRole({
         userId,
-        role,
+        role: role as "user" | "admin",
       });
 
       if (result.error) {

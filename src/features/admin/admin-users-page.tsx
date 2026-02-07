@@ -4,12 +4,9 @@ import {
   Download,
   Eye,
   Filter,
-  Mail,
   MoreHorizontal,
-  Plus,
   RefreshCw,
   Search,
-  Settings,
   Shield,
   ShieldCheck,
   Trash2,
@@ -22,7 +19,7 @@ import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -35,9 +32,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth/auth-client";
 import {
   canBanUsers,
@@ -53,7 +48,6 @@ import {
   useCreateUser,
   useDeleteUser,
   useImpersonateUser,
-  useResetUserPassword,
   useRevokeUserSessions,
   useSetUserRole,
   useUnbanUser,
@@ -130,7 +124,12 @@ function getRoleBadge(role: string) {
 
 function CreateUserDialog() {
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    email: string;
+    password: string;
+    role: UserRole;
+  }>({
     name: "",
     email: "",
     password: "",
@@ -196,7 +195,7 @@ function CreateUserDialog() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="role">Role</Label>
-            <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
+            <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value as UserRole })}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -236,7 +235,6 @@ export function AdminUsersPage() {
   const { mutate: setUserRole } = useSetUserRole();
   const { mutate: impersonateUser } = useImpersonateUser();
   const { mutate: revokeUserSessions } = useRevokeUserSessions();
-  const { mutate: resetPassword } = useResetUserPassword();
 
   const currentUserRole = (session?.user?.role as UserRole) || 'user';
 

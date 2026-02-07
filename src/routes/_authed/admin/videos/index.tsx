@@ -88,13 +88,13 @@ function AdminVideosPage() {
                 <TableRow key={video.id}>
                   <TableCell className="font-medium">{video.title}</TableCell>
                   <TableCell>
-                    {video.muxStatus === "ready" ? (
+                    {video.status === "ready" ? (
                       <Badge>Ready</Badge>
-                    ) : video.muxStatus === "preparing" ? (
+                    ) : video.status === "processing" ? (
                       <Badge variant="secondary">Processing</Badge>
                     ) : (
                       <Badge variant="outline">
-                        {video.muxStatus ?? "No video"}
+                        {video.status ?? "No video"}
                       </Badge>
                     )}
                   </TableCell>

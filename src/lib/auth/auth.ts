@@ -11,7 +11,7 @@ import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema/auth";
 import { sendEmail } from "@/lib/resend";
 import { env } from "../env.server";
-import { ac, admin as adminRole, user as userRole } from "./permissions";
+import { ac, admin as adminRole, user as userRole, creatorRole } from "./permissions";
 
 const stripeClient = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-02-24.acacia",
@@ -102,6 +102,7 @@ export const auth = betterAuth({
       roles: {
         user: userRole,
         admin: adminRole,
+        creator: creatorRole,
       },
     }),
     stripe({
@@ -111,17 +112,45 @@ export const auth = betterAuth({
       subscription: {
         enabled: true,
         plans: [
+          // Launch tier
           {
-            name: "monthly",
-            priceId: env.STRIPE_PRICE_MONTHLY ?? "price_monthly",
-            annualDiscountPriceId: undefined,
+            name: "launch-monthly",
+            priceId: env.STRIPE_PRICE_LAUNCH_MONTHLY ?? "price_launch_monthly",
           },
           {
-            name: "annual",
-            priceId: env.STRIPE_PRICE_ANNUAL ?? "price_annual",
-            freeTrial: {
-              days: 7,
-            },
+            name: "launch-annual",
+            priceId: env.STRIPE_PRICE_LAUNCH_ANNUAL ?? "price_launch_annual",
+            freeTrial: { days: 14 },
+          },
+          // Grow tier
+          {
+            name: "grow-monthly",
+            priceId: env.STRIPE_PRICE_GROW_MONTHLY ?? "price_grow_monthly",
+          },
+          {
+            name: "grow-annual",
+            priceId: env.STRIPE_PRICE_GROW_ANNUAL ?? "price_grow_annual",
+            freeTrial: { days: 14 },
+          },
+          // Scale tier
+          {
+            name: "scale-monthly",
+            priceId: env.STRIPE_PRICE_SCALE_MONTHLY ?? "price_scale_monthly",
+          },
+          {
+            name: "scale-annual",
+            priceId: env.STRIPE_PRICE_SCALE_ANNUAL ?? "price_scale_annual",
+            freeTrial: { days: 14 },
+          },
+          // Pro tier
+          {
+            name: "pro-monthly",
+            priceId: env.STRIPE_PRICE_PRO_MONTHLY ?? "price_pro_monthly",
+          },
+          {
+            name: "pro-annual",
+            priceId: env.STRIPE_PRICE_PRO_ANNUAL ?? "price_pro_annual",
+            freeTrial: { days: 14 },
           },
         ],
       },

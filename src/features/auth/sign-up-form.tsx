@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
-import { X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -11,15 +10,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import {
   Field,
   FieldContent,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { Label } from "@/components/ui/label";
+import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth/auth-client";
 import { useTranslation } from "@/lib/intl/react";
@@ -56,7 +53,7 @@ export function SignUpForm() {
     },
   });
 
-  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, reset } = form;
+  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue } = form;
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     try {
@@ -208,7 +205,7 @@ export function SignUpForm() {
 
           <ButtonGroup>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? <Spinner size="sm" /> : t("CREATE_ACCOUNT")}
+              {isSubmitting ? <Spinner className="size-4" /> : t("CREATE_ACCOUNT")}
             </Button>
           </ButtonGroup>
         </form>

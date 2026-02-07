@@ -21,7 +21,7 @@ function VerifyEmailPage() {
       return;
     }
 
-    authClient.verifyEmail({ token }).then(
+    authClient.verifyEmail({ query: { token } }).then(
       () => setStatus("success"),
       (err: Error) => {
         setStatus("error");

@@ -2,7 +2,10 @@ import { getCookie } from "@tanstack/react-start/server";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth/auth";
+import { db } from "@/lib/db";
+import { creator } from "@/lib/db/schema/creator";
 import type { Language } from "../intl/i18n";
 
 export const createTRPCContext = async (opts: { headers: Headers; req: Request }) => {
@@ -77,6 +80,45 @@ export const adminProcedure = t.procedure.use(({ ctx, next }) => {
   return next({
     ctx: {
       session: ctx.session,
+    },
+  });
+});
+
+// Creator procedure - requires creator role and resolves creator profile
+export const creatorProcedure = t.procedure.use(async ({ ctx, next }) => {
+  if (!ctx.session) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Authentication required",
+    });
+  }
+
+  const role = ctx.session.user.role;
+  if (role !== "creator" && role !== "admin") {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Creator access required",
+    });
+  }
+
+  // Resolve creator profile from user ID
+  const [creatorProfile] = await db
+    .select()
+    .from(creator)
+    .where(eq(creator.userId, ctx.session.user.id))
+    .limit(1);
+
+  if (!creatorProfile) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Creator profile not found. Please complete onboarding.",
+    });
+  }
+
+  return next({
+    ctx: {
+      session: ctx.session,
+      creator: creatorProfile,
     },
   });
 });

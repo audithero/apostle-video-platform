@@ -8,8 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldContent, FieldError, FieldLabel, FieldSet } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Field, FieldError, FieldLabel, FieldSet } from "@/components/ui/field";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuthHelpers } from "@/features/auth/auth-hooks";
@@ -85,12 +84,12 @@ export default function ForgotPasswordForm() {
                 <InputGroup>
                   <InputGroupInput id="email" placeholder={t("ENTER_EMAIL")} type="email" {...register("email")} />
                 </InputGroup>
-                <FieldError errors={errors.email} />
+                <FieldError errors={errors.email ? [errors.email] : undefined} />
               </Field>
             </FieldSet>
             <ButtonGroup>
               <Button className="mt-4 w-full" disabled={isSubmitting} type="submit">
-                {isSubmitting ? <Spinner size="sm" /> : t("SEND_RESET_LINK")}
+                {isSubmitting ? <Spinner className="size-4" /> : t("SEND_RESET_LINK")}
               </Button>
             </ButtonGroup>
           </form>

@@ -1,6 +1,18 @@
+declare module "react" {
+  namespace JSX {
+    interface IntrinsicElements {
+      "mux-player": React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
+        "stream-type"?: string;
+        "playback-id"?: string;
+        "metadata-video-title"?: string;
+      }, HTMLElement>;
+    }
+  }
+}
+
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Lock } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -50,13 +62,6 @@ function WatchPage() {
 
   const hasActiveSubscription = !!(session as Record<string, unknown>)?.activeSubscription;
   const hasAccess = video?.isFree || (session?.user && hasActiveSubscription);
-
-  const handleTimeUpdate = useCallback(
-    (time: number) => {
-      currentTimeRef.current = time;
-    },
-    []
-  );
 
   useEffect(() => {
     if (!video || !session?.user) return;

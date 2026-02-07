@@ -14,9 +14,7 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/c
 import { useLogout } from "@/features/auth/auth-hooks";
 import { authClient } from "@/lib/auth/auth-client";
 
-export function NavUser({
-  user,
-}: {
+export function NavUser(_props: {
   user: {
     name: string;
     email: string;

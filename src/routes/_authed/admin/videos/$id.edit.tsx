@@ -199,14 +199,14 @@ function EditVideoPage() {
           <CardContent>
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium">Status:</span>
-              {video.muxStatus === "ready" ? (
+              {video.status === "ready" ? (
                 <Badge>Ready</Badge>
-              ) : video.muxStatus === "preparing" ? (
+              ) : video.status === "processing" ? (
                 <Badge variant="secondary">Processing</Badge>
-              ) : video.muxStatus === "errored" ? (
+              ) : video.status === "errored" ? (
                 <Badge variant="destructive">Error</Badge>
               ) : (
-                <Badge variant="outline">{video.muxStatus ?? "No video uploaded"}</Badge>
+                <Badge variant="outline">{video.status ?? "No video uploaded"}</Badge>
               )}
             </div>
             {video.muxPlaybackId && (

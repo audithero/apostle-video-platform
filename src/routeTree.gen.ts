@@ -16,7 +16,10 @@ import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as PublicSearchRouteImport } from './routes/_public/search'
 import { Route as PublicPricingRouteImport } from './routes/_public/pricing'
 import { Route as PublicOfflineRouteImport } from './routes/_public/offline'
+import { Route as AuthedMyDashboardRouteImport } from './routes/_authed/my-dashboard'
 import { Route as AuthedFavoritesRouteImport } from './routes/_authed/favorites'
+import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
+import { Route as AuthedCommunityRouteImport } from './routes/_authed/community'
 import { Route as AuthedAdminRouteImport } from './routes/_authed/admin'
 import { Route as AuthedAccountRouteImport } from './routes/_authed/account'
 import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
@@ -25,20 +28,44 @@ import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
 import { Route as PublicShowsIndexRouteImport } from './routes/_public/shows/index'
+import { Route as AuthedMyCoursesIndexRouteImport } from './routes/_authed/my-courses/index'
+import { Route as AuthedDashboardIndexRouteImport } from './routes/_authed/dashboard/index'
 import { Route as AuthedAdminIndexRouteImport } from './routes/_authed/admin/index'
 import { Route as ApiWebhooksMuxRouteImport } from './routes/api/webhooks/mux'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as PublicWatchSlugRouteImport } from './routes/_public/watch/$slug'
 import { Route as PublicShowsSlugRouteImport } from './routes/_public/shows/$slug'
+import { Route as AuthedLearnLeaderboardRouteImport } from './routes/_authed/learn/leaderboard'
+import { Route as AuthedLearnCourseIdRouteImport } from './routes/_authed/learn/$courseId'
+import { Route as AuthedDashboardUsageRouteImport } from './routes/_authed/dashboard/usage'
+import { Route as AuthedDashboardPricingRouteImport } from './routes/_authed/dashboard/pricing'
+import { Route as AuthedDashboardAvatarPacksRouteImport } from './routes/_authed/dashboard/avatar-packs'
+import { Route as AuthedDashboardAffiliatesRouteImport } from './routes/_authed/dashboard/affiliates'
 import { Route as AuthedAdminUsersRouteImport } from './routes/_authed/admin/users'
 import { Route as AuthedAdminCommentsRouteImport } from './routes/_authed/admin/comments'
+import { Route as AuthedDashboardStudentsIndexRouteImport } from './routes/_authed/dashboard/students/index'
+import { Route as AuthedDashboardSettingsIndexRouteImport } from './routes/_authed/dashboard/settings/index'
+import { Route as AuthedDashboardPagesIndexRouteImport } from './routes/_authed/dashboard/pages/index'
+import { Route as AuthedDashboardEmailsIndexRouteImport } from './routes/_authed/dashboard/emails/index'
+import { Route as AuthedDashboardCoursesIndexRouteImport } from './routes/_authed/dashboard/courses/index'
+import { Route as AuthedDashboardCommunityIndexRouteImport } from './routes/_authed/dashboard/community/index'
+import { Route as AuthedDashboardAnalyticsIndexRouteImport } from './routes/_authed/dashboard/analytics/index'
 import { Route as AuthedAdminVideosIndexRouteImport } from './routes/_authed/admin/videos/index'
 import { Route as AuthedAdminSeriesIndexRouteImport } from './routes/_authed/admin/series/index'
+import { Route as AuthedDashboardStudentsStudentIdRouteImport } from './routes/_authed/dashboard/students/$studentId'
+import { Route as AuthedDashboardSettingsWebhooksRouteImport } from './routes/_authed/dashboard/settings/webhooks'
+import { Route as AuthedDashboardSettingsGamificationRouteImport } from './routes/_authed/dashboard/settings/gamification'
+import { Route as AuthedDashboardSettingsCheckoutRouteImport } from './routes/_authed/dashboard/settings/checkout'
+import { Route as AuthedDashboardSettingsBrandingRouteImport } from './routes/_authed/dashboard/settings/branding'
+import { Route as AuthedDashboardCoursesAiWizardRouteImport } from './routes/_authed/dashboard/courses/ai-wizard'
 import { Route as AuthedAdminVideosNewRouteImport } from './routes/_authed/admin/videos/new'
 import { Route as AuthedAdminSeriesNewRouteImport } from './routes/_authed/admin/series/new'
+import { Route as AuthedDashboardPagesIdEditRouteImport } from './routes/_authed/dashboard/pages/$id.edit'
+import { Route as AuthedDashboardCoursesIdEditRouteImport } from './routes/_authed/dashboard/courses/$id.edit'
 import { Route as AuthedAdminVideosIdEditRouteImport } from './routes/_authed/admin/videos/$id.edit'
 import { Route as AuthedAdminSeriesIdEditRouteImport } from './routes/_authed/admin/series/$id.edit'
+import { Route as AuthedDashboardCoursesCourseIdQuizLessonIdRouteImport } from './routes/_authed/dashboard/courses/$courseId.quiz.$lessonId'
 
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
@@ -72,9 +99,24 @@ const PublicOfflineRoute = PublicOfflineRouteImport.update({
   path: '/offline',
   getParentRoute: () => PublicRoute,
 } as any)
+const AuthedMyDashboardRoute = AuthedMyDashboardRouteImport.update({
+  id: '/my-dashboard',
+  path: '/my-dashboard',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedFavoritesRoute = AuthedFavoritesRouteImport.update({
   id: '/favorites',
   path: '/favorites',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedDashboardRoute = AuthedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedCommunityRoute = AuthedCommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => AuthedRoute,
 } as any)
 const AuthedAdminRoute = AuthedAdminRouteImport.update({
@@ -117,6 +159,16 @@ const PublicShowsIndexRoute = PublicShowsIndexRouteImport.update({
   path: '/shows/',
   getParentRoute: () => PublicRoute,
 } as any)
+const AuthedMyCoursesIndexRoute = AuthedMyCoursesIndexRouteImport.update({
+  id: '/my-courses/',
+  path: '/my-courses/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedDashboardIndexRoute = AuthedDashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthedDashboardRoute,
+} as any)
 const AuthedAdminIndexRoute = AuthedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -147,6 +199,38 @@ const PublicShowsSlugRoute = PublicShowsSlugRouteImport.update({
   path: '/shows/$slug',
   getParentRoute: () => PublicRoute,
 } as any)
+const AuthedLearnLeaderboardRoute = AuthedLearnLeaderboardRouteImport.update({
+  id: '/learn/leaderboard',
+  path: '/learn/leaderboard',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedLearnCourseIdRoute = AuthedLearnCourseIdRouteImport.update({
+  id: '/learn/$courseId',
+  path: '/learn/$courseId',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedDashboardUsageRoute = AuthedDashboardUsageRouteImport.update({
+  id: '/usage',
+  path: '/usage',
+  getParentRoute: () => AuthedDashboardRoute,
+} as any)
+const AuthedDashboardPricingRoute = AuthedDashboardPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => AuthedDashboardRoute,
+} as any)
+const AuthedDashboardAvatarPacksRoute =
+  AuthedDashboardAvatarPacksRouteImport.update({
+    id: '/avatar-packs',
+    path: '/avatar-packs',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardAffiliatesRoute =
+  AuthedDashboardAffiliatesRouteImport.update({
+    id: '/affiliates',
+    path: '/affiliates',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
 const AuthedAdminUsersRoute = AuthedAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -157,6 +241,48 @@ const AuthedAdminCommentsRoute = AuthedAdminCommentsRouteImport.update({
   path: '/comments',
   getParentRoute: () => AuthedAdminRoute,
 } as any)
+const AuthedDashboardStudentsIndexRoute =
+  AuthedDashboardStudentsIndexRouteImport.update({
+    id: '/students/',
+    path: '/students/',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardSettingsIndexRoute =
+  AuthedDashboardSettingsIndexRouteImport.update({
+    id: '/settings/',
+    path: '/settings/',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardPagesIndexRoute =
+  AuthedDashboardPagesIndexRouteImport.update({
+    id: '/pages/',
+    path: '/pages/',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardEmailsIndexRoute =
+  AuthedDashboardEmailsIndexRouteImport.update({
+    id: '/emails/',
+    path: '/emails/',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardCoursesIndexRoute =
+  AuthedDashboardCoursesIndexRouteImport.update({
+    id: '/courses/',
+    path: '/courses/',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardCommunityIndexRoute =
+  AuthedDashboardCommunityIndexRouteImport.update({
+    id: '/community/',
+    path: '/community/',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardAnalyticsIndexRoute =
+  AuthedDashboardAnalyticsIndexRouteImport.update({
+    id: '/analytics/',
+    path: '/analytics/',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
 const AuthedAdminVideosIndexRoute = AuthedAdminVideosIndexRouteImport.update({
   id: '/videos/',
   path: '/videos/',
@@ -167,6 +293,42 @@ const AuthedAdminSeriesIndexRoute = AuthedAdminSeriesIndexRouteImport.update({
   path: '/series/',
   getParentRoute: () => AuthedAdminRoute,
 } as any)
+const AuthedDashboardStudentsStudentIdRoute =
+  AuthedDashboardStudentsStudentIdRouteImport.update({
+    id: '/students/$studentId',
+    path: '/students/$studentId',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardSettingsWebhooksRoute =
+  AuthedDashboardSettingsWebhooksRouteImport.update({
+    id: '/settings/webhooks',
+    path: '/settings/webhooks',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardSettingsGamificationRoute =
+  AuthedDashboardSettingsGamificationRouteImport.update({
+    id: '/settings/gamification',
+    path: '/settings/gamification',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardSettingsCheckoutRoute =
+  AuthedDashboardSettingsCheckoutRouteImport.update({
+    id: '/settings/checkout',
+    path: '/settings/checkout',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardSettingsBrandingRoute =
+  AuthedDashboardSettingsBrandingRouteImport.update({
+    id: '/settings/branding',
+    path: '/settings/branding',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardCoursesAiWizardRoute =
+  AuthedDashboardCoursesAiWizardRouteImport.update({
+    id: '/courses/ai-wizard',
+    path: '/courses/ai-wizard',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
 const AuthedAdminVideosNewRoute = AuthedAdminVideosNewRouteImport.update({
   id: '/videos/new',
   path: '/videos/new',
@@ -177,6 +339,18 @@ const AuthedAdminSeriesNewRoute = AuthedAdminSeriesNewRouteImport.update({
   path: '/series/new',
   getParentRoute: () => AuthedAdminRoute,
 } as any)
+const AuthedDashboardPagesIdEditRoute =
+  AuthedDashboardPagesIdEditRouteImport.update({
+    id: '/pages/$id/edit',
+    path: '/pages/$id/edit',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardCoursesIdEditRoute =
+  AuthedDashboardCoursesIdEditRouteImport.update({
+    id: '/courses/$id/edit',
+    path: '/courses/$id/edit',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
 const AuthedAdminVideosIdEditRoute = AuthedAdminVideosIdEditRouteImport.update({
   id: '/videos/$id/edit',
   path: '/videos/$id/edit',
@@ -187,6 +361,12 @@ const AuthedAdminSeriesIdEditRoute = AuthedAdminSeriesIdEditRouteImport.update({
   path: '/series/$id/edit',
   getParentRoute: () => AuthedAdminRoute,
 } as any)
+const AuthedDashboardCoursesCourseIdQuizLessonIdRoute =
+  AuthedDashboardCoursesCourseIdQuizLessonIdRouteImport.update({
+    id: '/courses/$courseId/quiz/$lessonId',
+    path: '/courses/$courseId/quiz/$lessonId',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
@@ -197,25 +377,52 @@ export interface FileRoutesByFullPath {
   '/verify-email': typeof AuthVerifyEmailRoute
   '/account': typeof AuthedAccountRoute
   '/admin': typeof AuthedAdminRouteWithChildren
+  '/community': typeof AuthedCommunityRoute
+  '/dashboard': typeof AuthedDashboardRouteWithChildren
   '/favorites': typeof AuthedFavoritesRoute
+  '/my-dashboard': typeof AuthedMyDashboardRoute
   '/offline': typeof PublicOfflineRoute
   '/pricing': typeof PublicPricingRoute
   '/search': typeof PublicSearchRoute
   '/admin/comments': typeof AuthedAdminCommentsRoute
   '/admin/users': typeof AuthedAdminUsersRoute
+  '/dashboard/affiliates': typeof AuthedDashboardAffiliatesRoute
+  '/dashboard/avatar-packs': typeof AuthedDashboardAvatarPacksRoute
+  '/dashboard/pricing': typeof AuthedDashboardPricingRoute
+  '/dashboard/usage': typeof AuthedDashboardUsageRoute
+  '/learn/$courseId': typeof AuthedLearnCourseIdRoute
+  '/learn/leaderboard': typeof AuthedLearnLeaderboardRoute
   '/shows/$slug': typeof PublicShowsSlugRoute
   '/watch/$slug': typeof PublicWatchSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/api/webhooks/mux': typeof ApiWebhooksMuxRoute
   '/admin/': typeof AuthedAdminIndexRoute
+  '/dashboard/': typeof AuthedDashboardIndexRoute
+  '/my-courses/': typeof AuthedMyCoursesIndexRoute
   '/shows/': typeof PublicShowsIndexRoute
   '/admin/series/new': typeof AuthedAdminSeriesNewRoute
   '/admin/videos/new': typeof AuthedAdminVideosNewRoute
+  '/dashboard/courses/ai-wizard': typeof AuthedDashboardCoursesAiWizardRoute
+  '/dashboard/settings/branding': typeof AuthedDashboardSettingsBrandingRoute
+  '/dashboard/settings/checkout': typeof AuthedDashboardSettingsCheckoutRoute
+  '/dashboard/settings/gamification': typeof AuthedDashboardSettingsGamificationRoute
+  '/dashboard/settings/webhooks': typeof AuthedDashboardSettingsWebhooksRoute
+  '/dashboard/students/$studentId': typeof AuthedDashboardStudentsStudentIdRoute
   '/admin/series/': typeof AuthedAdminSeriesIndexRoute
   '/admin/videos/': typeof AuthedAdminVideosIndexRoute
+  '/dashboard/analytics/': typeof AuthedDashboardAnalyticsIndexRoute
+  '/dashboard/community/': typeof AuthedDashboardCommunityIndexRoute
+  '/dashboard/courses/': typeof AuthedDashboardCoursesIndexRoute
+  '/dashboard/emails/': typeof AuthedDashboardEmailsIndexRoute
+  '/dashboard/pages/': typeof AuthedDashboardPagesIndexRoute
+  '/dashboard/settings/': typeof AuthedDashboardSettingsIndexRoute
+  '/dashboard/students/': typeof AuthedDashboardStudentsIndexRoute
   '/admin/series/$id/edit': typeof AuthedAdminSeriesIdEditRoute
   '/admin/videos/$id/edit': typeof AuthedAdminVideosIdEditRoute
+  '/dashboard/courses/$id/edit': typeof AuthedDashboardCoursesIdEditRoute
+  '/dashboard/pages/$id/edit': typeof AuthedDashboardPagesIdEditRoute
+  '/dashboard/courses/$courseId/quiz/$lessonId': typeof AuthedDashboardCoursesCourseIdQuizLessonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
@@ -225,25 +432,51 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/verify-email': typeof AuthVerifyEmailRoute
   '/account': typeof AuthedAccountRoute
+  '/community': typeof AuthedCommunityRoute
   '/favorites': typeof AuthedFavoritesRoute
+  '/my-dashboard': typeof AuthedMyDashboardRoute
   '/offline': typeof PublicOfflineRoute
   '/pricing': typeof PublicPricingRoute
   '/search': typeof PublicSearchRoute
   '/admin/comments': typeof AuthedAdminCommentsRoute
   '/admin/users': typeof AuthedAdminUsersRoute
+  '/dashboard/affiliates': typeof AuthedDashboardAffiliatesRoute
+  '/dashboard/avatar-packs': typeof AuthedDashboardAvatarPacksRoute
+  '/dashboard/pricing': typeof AuthedDashboardPricingRoute
+  '/dashboard/usage': typeof AuthedDashboardUsageRoute
+  '/learn/$courseId': typeof AuthedLearnCourseIdRoute
+  '/learn/leaderboard': typeof AuthedLearnLeaderboardRoute
   '/shows/$slug': typeof PublicShowsSlugRoute
   '/watch/$slug': typeof PublicWatchSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/api/webhooks/mux': typeof ApiWebhooksMuxRoute
   '/admin': typeof AuthedAdminIndexRoute
+  '/dashboard': typeof AuthedDashboardIndexRoute
+  '/my-courses': typeof AuthedMyCoursesIndexRoute
   '/shows': typeof PublicShowsIndexRoute
   '/admin/series/new': typeof AuthedAdminSeriesNewRoute
   '/admin/videos/new': typeof AuthedAdminVideosNewRoute
+  '/dashboard/courses/ai-wizard': typeof AuthedDashboardCoursesAiWizardRoute
+  '/dashboard/settings/branding': typeof AuthedDashboardSettingsBrandingRoute
+  '/dashboard/settings/checkout': typeof AuthedDashboardSettingsCheckoutRoute
+  '/dashboard/settings/gamification': typeof AuthedDashboardSettingsGamificationRoute
+  '/dashboard/settings/webhooks': typeof AuthedDashboardSettingsWebhooksRoute
+  '/dashboard/students/$studentId': typeof AuthedDashboardStudentsStudentIdRoute
   '/admin/series': typeof AuthedAdminSeriesIndexRoute
   '/admin/videos': typeof AuthedAdminVideosIndexRoute
+  '/dashboard/analytics': typeof AuthedDashboardAnalyticsIndexRoute
+  '/dashboard/community': typeof AuthedDashboardCommunityIndexRoute
+  '/dashboard/courses': typeof AuthedDashboardCoursesIndexRoute
+  '/dashboard/emails': typeof AuthedDashboardEmailsIndexRoute
+  '/dashboard/pages': typeof AuthedDashboardPagesIndexRoute
+  '/dashboard/settings': typeof AuthedDashboardSettingsIndexRoute
+  '/dashboard/students': typeof AuthedDashboardStudentsIndexRoute
   '/admin/series/$id/edit': typeof AuthedAdminSeriesIdEditRoute
   '/admin/videos/$id/edit': typeof AuthedAdminVideosIdEditRoute
+  '/dashboard/courses/$id/edit': typeof AuthedDashboardCoursesIdEditRoute
+  '/dashboard/pages/$id/edit': typeof AuthedDashboardPagesIdEditRoute
+  '/dashboard/courses/$courseId/quiz/$lessonId': typeof AuthedDashboardCoursesCourseIdQuizLessonIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -257,26 +490,53 @@ export interface FileRoutesById {
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_authed/account': typeof AuthedAccountRoute
   '/_authed/admin': typeof AuthedAdminRouteWithChildren
+  '/_authed/community': typeof AuthedCommunityRoute
+  '/_authed/dashboard': typeof AuthedDashboardRouteWithChildren
   '/_authed/favorites': typeof AuthedFavoritesRoute
+  '/_authed/my-dashboard': typeof AuthedMyDashboardRoute
   '/_public/offline': typeof PublicOfflineRoute
   '/_public/pricing': typeof PublicPricingRoute
   '/_public/search': typeof PublicSearchRoute
   '/_public/': typeof PublicIndexRoute
   '/_authed/admin/comments': typeof AuthedAdminCommentsRoute
   '/_authed/admin/users': typeof AuthedAdminUsersRoute
+  '/_authed/dashboard/affiliates': typeof AuthedDashboardAffiliatesRoute
+  '/_authed/dashboard/avatar-packs': typeof AuthedDashboardAvatarPacksRoute
+  '/_authed/dashboard/pricing': typeof AuthedDashboardPricingRoute
+  '/_authed/dashboard/usage': typeof AuthedDashboardUsageRoute
+  '/_authed/learn/$courseId': typeof AuthedLearnCourseIdRoute
+  '/_authed/learn/leaderboard': typeof AuthedLearnLeaderboardRoute
   '/_public/shows/$slug': typeof PublicShowsSlugRoute
   '/_public/watch/$slug': typeof PublicWatchSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/api/webhooks/mux': typeof ApiWebhooksMuxRoute
   '/_authed/admin/': typeof AuthedAdminIndexRoute
+  '/_authed/dashboard/': typeof AuthedDashboardIndexRoute
+  '/_authed/my-courses/': typeof AuthedMyCoursesIndexRoute
   '/_public/shows/': typeof PublicShowsIndexRoute
   '/_authed/admin/series/new': typeof AuthedAdminSeriesNewRoute
   '/_authed/admin/videos/new': typeof AuthedAdminVideosNewRoute
+  '/_authed/dashboard/courses/ai-wizard': typeof AuthedDashboardCoursesAiWizardRoute
+  '/_authed/dashboard/settings/branding': typeof AuthedDashboardSettingsBrandingRoute
+  '/_authed/dashboard/settings/checkout': typeof AuthedDashboardSettingsCheckoutRoute
+  '/_authed/dashboard/settings/gamification': typeof AuthedDashboardSettingsGamificationRoute
+  '/_authed/dashboard/settings/webhooks': typeof AuthedDashboardSettingsWebhooksRoute
+  '/_authed/dashboard/students/$studentId': typeof AuthedDashboardStudentsStudentIdRoute
   '/_authed/admin/series/': typeof AuthedAdminSeriesIndexRoute
   '/_authed/admin/videos/': typeof AuthedAdminVideosIndexRoute
+  '/_authed/dashboard/analytics/': typeof AuthedDashboardAnalyticsIndexRoute
+  '/_authed/dashboard/community/': typeof AuthedDashboardCommunityIndexRoute
+  '/_authed/dashboard/courses/': typeof AuthedDashboardCoursesIndexRoute
+  '/_authed/dashboard/emails/': typeof AuthedDashboardEmailsIndexRoute
+  '/_authed/dashboard/pages/': typeof AuthedDashboardPagesIndexRoute
+  '/_authed/dashboard/settings/': typeof AuthedDashboardSettingsIndexRoute
+  '/_authed/dashboard/students/': typeof AuthedDashboardStudentsIndexRoute
   '/_authed/admin/series/$id/edit': typeof AuthedAdminSeriesIdEditRoute
   '/_authed/admin/videos/$id/edit': typeof AuthedAdminVideosIdEditRoute
+  '/_authed/dashboard/courses/$id/edit': typeof AuthedDashboardCoursesIdEditRoute
+  '/_authed/dashboard/pages/$id/edit': typeof AuthedDashboardPagesIdEditRoute
+  '/_authed/dashboard/courses/$courseId/quiz/$lessonId': typeof AuthedDashboardCoursesCourseIdQuizLessonIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -289,25 +549,52 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/account'
     | '/admin'
+    | '/community'
+    | '/dashboard'
     | '/favorites'
+    | '/my-dashboard'
     | '/offline'
     | '/pricing'
     | '/search'
     | '/admin/comments'
     | '/admin/users'
+    | '/dashboard/affiliates'
+    | '/dashboard/avatar-packs'
+    | '/dashboard/pricing'
+    | '/dashboard/usage'
+    | '/learn/$courseId'
+    | '/learn/leaderboard'
     | '/shows/$slug'
     | '/watch/$slug'
     | '/api/auth/$'
     | '/api/trpc/$'
     | '/api/webhooks/mux'
     | '/admin/'
+    | '/dashboard/'
+    | '/my-courses/'
     | '/shows/'
     | '/admin/series/new'
     | '/admin/videos/new'
+    | '/dashboard/courses/ai-wizard'
+    | '/dashboard/settings/branding'
+    | '/dashboard/settings/checkout'
+    | '/dashboard/settings/gamification'
+    | '/dashboard/settings/webhooks'
+    | '/dashboard/students/$studentId'
     | '/admin/series/'
     | '/admin/videos/'
+    | '/dashboard/analytics/'
+    | '/dashboard/community/'
+    | '/dashboard/courses/'
+    | '/dashboard/emails/'
+    | '/dashboard/pages/'
+    | '/dashboard/settings/'
+    | '/dashboard/students/'
     | '/admin/series/$id/edit'
     | '/admin/videos/$id/edit'
+    | '/dashboard/courses/$id/edit'
+    | '/dashboard/pages/$id/edit'
+    | '/dashboard/courses/$courseId/quiz/$lessonId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -317,25 +604,51 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify-email'
     | '/account'
+    | '/community'
     | '/favorites'
+    | '/my-dashboard'
     | '/offline'
     | '/pricing'
     | '/search'
     | '/admin/comments'
     | '/admin/users'
+    | '/dashboard/affiliates'
+    | '/dashboard/avatar-packs'
+    | '/dashboard/pricing'
+    | '/dashboard/usage'
+    | '/learn/$courseId'
+    | '/learn/leaderboard'
     | '/shows/$slug'
     | '/watch/$slug'
     | '/api/auth/$'
     | '/api/trpc/$'
     | '/api/webhooks/mux'
     | '/admin'
+    | '/dashboard'
+    | '/my-courses'
     | '/shows'
     | '/admin/series/new'
     | '/admin/videos/new'
+    | '/dashboard/courses/ai-wizard'
+    | '/dashboard/settings/branding'
+    | '/dashboard/settings/checkout'
+    | '/dashboard/settings/gamification'
+    | '/dashboard/settings/webhooks'
+    | '/dashboard/students/$studentId'
     | '/admin/series'
     | '/admin/videos'
+    | '/dashboard/analytics'
+    | '/dashboard/community'
+    | '/dashboard/courses'
+    | '/dashboard/emails'
+    | '/dashboard/pages'
+    | '/dashboard/settings'
+    | '/dashboard/students'
     | '/admin/series/$id/edit'
     | '/admin/videos/$id/edit'
+    | '/dashboard/courses/$id/edit'
+    | '/dashboard/pages/$id/edit'
+    | '/dashboard/courses/$courseId/quiz/$lessonId'
   id:
     | '__root__'
     | '/_auth'
@@ -348,26 +661,53 @@ export interface FileRouteTypes {
     | '/_auth/verify-email'
     | '/_authed/account'
     | '/_authed/admin'
+    | '/_authed/community'
+    | '/_authed/dashboard'
     | '/_authed/favorites'
+    | '/_authed/my-dashboard'
     | '/_public/offline'
     | '/_public/pricing'
     | '/_public/search'
     | '/_public/'
     | '/_authed/admin/comments'
     | '/_authed/admin/users'
+    | '/_authed/dashboard/affiliates'
+    | '/_authed/dashboard/avatar-packs'
+    | '/_authed/dashboard/pricing'
+    | '/_authed/dashboard/usage'
+    | '/_authed/learn/$courseId'
+    | '/_authed/learn/leaderboard'
     | '/_public/shows/$slug'
     | '/_public/watch/$slug'
     | '/api/auth/$'
     | '/api/trpc/$'
     | '/api/webhooks/mux'
     | '/_authed/admin/'
+    | '/_authed/dashboard/'
+    | '/_authed/my-courses/'
     | '/_public/shows/'
     | '/_authed/admin/series/new'
     | '/_authed/admin/videos/new'
+    | '/_authed/dashboard/courses/ai-wizard'
+    | '/_authed/dashboard/settings/branding'
+    | '/_authed/dashboard/settings/checkout'
+    | '/_authed/dashboard/settings/gamification'
+    | '/_authed/dashboard/settings/webhooks'
+    | '/_authed/dashboard/students/$studentId'
     | '/_authed/admin/series/'
     | '/_authed/admin/videos/'
+    | '/_authed/dashboard/analytics/'
+    | '/_authed/dashboard/community/'
+    | '/_authed/dashboard/courses/'
+    | '/_authed/dashboard/emails/'
+    | '/_authed/dashboard/pages/'
+    | '/_authed/dashboard/settings/'
+    | '/_authed/dashboard/students/'
     | '/_authed/admin/series/$id/edit'
     | '/_authed/admin/videos/$id/edit'
+    | '/_authed/dashboard/courses/$id/edit'
+    | '/_authed/dashboard/pages/$id/edit'
+    | '/_authed/dashboard/courses/$courseId/quiz/$lessonId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -430,11 +770,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicOfflineRouteImport
       parentRoute: typeof PublicRoute
     }
+    '/_authed/my-dashboard': {
+      id: '/_authed/my-dashboard'
+      path: '/my-dashboard'
+      fullPath: '/my-dashboard'
+      preLoaderRoute: typeof AuthedMyDashboardRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/favorites': {
       id: '/_authed/favorites'
       path: '/favorites'
       fullPath: '/favorites'
       preLoaderRoute: typeof AuthedFavoritesRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/dashboard': {
+      id: '/_authed/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthedDashboardRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/community': {
+      id: '/_authed/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof AuthedCommunityRouteImport
       parentRoute: typeof AuthedRoute
     }
     '/_authed/admin': {
@@ -493,6 +854,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicShowsIndexRouteImport
       parentRoute: typeof PublicRoute
     }
+    '/_authed/my-courses/': {
+      id: '/_authed/my-courses/'
+      path: '/my-courses'
+      fullPath: '/my-courses/'
+      preLoaderRoute: typeof AuthedMyCoursesIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/dashboard/': {
+      id: '/_authed/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthedDashboardIndexRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
     '/_authed/admin/': {
       id: '/_authed/admin/'
       path: '/'
@@ -535,6 +910,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicShowsSlugRouteImport
       parentRoute: typeof PublicRoute
     }
+    '/_authed/learn/leaderboard': {
+      id: '/_authed/learn/leaderboard'
+      path: '/learn/leaderboard'
+      fullPath: '/learn/leaderboard'
+      preLoaderRoute: typeof AuthedLearnLeaderboardRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/learn/$courseId': {
+      id: '/_authed/learn/$courseId'
+      path: '/learn/$courseId'
+      fullPath: '/learn/$courseId'
+      preLoaderRoute: typeof AuthedLearnCourseIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/dashboard/usage': {
+      id: '/_authed/dashboard/usage'
+      path: '/usage'
+      fullPath: '/dashboard/usage'
+      preLoaderRoute: typeof AuthedDashboardUsageRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/pricing': {
+      id: '/_authed/dashboard/pricing'
+      path: '/pricing'
+      fullPath: '/dashboard/pricing'
+      preLoaderRoute: typeof AuthedDashboardPricingRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/avatar-packs': {
+      id: '/_authed/dashboard/avatar-packs'
+      path: '/avatar-packs'
+      fullPath: '/dashboard/avatar-packs'
+      preLoaderRoute: typeof AuthedDashboardAvatarPacksRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/affiliates': {
+      id: '/_authed/dashboard/affiliates'
+      path: '/affiliates'
+      fullPath: '/dashboard/affiliates'
+      preLoaderRoute: typeof AuthedDashboardAffiliatesRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
     '/_authed/admin/users': {
       id: '/_authed/admin/users'
       path: '/users'
@@ -548,6 +965,55 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/comments'
       preLoaderRoute: typeof AuthedAdminCommentsRouteImport
       parentRoute: typeof AuthedAdminRoute
+    }
+    '/_authed/dashboard/students/': {
+      id: '/_authed/dashboard/students/'
+      path: '/students'
+      fullPath: '/dashboard/students/'
+      preLoaderRoute: typeof AuthedDashboardStudentsIndexRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/settings/': {
+      id: '/_authed/dashboard/settings/'
+      path: '/settings'
+      fullPath: '/dashboard/settings/'
+      preLoaderRoute: typeof AuthedDashboardSettingsIndexRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/pages/': {
+      id: '/_authed/dashboard/pages/'
+      path: '/pages'
+      fullPath: '/dashboard/pages/'
+      preLoaderRoute: typeof AuthedDashboardPagesIndexRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/emails/': {
+      id: '/_authed/dashboard/emails/'
+      path: '/emails'
+      fullPath: '/dashboard/emails/'
+      preLoaderRoute: typeof AuthedDashboardEmailsIndexRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/courses/': {
+      id: '/_authed/dashboard/courses/'
+      path: '/courses'
+      fullPath: '/dashboard/courses/'
+      preLoaderRoute: typeof AuthedDashboardCoursesIndexRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/community/': {
+      id: '/_authed/dashboard/community/'
+      path: '/community'
+      fullPath: '/dashboard/community/'
+      preLoaderRoute: typeof AuthedDashboardCommunityIndexRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/analytics/': {
+      id: '/_authed/dashboard/analytics/'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics/'
+      preLoaderRoute: typeof AuthedDashboardAnalyticsIndexRouteImport
+      parentRoute: typeof AuthedDashboardRoute
     }
     '/_authed/admin/videos/': {
       id: '/_authed/admin/videos/'
@@ -563,6 +1029,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAdminSeriesIndexRouteImport
       parentRoute: typeof AuthedAdminRoute
     }
+    '/_authed/dashboard/students/$studentId': {
+      id: '/_authed/dashboard/students/$studentId'
+      path: '/students/$studentId'
+      fullPath: '/dashboard/students/$studentId'
+      preLoaderRoute: typeof AuthedDashboardStudentsStudentIdRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/settings/webhooks': {
+      id: '/_authed/dashboard/settings/webhooks'
+      path: '/settings/webhooks'
+      fullPath: '/dashboard/settings/webhooks'
+      preLoaderRoute: typeof AuthedDashboardSettingsWebhooksRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/settings/gamification': {
+      id: '/_authed/dashboard/settings/gamification'
+      path: '/settings/gamification'
+      fullPath: '/dashboard/settings/gamification'
+      preLoaderRoute: typeof AuthedDashboardSettingsGamificationRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/settings/checkout': {
+      id: '/_authed/dashboard/settings/checkout'
+      path: '/settings/checkout'
+      fullPath: '/dashboard/settings/checkout'
+      preLoaderRoute: typeof AuthedDashboardSettingsCheckoutRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/settings/branding': {
+      id: '/_authed/dashboard/settings/branding'
+      path: '/settings/branding'
+      fullPath: '/dashboard/settings/branding'
+      preLoaderRoute: typeof AuthedDashboardSettingsBrandingRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/courses/ai-wizard': {
+      id: '/_authed/dashboard/courses/ai-wizard'
+      path: '/courses/ai-wizard'
+      fullPath: '/dashboard/courses/ai-wizard'
+      preLoaderRoute: typeof AuthedDashboardCoursesAiWizardRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
     '/_authed/admin/videos/new': {
       id: '/_authed/admin/videos/new'
       path: '/videos/new'
@@ -577,6 +1085,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAdminSeriesNewRouteImport
       parentRoute: typeof AuthedAdminRoute
     }
+    '/_authed/dashboard/pages/$id/edit': {
+      id: '/_authed/dashboard/pages/$id/edit'
+      path: '/pages/$id/edit'
+      fullPath: '/dashboard/pages/$id/edit'
+      preLoaderRoute: typeof AuthedDashboardPagesIdEditRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/courses/$id/edit': {
+      id: '/_authed/dashboard/courses/$id/edit'
+      path: '/courses/$id/edit'
+      fullPath: '/dashboard/courses/$id/edit'
+      preLoaderRoute: typeof AuthedDashboardCoursesIdEditRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
     '/_authed/admin/videos/$id/edit': {
       id: '/_authed/admin/videos/$id/edit'
       path: '/videos/$id/edit'
@@ -590,6 +1112,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/series/$id/edit'
       preLoaderRoute: typeof AuthedAdminSeriesIdEditRouteImport
       parentRoute: typeof AuthedAdminRoute
+    }
+    '/_authed/dashboard/courses/$courseId/quiz/$lessonId': {
+      id: '/_authed/dashboard/courses/$courseId/quiz/$lessonId'
+      path: '/courses/$courseId/quiz/$lessonId'
+      fullPath: '/dashboard/courses/$courseId/quiz/$lessonId'
+      preLoaderRoute: typeof AuthedDashboardCoursesCourseIdQuizLessonIdRouteImport
+      parentRoute: typeof AuthedDashboardRoute
     }
   }
 }
@@ -640,16 +1169,82 @@ const AuthedAdminRouteWithChildren = AuthedAdminRoute._addFileChildren(
   AuthedAdminRouteChildren,
 )
 
+interface AuthedDashboardRouteChildren {
+  AuthedDashboardAffiliatesRoute: typeof AuthedDashboardAffiliatesRoute
+  AuthedDashboardAvatarPacksRoute: typeof AuthedDashboardAvatarPacksRoute
+  AuthedDashboardPricingRoute: typeof AuthedDashboardPricingRoute
+  AuthedDashboardUsageRoute: typeof AuthedDashboardUsageRoute
+  AuthedDashboardIndexRoute: typeof AuthedDashboardIndexRoute
+  AuthedDashboardCoursesAiWizardRoute: typeof AuthedDashboardCoursesAiWizardRoute
+  AuthedDashboardSettingsBrandingRoute: typeof AuthedDashboardSettingsBrandingRoute
+  AuthedDashboardSettingsCheckoutRoute: typeof AuthedDashboardSettingsCheckoutRoute
+  AuthedDashboardSettingsGamificationRoute: typeof AuthedDashboardSettingsGamificationRoute
+  AuthedDashboardSettingsWebhooksRoute: typeof AuthedDashboardSettingsWebhooksRoute
+  AuthedDashboardStudentsStudentIdRoute: typeof AuthedDashboardStudentsStudentIdRoute
+  AuthedDashboardAnalyticsIndexRoute: typeof AuthedDashboardAnalyticsIndexRoute
+  AuthedDashboardCommunityIndexRoute: typeof AuthedDashboardCommunityIndexRoute
+  AuthedDashboardCoursesIndexRoute: typeof AuthedDashboardCoursesIndexRoute
+  AuthedDashboardEmailsIndexRoute: typeof AuthedDashboardEmailsIndexRoute
+  AuthedDashboardPagesIndexRoute: typeof AuthedDashboardPagesIndexRoute
+  AuthedDashboardSettingsIndexRoute: typeof AuthedDashboardSettingsIndexRoute
+  AuthedDashboardStudentsIndexRoute: typeof AuthedDashboardStudentsIndexRoute
+  AuthedDashboardCoursesIdEditRoute: typeof AuthedDashboardCoursesIdEditRoute
+  AuthedDashboardPagesIdEditRoute: typeof AuthedDashboardPagesIdEditRoute
+  AuthedDashboardCoursesCourseIdQuizLessonIdRoute: typeof AuthedDashboardCoursesCourseIdQuizLessonIdRoute
+}
+
+const AuthedDashboardRouteChildren: AuthedDashboardRouteChildren = {
+  AuthedDashboardAffiliatesRoute: AuthedDashboardAffiliatesRoute,
+  AuthedDashboardAvatarPacksRoute: AuthedDashboardAvatarPacksRoute,
+  AuthedDashboardPricingRoute: AuthedDashboardPricingRoute,
+  AuthedDashboardUsageRoute: AuthedDashboardUsageRoute,
+  AuthedDashboardIndexRoute: AuthedDashboardIndexRoute,
+  AuthedDashboardCoursesAiWizardRoute: AuthedDashboardCoursesAiWizardRoute,
+  AuthedDashboardSettingsBrandingRoute: AuthedDashboardSettingsBrandingRoute,
+  AuthedDashboardSettingsCheckoutRoute: AuthedDashboardSettingsCheckoutRoute,
+  AuthedDashboardSettingsGamificationRoute:
+    AuthedDashboardSettingsGamificationRoute,
+  AuthedDashboardSettingsWebhooksRoute: AuthedDashboardSettingsWebhooksRoute,
+  AuthedDashboardStudentsStudentIdRoute: AuthedDashboardStudentsStudentIdRoute,
+  AuthedDashboardAnalyticsIndexRoute: AuthedDashboardAnalyticsIndexRoute,
+  AuthedDashboardCommunityIndexRoute: AuthedDashboardCommunityIndexRoute,
+  AuthedDashboardCoursesIndexRoute: AuthedDashboardCoursesIndexRoute,
+  AuthedDashboardEmailsIndexRoute: AuthedDashboardEmailsIndexRoute,
+  AuthedDashboardPagesIndexRoute: AuthedDashboardPagesIndexRoute,
+  AuthedDashboardSettingsIndexRoute: AuthedDashboardSettingsIndexRoute,
+  AuthedDashboardStudentsIndexRoute: AuthedDashboardStudentsIndexRoute,
+  AuthedDashboardCoursesIdEditRoute: AuthedDashboardCoursesIdEditRoute,
+  AuthedDashboardPagesIdEditRoute: AuthedDashboardPagesIdEditRoute,
+  AuthedDashboardCoursesCourseIdQuizLessonIdRoute:
+    AuthedDashboardCoursesCourseIdQuizLessonIdRoute,
+}
+
+const AuthedDashboardRouteWithChildren = AuthedDashboardRoute._addFileChildren(
+  AuthedDashboardRouteChildren,
+)
+
 interface AuthedRouteChildren {
   AuthedAccountRoute: typeof AuthedAccountRoute
   AuthedAdminRoute: typeof AuthedAdminRouteWithChildren
+  AuthedCommunityRoute: typeof AuthedCommunityRoute
+  AuthedDashboardRoute: typeof AuthedDashboardRouteWithChildren
   AuthedFavoritesRoute: typeof AuthedFavoritesRoute
+  AuthedMyDashboardRoute: typeof AuthedMyDashboardRoute
+  AuthedLearnCourseIdRoute: typeof AuthedLearnCourseIdRoute
+  AuthedLearnLeaderboardRoute: typeof AuthedLearnLeaderboardRoute
+  AuthedMyCoursesIndexRoute: typeof AuthedMyCoursesIndexRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedAccountRoute: AuthedAccountRoute,
   AuthedAdminRoute: AuthedAdminRouteWithChildren,
+  AuthedCommunityRoute: AuthedCommunityRoute,
+  AuthedDashboardRoute: AuthedDashboardRouteWithChildren,
   AuthedFavoritesRoute: AuthedFavoritesRoute,
+  AuthedMyDashboardRoute: AuthedMyDashboardRoute,
+  AuthedLearnCourseIdRoute: AuthedLearnCourseIdRoute,
+  AuthedLearnLeaderboardRoute: AuthedLearnLeaderboardRoute,
+  AuthedMyCoursesIndexRoute: AuthedMyCoursesIndexRoute,
 }
 
 const AuthedRouteWithChildren =
@@ -689,12 +1284,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

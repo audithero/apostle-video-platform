@@ -17,6 +17,21 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: z.string(),
     STRIPE_PRICE_MONTHLY: z.string().optional(),
     STRIPE_PRICE_ANNUAL: z.string().optional(),
+    // 4-tier Stripe prices
+    STRIPE_PRICE_LAUNCH_MONTHLY: z.string().optional(),
+    STRIPE_PRICE_LAUNCH_ANNUAL: z.string().optional(),
+    STRIPE_PRICE_GROW_MONTHLY: z.string().optional(),
+    STRIPE_PRICE_GROW_ANNUAL: z.string().optional(),
+    STRIPE_PRICE_SCALE_MONTHLY: z.string().optional(),
+    STRIPE_PRICE_SCALE_ANNUAL: z.string().optional(),
+    STRIPE_PRICE_PRO_MONTHLY: z.string().optional(),
+    STRIPE_PRICE_PRO_ANNUAL: z.string().optional(),
+    // AI
+    ANTHROPIC_API_KEY: z.string().optional(),
+    OPENAI_API_KEY: z.string().optional(),
+    // HeyGen
+    HEYGEN_API_KEY: z.string().optional(),
+    HEYGEN_WEBHOOK_SECRET: z.string().optional(),
 
     // Mux
     MUX_TOKEN_ID: z.string(),

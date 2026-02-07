@@ -3,9 +3,6 @@ import {
   Calendar,
   Check,
   Copy,
-  Mail,
-  MapPin,
-  Phone,
   Shield,
   ShieldCheck,
   User,
@@ -38,10 +35,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { authClient } from "@/lib/auth/auth-client";
 import {
   canBanUsers,
-  canDeleteUsers,
   canImpersonateUsers,
   canSetUserRoles,
   getAssignableRoles,

@@ -1,6 +1,5 @@
 import { relations } from "drizzle-orm";
 import { boolean, integer, pgEnum, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
-import { user } from "./auth";
 
 export const videoStatusEnum = pgEnum("video_status", [
   "pending",

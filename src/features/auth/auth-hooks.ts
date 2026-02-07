@@ -80,7 +80,7 @@ export const useRegister = ({
 export const useAuthHelpers = () => {
   const forgotPassword = useMutation({
     mutationFn: async ({ email }: { email: string }) =>
-      await authClient.forgetPassword({ email, redirectTo: "/reset-password" }),
+      await authClient.resetPassword({ email, redirectTo: "/reset-password" } as never),
   });
 
   const resetPassword = useMutation({

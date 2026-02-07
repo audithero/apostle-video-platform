@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,10 +12,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { useSession } from "@/features/auth/auth-hooks";
 import { authClient } from "@/lib/auth/auth-client";
 import { toast } from "sonner";
 import { seo } from "@/lib/seo";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_public/pricing")({
   component: PricingPage,
@@ -23,157 +28,425 @@ export const Route = createFileRoute("/_public/pricing")({
       ...seo({
         title: "Pricing | Apostle",
         description:
-          "Simple, transparent pricing for Apostle. Stream unlimited premium cooking shows starting at $9.99/month. Cancel anytime.",
+          "Creator platform pricing. Launch, grow, and scale your online course business with Apostle. Start your 14-day free trial today.",
       }),
     ],
   }),
 });
 
-const features = [
-  "Unlimited access to all cooking shows",
-  "New content added weekly",
-  "Watch on any device",
-  "Downloadable recipe PDFs",
-  "Ad-free streaming",
-  "Cancel anytime",
+// -- Tier Data ----------------------------------------------------------------
+
+interface Tier {
+  readonly id: "launch" | "grow" | "scale" | "pro";
+  readonly name: string;
+  readonly monthlyPrice: number;
+  readonly annualPrice: number;
+  readonly badge: string | null;
+  readonly description: string;
+  readonly highlights: ReadonlyArray<string>;
+  readonly cta: string;
+}
+
+const TIERS: ReadonlyArray<Tier> = [
+  {
+    id: "launch",
+    name: "Launch",
+    monthlyPrice: 29,
+    annualPrice: 290,
+    badge: null,
+    description: "Everything you need to create and sell your first course.",
+    highlights: [
+      "3 courses",
+      "100 students",
+      "5 hrs video storage",
+      "2,500 emails/mo",
+      "3 AI credits/mo",
+      "1 landing page",
+      "Basic analytics",
+    ],
+    cta: "Start Free Trial",
+  },
+  {
+    id: "grow",
+    name: "Grow",
+    monthlyPrice: 79,
+    annualPrice: 790,
+    badge: "Most Popular",
+    description: "For creators ready to scale their audience and revenue.",
+    highlights: [
+      "10 courses",
+      "1,000 students",
+      "25 hrs video storage",
+      "10,000 emails/mo",
+      "10 AI credits/mo",
+      "5 landing pages",
+      "Community access",
+      "Priority rendering",
+    ],
+    cta: "Start Free Trial",
+  },
+  {
+    id: "scale",
+    name: "Scale",
+    monthlyPrice: 149,
+    annualPrice: 1490,
+    badge: null,
+    description: "Advanced tools for established course businesses.",
+    highlights: [
+      "25 courses",
+      "5,000 students",
+      "100 hrs video storage",
+      "25,000 emails/mo",
+      "30 AI credits/mo",
+      "Unlimited landing pages",
+      "Custom domain",
+      "Remove branding",
+      "Affiliate program",
+      "Advanced analytics",
+    ],
+    cta: "Start Free Trial",
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    monthlyPrice: 199,
+    annualPrice: 1990,
+    badge: null,
+    description: "Maximum power for high-volume course creators.",
+    highlights: [
+      "Unlimited courses",
+      "15,000 students",
+      "250 hrs video storage",
+      "50,000 emails/mo",
+      "100 AI credits/mo",
+      "Everything in Scale",
+      "API access",
+      "Priority support",
+    ],
+    cta: "Start Free Trial",
+  },
 ];
+
+// -- Feature Comparison -------------------------------------------------------
+
+interface ComparisonFeature {
+  readonly name: string;
+  readonly launch: string | boolean;
+  readonly grow: string | boolean;
+  readonly scale: string | boolean;
+  readonly pro: string | boolean;
+}
+
+const COMPARISON_FEATURES: ReadonlyArray<ComparisonFeature> = [
+  { name: "Courses", launch: "3", grow: "10", scale: "25", pro: "Unlimited" },
+  { name: "Students", launch: "100", grow: "1,000", scale: "5,000", pro: "15,000" },
+  { name: "Video Storage", launch: "5 hrs", grow: "25 hrs", scale: "100 hrs", pro: "250 hrs" },
+  { name: "Emails/month", launch: "2,500", grow: "10,000", scale: "25,000", pro: "50,000" },
+  { name: "AI Course Credits", launch: "3/mo", grow: "10/mo", scale: "30/mo", pro: "100/mo" },
+  { name: "Avatar Video", launch: "Add-on", grow: "Add-on", scale: "Add-on", pro: "Add-on" },
+  { name: "Landing Pages", launch: "1", grow: "5", scale: "Unlimited", pro: "Unlimited" },
+  { name: "Email Marketing", launch: "1 sequence", grow: "5 sequences", scale: "Unlimited", pro: "Unlimited" },
+  { name: "Page Builder", launch: true, grow: true, scale: true, pro: true },
+  { name: "Community", launch: false, grow: true, scale: true, pro: true },
+  { name: "Analytics", launch: "Basic", grow: "Standard", scale: "Advanced", pro: "Advanced" },
+  { name: "Affiliate Program", launch: false, grow: false, scale: true, pro: true },
+  { name: "Custom Domain", launch: false, grow: false, scale: true, pro: true },
+  { name: "Remove Branding", launch: false, grow: false, scale: true, pro: true },
+  { name: "API Access", launch: false, grow: false, scale: false, pro: true },
+  { name: "Priority Support", launch: false, grow: false, scale: true, pro: true },
+];
+
+// -- Page Component -----------------------------------------------------------
 
 function PricingPage() {
   const { data: session } = useSession();
+  const [isAnnual, setIsAnnual] = useState(false);
 
   const handleSubscribe = async (plan: string) => {
     if (!session?.user) {
       return;
     }
     try {
+      const billingPlan = isAnnual ? `${plan}_annual` : plan;
       await authClient.subscription.upgrade({
-        plan,
-        successUrl: "/account",
+        plan: billingPlan,
+        successUrl: "/dashboard",
         cancelUrl: "/pricing",
       });
     } catch {
-      toast.error("Failed to start subscription. Please try again.");
+      toast.error("Failed to start checkout. Please try again.");
     }
   };
 
   return (
     <div className="container py-16 md:py-24">
+      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="mx-auto max-w-3xl text-center"
       >
-        <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">Plans</p>
-        <h1 className="mt-2 text-3xl font-bold uppercase tracking-tight md:text-5xl">
+        <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">
+          Pricing
+        </p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-5xl">
           Simple, Transparent Pricing
         </h1>
         <p className="mt-6 text-lg text-muted-foreground">
-          Choose the plan that works best for you. Cancel anytime.
+          Everything you need to create, sell, and scale your online courses.
+          Start with a 14-day free trial on any plan.
         </p>
+
+        {/* Billing Toggle */}
+        <div className="mt-10 flex items-center justify-center gap-3">
+          <Label
+            htmlFor="billing-toggle"
+            className={cn(
+              "text-sm font-medium transition-colors",
+              !isAnnual ? "text-foreground" : "text-muted-foreground",
+            )}
+          >
+            Monthly
+          </Label>
+          <Switch
+            id="billing-toggle"
+            checked={isAnnual}
+            onCheckedChange={setIsAnnual}
+            aria-label="Toggle annual billing"
+          />
+          <Label
+            htmlFor="billing-toggle"
+            className={cn(
+              "text-sm font-medium transition-colors",
+              isAnnual ? "text-foreground" : "text-muted-foreground",
+            )}
+          >
+            Annual
+          </Label>
+          {isAnnual && (
+            <Badge variant="secondary" className="ml-1">
+              Save ~17%
+            </Badge>
+          )}
+        </div>
       </motion.div>
 
-      <div className="mx-auto mt-16 grid max-w-4xl gap-8 md:grid-cols-2">
-        {/* Monthly Plan */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-        >
-          <Card className="flex h-full flex-col rounded-2xl border-border/50">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-sm font-medium uppercase tracking-widest text-muted-foreground">Monthly</CardTitle>
-              <CardDescription>Perfect for trying things out</CardDescription>
-              <div className="mt-6">
-                <span className="text-5xl font-bold">$9.99</span>
-                <span className="ml-1 text-muted-foreground">/month</span>
-              </div>
-            </CardHeader>
-            <CardContent className="flex-1">
-              <ul className="space-y-4">
-                {features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-3">
-                    <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                      <Check className="size-3 text-primary" />
-                    </div>
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-            <CardFooter className="pt-4">
-              {session?.user ? (
-                <Button
-                  className="w-full rounded-full uppercase tracking-wider text-sm"
-                  onClick={() => handleSubscribe("monthly")}
-                >
-                  Subscribe Monthly
-                </Button>
-              ) : (
-                <Button className="w-full rounded-full uppercase tracking-wider text-sm" asChild>
-                  <Link to="/register">Get Started</Link>
-                </Button>
-              )}
-            </CardFooter>
-          </Card>
-        </motion.div>
-
-        {/* Annual Plan */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          <Card className="relative flex h-full flex-col rounded-2xl border-primary/30 bg-card shadow-xl shadow-primary/5">
-            <div className="absolute -top-3 right-6">
-              <Badge className="rounded-full px-4 py-1 text-xs uppercase tracking-wider">Best Value</Badge>
-            </div>
-            <CardHeader className="pb-4">
-              <CardTitle className="text-sm font-medium uppercase tracking-widest text-muted-foreground">Annual</CardTitle>
-              <CardDescription>Save 25% with annual billing</CardDescription>
-              <div className="mt-6">
-                <span className="text-5xl font-bold">$89.99</span>
-                <span className="ml-1 text-muted-foreground">/year</span>
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                7-day free trial included
-              </p>
-            </CardHeader>
-            <CardContent className="flex-1">
-              <ul className="space-y-4">
-                {features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-3">
-                    <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                      <Check className="size-3 text-primary" />
-                    </div>
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-                <li className="flex items-center gap-3">
-                  <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                    <Check className="size-3 text-primary" />
-                  </div>
-                  <span className="text-sm font-medium">7-day free trial</span>
-                </li>
-              </ul>
-            </CardContent>
-            <CardFooter className="pt-4">
-              {session?.user ? (
-                <Button
-                  className="w-full rounded-full uppercase tracking-wider text-sm"
-                  onClick={() => handleSubscribe("annual")}
-                >
-                  Start Free Trial
-                </Button>
-              ) : (
-                <Button className="w-full rounded-full uppercase tracking-wider text-sm" asChild>
-                  <Link to="/register">Get Started</Link>
-                </Button>
-              )}
-            </CardFooter>
-          </Card>
-        </motion.div>
+      {/* Pricing Cards */}
+      <div className="mx-auto mt-12 grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {TIERS.map((tier, idx) => (
+          <motion.div
+            key={tier.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 + idx * 0.08, duration: 0.5 }}
+          >
+            <TierCard
+              tier={tier}
+              isAnnual={isAnnual}
+              isLoggedIn={!!session?.user}
+              onSubscribe={() => handleSubscribe(tier.id)}
+            />
+          </motion.div>
+        ))}
       </div>
+
+      {/* Feature Comparison Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        className="mx-auto mt-20 max-w-6xl"
+      >
+        <h2 className="text-center text-2xl font-bold">Compare All Features</h2>
+        <p className="mt-2 text-center text-muted-foreground">
+          A detailed breakdown of what each plan includes.
+        </p>
+
+        <Card className="mt-8">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b bg-muted/30">
+                    <th className="px-6 py-4 text-left text-sm font-medium">
+                      Feature
+                    </th>
+                    {TIERS.map((tier) => (
+                      <th
+                        key={tier.id}
+                        className={cn(
+                          "px-4 py-4 text-center text-sm font-medium",
+                          tier.id === "grow" && "bg-primary/5",
+                        )}
+                      >
+                        {tier.name}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {COMPARISON_FEATURES.map((feature, idx) => (
+                    <tr
+                      key={feature.name}
+                      className={
+                        idx < COMPARISON_FEATURES.length - 1 ? "border-b" : ""
+                      }
+                    >
+                      <td className="px-6 py-3.5 text-left text-sm">
+                        {feature.name}
+                      </td>
+                      <td className="px-4 py-3.5 text-center">
+                        <FeatureValue value={feature.launch} />
+                      </td>
+                      <td className={cn("px-4 py-3.5 text-center", "bg-primary/5")}>
+                        <FeatureValue value={feature.grow} />
+                      </td>
+                      <td className="px-4 py-3.5 text-center">
+                        <FeatureValue value={feature.scale} />
+                      </td>
+                      <td className="px-4 py-3.5 text-center">
+                        <FeatureValue value={feature.pro} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* FAQ / CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+        className="mx-auto mt-20 max-w-2xl text-center"
+      >
+        <h2 className="text-2xl font-bold">Ready to Get Started?</h2>
+        <p className="mt-3 text-muted-foreground">
+          Start your 14-day free trial today. No credit card required.
+          Cancel anytime.
+        </p>
+        <div className="mt-6">
+          {session?.user ? (
+            <Button
+              type="button"
+              size="lg"
+              className="rounded-full px-8 uppercase tracking-wider"
+              onClick={() => handleSubscribe("grow")}
+            >
+              Start Free Trial
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              size="lg"
+              className="rounded-full px-8 uppercase tracking-wider"
+              asChild
+            >
+              <Link to="/register">Create Your Account</Link>
+            </Button>
+          )}
+        </div>
+      </motion.div>
     </div>
   );
+}
+
+// -- Tier Card ----------------------------------------------------------------
+
+interface TierCardProps {
+  readonly tier: Tier;
+  readonly isAnnual: boolean;
+  readonly isLoggedIn: boolean;
+  readonly onSubscribe: () => void;
+}
+
+function TierCard({ tier, isAnnual, isLoggedIn, onSubscribe }: TierCardProps) {
+  const price = isAnnual ? tier.annualPrice : tier.monthlyPrice;
+  const period = isAnnual ? "year" : "month";
+  const isPopular = tier.badge !== null;
+
+  return (
+    <Card
+      className={cn(
+        "relative flex h-full flex-col",
+        isPopular && "border-primary shadow-xl shadow-primary/10",
+      )}
+    >
+      {isPopular && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+          <Badge className="rounded-full px-4 py-1 text-xs">
+            {tier.badge}
+          </Badge>
+        </div>
+      )}
+
+      <CardHeader className={cn(isPopular && "pt-8")}>
+        <CardTitle className="text-lg">{tier.name}</CardTitle>
+        <CardDescription className="min-h-[40px]">
+          {tier.description}
+        </CardDescription>
+        <div className="mt-4">
+          <span className="text-4xl font-bold">{`$${String(price)}`}</span>
+          <span className="text-muted-foreground">{`/${period}`}</span>
+        </div>
+        {isAnnual && (
+          <p className="text-sm text-emerald-600">
+            {`Save $${String(tier.monthlyPrice * 12 - tier.annualPrice)}/year`}
+          </p>
+        )}
+      </CardHeader>
+
+      <CardContent className="flex-1">
+        <Separator className="mb-4" />
+        <ul className="space-y-3">
+          {tier.highlights.map((highlight) => (
+            <li key={highlight} className="flex items-start gap-2.5 text-sm">
+              <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                <Check className="size-3 text-primary" />
+              </div>
+              <span>{highlight}</span>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+
+      <CardFooter className="pt-4">
+        {isLoggedIn ? (
+          <Button
+            type="button"
+            className="w-full rounded-full uppercase tracking-wider"
+            variant={isPopular ? "default" : "outline"}
+            onClick={onSubscribe}
+          >
+            {tier.cta}
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            className="w-full rounded-full uppercase tracking-wider"
+            variant={isPopular ? "default" : "outline"}
+            asChild
+          >
+            <Link to="/register">{tier.cta}</Link>
+          </Button>
+        )}
+      </CardFooter>
+    </Card>
+  );
+}
+
+// -- Feature Value Cell -------------------------------------------------------
+
+function FeatureValue({ value }: { readonly value: string | boolean }) {
+  if (value === true) {
+    return <Check className="mx-auto size-4 text-emerald-600" />;
+  }
+  if (value === false) {
+    return <X className="mx-auto size-4 text-muted-foreground/30" />;
+  }
+  return <span className="text-sm">{value}</span>;
 }

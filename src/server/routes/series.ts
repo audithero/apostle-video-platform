@@ -2,7 +2,7 @@ import { z } from "zod";
 import { eq, and, asc, desc, count } from "drizzle-orm";
 import { createTRPCRouter, publicProcedure, adminProcedure } from "@/lib/trpc/init";
 import { db } from "@/lib/db";
-import { series, seriesVideo, video } from "@/lib/db/schema";
+import { series, seriesVideo } from "@/lib/db/schema";
 
 export const seriesRouter = createTRPCRouter({
   list: publicProcedure

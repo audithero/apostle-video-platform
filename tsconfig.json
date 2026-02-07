@@ -8,6 +8,11 @@
     "src/lib/intl/react-i18next.d.ts",
     "src/lib/intl/i18next.d.ts"
   ],
+  "exclude": [
+    "node_modules",
+    "src/sw.ts",
+    "scripts/**"
+  ],
   "compilerOptions": {
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",

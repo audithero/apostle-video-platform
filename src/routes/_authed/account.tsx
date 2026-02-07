@@ -11,8 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { useSession, useAuthHelpers } from "@/features/auth/auth-hooks";
+import { useSession } from "@/features/auth/auth-hooks";
 import { authClient } from "@/lib/auth/auth-client";
 import { toast } from "sonner";
 

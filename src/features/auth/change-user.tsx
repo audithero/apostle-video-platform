@@ -20,7 +20,6 @@ import {
 import { Field, FieldContent, FieldError, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
-import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { useSession } from "@/features/auth/auth-hooks";
 import { authClient } from "@/lib/auth/auth-client";
@@ -113,7 +112,7 @@ export function ChangeUser() {
               <InputGroup>
                 <InputGroupInput id="name" placeholder={data?.user.name} type="text" {...register("name")} />
               </InputGroup>
-              <FieldError errors={errors.name} />
+              <FieldError errors={errors.name ? [errors.name] : undefined} />
             </Field>
 
             <Field>
@@ -141,7 +140,7 @@ export function ChangeUser() {
         <DialogFooter>
           <ButtonGroup>
             <Button disabled={isSubmitting} onClick={handleSubmit(onSubmit)} type="submit">
-              {isSubmitting ? <Spinner size="sm" /> : t("UPDATE")}
+              {isSubmitting ? <Spinner className="size-4" /> : t("UPDATE")}
             </Button>
           </ButtonGroup>
         </DialogFooter>
