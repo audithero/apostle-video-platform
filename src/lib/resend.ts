@@ -10,7 +10,7 @@ export async function sendEmail({ subject, template, to }: { subject: string; te
     const html = await render(template);
 
     const { data } = await resend.emails.send({
-      from: "noreply@example.com", // TODO: Configure in env
+      from: env.EMAIL_FROM ?? "noreply@example.com",
       html,
       subject,
       to,

@@ -40,15 +40,15 @@ function FavoritesPage() {
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {favorites.map((fav) => (
             <Link
-              key={fav.video.id}
+              key={fav.id}
               to="/watch/$slug"
-              params={{ slug: fav.video.slug }}
+              params={{ slug: fav.slug }}
             >
               <Card className="overflow-hidden transition-shadow hover:shadow-lg">
-                {fav.video.thumbnailUrl ? (
+                {fav.thumbnailUrl ? (
                   <img
-                    src={fav.video.thumbnailUrl}
-                    alt={fav.video.title}
+                    src={fav.thumbnailUrl}
+                    alt={fav.title}
                     className="aspect-video w-full object-cover"
                   />
                 ) : (
@@ -58,14 +58,14 @@ function FavoritesPage() {
                 )}
                 <CardContent className="pt-4">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold truncate">{fav.video.title}</h3>
-                    {fav.video.isFree && (
+                    <h3 className="font-semibold truncate">{fav.title}</h3>
+                    {fav.isFree && (
                       <Badge variant="secondary">Free</Badge>
                     )}
                   </div>
-                  {fav.video.description && (
+                  {fav.description && (
                     <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                      {fav.video.description}
+                      {fav.description}
                     </p>
                   )}
                 </CardContent>

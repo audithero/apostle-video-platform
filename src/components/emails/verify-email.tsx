@@ -1,7 +1,6 @@
 import { Button, Text } from "@react-email/components";
 import { EmailLayout } from "./layout-email";
 
-// TODO: add a template for the email using React EMAIL instead of plain text
 const VerifyEmail = ({ url, username }: { url: string; username: string }) => {
   return (
     <EmailLayout preview="Verify your email address">

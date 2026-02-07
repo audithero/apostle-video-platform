@@ -73,6 +73,33 @@ export const videosRouter = createTRPCRouter({
       };
     }),
 
+  getById: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      const rows = await db
+        .select({
+          video: video,
+          seriesId: seriesVideo.seriesId,
+          seriesTitle: series.title,
+          seriesSlug: series.slug,
+        })
+        .from(video)
+        .leftJoin(seriesVideo, eq(video.id, seriesVideo.videoId))
+        .leftJoin(series, eq(seriesVideo.seriesId, series.id))
+        .where(eq(video.id, input.id))
+        .limit(1);
+
+      if (rows.length === 0) return null;
+
+      const row = rows[0];
+      return {
+        ...row.video,
+        series: row.seriesId
+          ? { id: row.seriesId, title: row.seriesTitle, slug: row.seriesSlug }
+          : null,
+      };
+    }),
+
   create: adminProcedure
     .input(
       z.object({

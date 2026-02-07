@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -145,16 +146,19 @@ function ChangePasswordCard() {
 }
 
 function BillingCard() {
+  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const hasSubscription = !!(session as Record<string, unknown>)?.activeSubscription;
 
-  const handleManageBilling = async () => {
+  const handleCancelSubscription = async () => {
     setIsLoading(true);
     try {
       await authClient.subscription.cancel({
         returnUrl: "/account",
       });
+      toast.success("Subscription cancelled successfully.");
     } catch {
-      toast.error("Failed to open billing portal.");
+      toast.error("Failed to cancel subscription.");
     } finally {
       setIsLoading(false);
     }
@@ -166,10 +170,24 @@ function BillingCard() {
         <CardTitle>Billing</CardTitle>
         <CardDescription>Manage your subscription and billing.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <Button variant="outline" onClick={handleManageBilling} disabled={isLoading}>
-          {isLoading ? "Opening..." : "Manage Subscription"}
-        </Button>
+      <CardContent className="space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">Status:</span>
+          {hasSubscription ? (
+            <Badge>Active</Badge>
+          ) : (
+            <Badge variant="secondary">Inactive</Badge>
+          )}
+        </div>
+        {hasSubscription ? (
+          <Button variant="destructive" onClick={handleCancelSubscription} disabled={isLoading}>
+            {isLoading ? "Cancelling..." : "Cancel Subscription"}
+          </Button>
+        ) : (
+          <Button asChild>
+            <Link to="/pricing">Subscribe</Link>
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

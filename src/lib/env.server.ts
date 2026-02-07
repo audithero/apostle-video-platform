@@ -9,11 +9,14 @@ export const env = createEnv({
     SERVER_URL: z.string().url().optional().default("http://localhost:3000"),
     DATABASE_URL: z.string().url(),
     RESEND_API_KEY: z.string(),
+    EMAIL_FROM: z.string().email().optional(),
     BETTER_AUTH_SECRET: z.string(),
 
     // Stripe
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
+    STRIPE_PRICE_MONTHLY: z.string().optional(),
+    STRIPE_PRICE_ANNUAL: z.string().optional(),
 
     // Mux
     MUX_TOKEN_ID: z.string(),

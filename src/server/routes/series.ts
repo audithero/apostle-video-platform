@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, and, asc, desc } from "drizzle-orm";
+import { eq, and, asc, desc, count } from "drizzle-orm";
 import { createTRPCRouter, publicProcedure, adminProcedure } from "@/lib/trpc/init";
 import { db } from "@/lib/db";
 import { series, seriesVideo, video } from "@/lib/db/schema";
@@ -19,13 +19,27 @@ export const seriesRouter = createTRPCRouter({
           ? eq(series.published, input.published)
           : undefined;
 
-      const rows = await db
+      const allSeries = await db
         .select()
         .from(series)
         .where(condition)
         .orderBy(asc(series.sortOrder), desc(series.createdAt));
 
-      return rows;
+      // Get video counts for each series
+      const counts = await db
+        .select({
+          seriesId: seriesVideo.seriesId,
+          videoCount: count(),
+        })
+        .from(seriesVideo)
+        .groupBy(seriesVideo.seriesId);
+
+      const countMap = new Map(counts.map((c) => [c.seriesId, c.videoCount]));
+
+      return allSeries.map((s) => ({
+        ...s,
+        videoCount: countMap.get(s.id) ?? 0,
+      }));
     }),
 
   getBySlug: publicProcedure
@@ -54,6 +68,32 @@ export const seriesRouter = createTRPCRouter({
       };
     }),
 
+  getById: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      const result = await db.query.series.findFirst({
+        where: eq(series.id, input.id),
+        with: {
+          seriesVideos: {
+            orderBy: [asc(seriesVideo.sortOrder)],
+            with: {
+              video: true,
+            },
+          },
+        },
+      });
+
+      if (!result) return null;
+
+      return {
+        ...result,
+        videos: result.seriesVideos.map((sv) => ({
+          ...sv.video,
+          sortOrder: sv.sortOrder,
+        })),
+      };
+    }),
+
   create: adminProcedure
     .input(
       z.object({
@@ -61,18 +101,33 @@ export const seriesRouter = createTRPCRouter({
         slug: z.string().min(1),
         description: z.string().optional(),
         thumbnailUrl: z.string().optional(),
+        published: z.boolean().optional(),
+        videoIds: z.array(z.string()).optional(),
       })
     )
     .mutation(async ({ input }) => {
+      const { videoIds, ...seriesData } = input;
+
       const [newSeries] = await db
         .insert(series)
         .values({
-          title: input.title,
-          slug: input.slug,
-          description: input.description,
-          thumbnailUrl: input.thumbnailUrl,
+          title: seriesData.title,
+          slug: seriesData.slug,
+          description: seriesData.description,
+          thumbnailUrl: seriesData.thumbnailUrl,
+          published: seriesData.published ?? false,
         })
         .returning();
+
+      if (videoIds && videoIds.length > 0) {
+        await db.insert(seriesVideo).values(
+          videoIds.map((videoId, index) => ({
+            seriesId: newSeries.id,
+            videoId,
+            sortOrder: index,
+          }))
+        );
+      }
 
       return newSeries;
     }),

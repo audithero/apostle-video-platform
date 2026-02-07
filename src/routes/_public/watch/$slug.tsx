@@ -48,9 +48,8 @@ function WatchPage() {
     trpc.progress.save.mutationOptions()
   );
 
-  const hasAccess =
-    video?.isFree ||
-    (session?.user && (session as any).activeSubscription);
+  const hasActiveSubscription = !!(session as Record<string, unknown>)?.activeSubscription;
+  const hasAccess = video?.isFree || (session?.user && hasActiveSubscription);
 
   const handleTimeUpdate = useCallback(
     (time: number) => {

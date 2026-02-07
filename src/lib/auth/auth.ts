@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin, openAPI } from "better-auth/plugins";
+import { admin, mcp, openAPI } from "better-auth/plugins";
 import { stripe } from "@better-auth/stripe";
 import Stripe from "stripe";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
@@ -51,13 +51,17 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          await sendEmail({
-            subject: "Welcome to Apostle",
-            template: WelcomeEmail({
-              username: user.name || user.email,
-            }),
-            to: user.email,
-          });
+          try {
+            await sendEmail({
+              subject: "Welcome to Apostle",
+              template: WelcomeEmail({
+                username: user.name || user.email,
+              }),
+              to: user.email,
+            });
+          } catch (err) {
+            console.error("Failed to send welcome email:", err);
+          }
         },
       },
     },
@@ -109,18 +113,21 @@ export const auth = betterAuth({
         plans: [
           {
             name: "monthly",
-            priceId: "price_monthly", // Replace with actual Stripe price ID
+            priceId: env.STRIPE_PRICE_MONTHLY ?? "price_monthly",
             annualDiscountPriceId: undefined,
           },
           {
             name: "annual",
-            priceId: "price_annual", // Replace with actual Stripe price ID
+            priceId: env.STRIPE_PRICE_ANNUAL ?? "price_annual",
             freeTrial: {
               days: 7,
             },
           },
         ],
       },
+    }),
+    mcp({
+      loginPage: "/login",
     }),
     tanstackStartCookies(), // keep last
   ],

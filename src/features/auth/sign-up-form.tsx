@@ -117,7 +117,7 @@ export function SignUpForm() {
                       {...register("firstName")}
                     />
                   </InputGroup>
-                  <FieldError errors={errors.firstName} />
+                  <FieldError errors={errors.firstName ? [errors.firstName] : undefined} />
                 </Field>
 
                 <Field>
@@ -129,7 +129,7 @@ export function SignUpForm() {
                       {...register("lastName")}
                     />
                   </InputGroup>
-                  <FieldError errors={errors.lastName} />
+                  <FieldError errors={errors.lastName ? [errors.lastName] : undefined} />
                 </Field>
               </div>
 
@@ -143,7 +143,7 @@ export function SignUpForm() {
                     {...register("email")}
                   />
                 </InputGroup>
-                <FieldError errors={errors.email} />
+                <FieldError errors={errors.email ? [errors.email] : undefined} />
               </Field>
             </FieldGroup>
           </FieldSet>
@@ -159,7 +159,7 @@ export function SignUpForm() {
                     {...register("password")}
                   />
                 </InputGroup>
-                <FieldError errors={errors.password} />
+                <FieldError errors={errors.password ? [errors.password] : undefined} />
               </Field>
 
               <Field>
@@ -172,7 +172,7 @@ export function SignUpForm() {
                     {...register("passwordConfirmation")}
                   />
                 </InputGroup>
-                <FieldError errors={errors.passwordConfirmation} />
+                <FieldError errors={errors.passwordConfirmation ? [errors.passwordConfirmation] : undefined} />
               </Field>
             </FieldGroup>
           </FieldSet>

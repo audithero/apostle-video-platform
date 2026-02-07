@@ -19,6 +19,8 @@ import { Route as PublicOfflineRouteImport } from './routes/_public/offline'
 import { Route as AuthedFavoritesRouteImport } from './routes/_authed/favorites'
 import { Route as AuthedAdminRouteImport } from './routes/_authed/admin'
 import { Route as AuthedAccountRouteImport } from './routes/_authed/account'
+import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
+import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
@@ -36,6 +38,7 @@ import { Route as AuthedAdminSeriesIndexRouteImport } from './routes/_authed/adm
 import { Route as AuthedAdminVideosNewRouteImport } from './routes/_authed/admin/videos/new'
 import { Route as AuthedAdminSeriesNewRouteImport } from './routes/_authed/admin/series/new'
 import { Route as AuthedAdminVideosIdEditRouteImport } from './routes/_authed/admin/videos/$id.edit'
+import { Route as AuthedAdminSeriesIdEditRouteImport } from './routes/_authed/admin/series/$id.edit'
 
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
@@ -83,6 +86,16 @@ const AuthedAccountRoute = AuthedAccountRouteImport.update({
   id: '/account',
   path: '/account',
   getParentRoute: () => AuthedRoute,
+} as any)
+const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/register',
@@ -169,12 +182,19 @@ const AuthedAdminVideosIdEditRoute = AuthedAdminVideosIdEditRouteImport.update({
   path: '/videos/$id/edit',
   getParentRoute: () => AuthedAdminRoute,
 } as any)
+const AuthedAdminSeriesIdEditRoute = AuthedAdminSeriesIdEditRouteImport.update({
+  id: '/series/$id/edit',
+  path: '/series/$id/edit',
+  getParentRoute: () => AuthedAdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/reset-password': typeof AuthResetPasswordRoute
+  '/verify-email': typeof AuthVerifyEmailRoute
   '/account': typeof AuthedAccountRoute
   '/admin': typeof AuthedAdminRouteWithChildren
   '/favorites': typeof AuthedFavoritesRoute
@@ -194,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/admin/videos/new': typeof AuthedAdminVideosNewRoute
   '/admin/series/': typeof AuthedAdminSeriesIndexRoute
   '/admin/videos/': typeof AuthedAdminVideosIndexRoute
+  '/admin/series/$id/edit': typeof AuthedAdminSeriesIdEditRoute
   '/admin/videos/$id/edit': typeof AuthedAdminVideosIdEditRoute
 }
 export interface FileRoutesByTo {
@@ -201,6 +222,8 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/reset-password': typeof AuthResetPasswordRoute
+  '/verify-email': typeof AuthVerifyEmailRoute
   '/account': typeof AuthedAccountRoute
   '/favorites': typeof AuthedFavoritesRoute
   '/offline': typeof PublicOfflineRoute
@@ -219,6 +242,7 @@ export interface FileRoutesByTo {
   '/admin/videos/new': typeof AuthedAdminVideosNewRoute
   '/admin/series': typeof AuthedAdminSeriesIndexRoute
   '/admin/videos': typeof AuthedAdminVideosIndexRoute
+  '/admin/series/$id/edit': typeof AuthedAdminSeriesIdEditRoute
   '/admin/videos/$id/edit': typeof AuthedAdminVideosIdEditRoute
 }
 export interface FileRoutesById {
@@ -229,6 +253,8 @@ export interface FileRoutesById {
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
+  '/_auth/reset-password': typeof AuthResetPasswordRoute
+  '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_authed/account': typeof AuthedAccountRoute
   '/_authed/admin': typeof AuthedAdminRouteWithChildren
   '/_authed/favorites': typeof AuthedFavoritesRoute
@@ -249,6 +275,7 @@ export interface FileRoutesById {
   '/_authed/admin/videos/new': typeof AuthedAdminVideosNewRoute
   '/_authed/admin/series/': typeof AuthedAdminSeriesIndexRoute
   '/_authed/admin/videos/': typeof AuthedAdminVideosIndexRoute
+  '/_authed/admin/series/$id/edit': typeof AuthedAdminSeriesIdEditRoute
   '/_authed/admin/videos/$id/edit': typeof AuthedAdminVideosIdEditRoute
 }
 export interface FileRouteTypes {
@@ -258,6 +285,8 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/register'
+    | '/reset-password'
+    | '/verify-email'
     | '/account'
     | '/admin'
     | '/favorites'
@@ -277,6 +306,7 @@ export interface FileRouteTypes {
     | '/admin/videos/new'
     | '/admin/series/'
     | '/admin/videos/'
+    | '/admin/series/$id/edit'
     | '/admin/videos/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -284,6 +314,8 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/register'
+    | '/reset-password'
+    | '/verify-email'
     | '/account'
     | '/favorites'
     | '/offline'
@@ -302,6 +334,7 @@ export interface FileRouteTypes {
     | '/admin/videos/new'
     | '/admin/series'
     | '/admin/videos'
+    | '/admin/series/$id/edit'
     | '/admin/videos/$id/edit'
   id:
     | '__root__'
@@ -311,6 +344,8 @@ export interface FileRouteTypes {
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/register'
+    | '/_auth/reset-password'
+    | '/_auth/verify-email'
     | '/_authed/account'
     | '/_authed/admin'
     | '/_authed/favorites'
@@ -331,6 +366,7 @@ export interface FileRouteTypes {
     | '/_authed/admin/videos/new'
     | '/_authed/admin/series/'
     | '/_authed/admin/videos/'
+    | '/_authed/admin/series/$id/edit'
     | '/_authed/admin/videos/$id/edit'
   fileRoutesById: FileRoutesById
 }
@@ -414,6 +450,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/account'
       preLoaderRoute: typeof AuthedAccountRouteImport
       parentRoute: typeof AuthedRoute
+    }
+    '/_auth/verify-email': {
+      id: '/_auth/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof AuthVerifyEmailRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/reset-password': {
+      id: '/_auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/register': {
       id: '/_auth/register'
@@ -534,6 +584,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAdminVideosIdEditRouteImport
       parentRoute: typeof AuthedAdminRoute
     }
+    '/_authed/admin/series/$id/edit': {
+      id: '/_authed/admin/series/$id/edit'
+      path: '/series/$id/edit'
+      fullPath: '/admin/series/$id/edit'
+      preLoaderRoute: typeof AuthedAdminSeriesIdEditRouteImport
+      parentRoute: typeof AuthedAdminRoute
+    }
   }
 }
 
@@ -541,12 +598,16 @@ interface AuthRouteChildren {
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthVerifyEmailRoute: AuthVerifyEmailRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -559,6 +620,7 @@ interface AuthedAdminRouteChildren {
   AuthedAdminVideosNewRoute: typeof AuthedAdminVideosNewRoute
   AuthedAdminSeriesIndexRoute: typeof AuthedAdminSeriesIndexRoute
   AuthedAdminVideosIndexRoute: typeof AuthedAdminVideosIndexRoute
+  AuthedAdminSeriesIdEditRoute: typeof AuthedAdminSeriesIdEditRoute
   AuthedAdminVideosIdEditRoute: typeof AuthedAdminVideosIdEditRoute
 }
 
@@ -570,6 +632,7 @@ const AuthedAdminRouteChildren: AuthedAdminRouteChildren = {
   AuthedAdminVideosNewRoute: AuthedAdminVideosNewRoute,
   AuthedAdminSeriesIndexRoute: AuthedAdminSeriesIndexRoute,
   AuthedAdminVideosIndexRoute: AuthedAdminVideosIndexRoute,
+  AuthedAdminSeriesIdEditRoute: AuthedAdminSeriesIdEditRoute,
   AuthedAdminVideosIdEditRoute: AuthedAdminVideosIdEditRoute,
 }
 

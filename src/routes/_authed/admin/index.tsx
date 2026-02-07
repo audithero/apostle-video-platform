@@ -16,7 +16,7 @@ function AdminDashboard() {
     trpc.admin.getStats.queryOptions()
   );
   const { data: recentVideos, isLoading: videosLoading } = useQuery(
-    trpc.videos.list.queryOptions({ limit: 5 })
+    trpc.videos.list.queryOptions({})
   );
 
   return (
@@ -71,7 +71,7 @@ function AdminDashboard() {
               <Skeleton key={i} className="h-16 w-full rounded-lg" />
             ))
           ) : recentVideos && recentVideos.length > 0 ? (
-            recentVideos.map((video) => (
+            recentVideos.slice(0, 5).map((video) => (
               <Card key={video.id}>
                 <CardContent className="flex items-center justify-between py-3">
                   <div>

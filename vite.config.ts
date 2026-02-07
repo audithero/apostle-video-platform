@@ -40,7 +40,7 @@ export default defineConfig({
       start: { entry: "./start.tsx" },
       server: { entry: "./server.ts" },
     }),
-    nitroV2Plugin({ preset: "vercel" }),
+    nitroV2Plugin({ preset: "vercel", compatibilityDate: "2025-04-01" }),
     viteReact(),
   ],
 });
