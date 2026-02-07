@@ -55,7 +55,9 @@ import { Route as AuthedAdminVideosIndexRouteImport } from './routes/_authed/adm
 import { Route as AuthedAdminSeriesIndexRouteImport } from './routes/_authed/admin/series/index'
 import { Route as AuthedDashboardStudentsStudentIdRouteImport } from './routes/_authed/dashboard/students/$studentId'
 import { Route as AuthedDashboardSettingsWebhooksRouteImport } from './routes/_authed/dashboard/settings/webhooks'
+import { Route as AuthedDashboardSettingsIntegrationsRouteImport } from './routes/_authed/dashboard/settings/integrations'
 import { Route as AuthedDashboardSettingsGamificationRouteImport } from './routes/_authed/dashboard/settings/gamification'
+import { Route as AuthedDashboardSettingsDomainRouteImport } from './routes/_authed/dashboard/settings/domain'
 import { Route as AuthedDashboardSettingsCheckoutRouteImport } from './routes/_authed/dashboard/settings/checkout'
 import { Route as AuthedDashboardSettingsBrandingRouteImport } from './routes/_authed/dashboard/settings/branding'
 import { Route as AuthedDashboardCoursesAiWizardRouteImport } from './routes/_authed/dashboard/courses/ai-wizard'
@@ -305,10 +307,22 @@ const AuthedDashboardSettingsWebhooksRoute =
     path: '/settings/webhooks',
     getParentRoute: () => AuthedDashboardRoute,
   } as any)
+const AuthedDashboardSettingsIntegrationsRoute =
+  AuthedDashboardSettingsIntegrationsRouteImport.update({
+    id: '/settings/integrations',
+    path: '/settings/integrations',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
 const AuthedDashboardSettingsGamificationRoute =
   AuthedDashboardSettingsGamificationRouteImport.update({
     id: '/settings/gamification',
     path: '/settings/gamification',
+    getParentRoute: () => AuthedDashboardRoute,
+  } as any)
+const AuthedDashboardSettingsDomainRoute =
+  AuthedDashboardSettingsDomainRouteImport.update({
+    id: '/settings/domain',
+    path: '/settings/domain',
     getParentRoute: () => AuthedDashboardRoute,
   } as any)
 const AuthedDashboardSettingsCheckoutRoute =
@@ -406,7 +420,9 @@ export interface FileRoutesByFullPath {
   '/dashboard/courses/ai-wizard': typeof AuthedDashboardCoursesAiWizardRoute
   '/dashboard/settings/branding': typeof AuthedDashboardSettingsBrandingRoute
   '/dashboard/settings/checkout': typeof AuthedDashboardSettingsCheckoutRoute
+  '/dashboard/settings/domain': typeof AuthedDashboardSettingsDomainRoute
   '/dashboard/settings/gamification': typeof AuthedDashboardSettingsGamificationRoute
+  '/dashboard/settings/integrations': typeof AuthedDashboardSettingsIntegrationsRoute
   '/dashboard/settings/webhooks': typeof AuthedDashboardSettingsWebhooksRoute
   '/dashboard/students/$studentId': typeof AuthedDashboardStudentsStudentIdRoute
   '/admin/series/': typeof AuthedAdminSeriesIndexRoute
@@ -460,7 +476,9 @@ export interface FileRoutesByTo {
   '/dashboard/courses/ai-wizard': typeof AuthedDashboardCoursesAiWizardRoute
   '/dashboard/settings/branding': typeof AuthedDashboardSettingsBrandingRoute
   '/dashboard/settings/checkout': typeof AuthedDashboardSettingsCheckoutRoute
+  '/dashboard/settings/domain': typeof AuthedDashboardSettingsDomainRoute
   '/dashboard/settings/gamification': typeof AuthedDashboardSettingsGamificationRoute
+  '/dashboard/settings/integrations': typeof AuthedDashboardSettingsIntegrationsRoute
   '/dashboard/settings/webhooks': typeof AuthedDashboardSettingsWebhooksRoute
   '/dashboard/students/$studentId': typeof AuthedDashboardStudentsStudentIdRoute
   '/admin/series': typeof AuthedAdminSeriesIndexRoute
@@ -520,7 +538,9 @@ export interface FileRoutesById {
   '/_authed/dashboard/courses/ai-wizard': typeof AuthedDashboardCoursesAiWizardRoute
   '/_authed/dashboard/settings/branding': typeof AuthedDashboardSettingsBrandingRoute
   '/_authed/dashboard/settings/checkout': typeof AuthedDashboardSettingsCheckoutRoute
+  '/_authed/dashboard/settings/domain': typeof AuthedDashboardSettingsDomainRoute
   '/_authed/dashboard/settings/gamification': typeof AuthedDashboardSettingsGamificationRoute
+  '/_authed/dashboard/settings/integrations': typeof AuthedDashboardSettingsIntegrationsRoute
   '/_authed/dashboard/settings/webhooks': typeof AuthedDashboardSettingsWebhooksRoute
   '/_authed/dashboard/students/$studentId': typeof AuthedDashboardStudentsStudentIdRoute
   '/_authed/admin/series/': typeof AuthedAdminSeriesIndexRoute
@@ -578,7 +598,9 @@ export interface FileRouteTypes {
     | '/dashboard/courses/ai-wizard'
     | '/dashboard/settings/branding'
     | '/dashboard/settings/checkout'
+    | '/dashboard/settings/domain'
     | '/dashboard/settings/gamification'
+    | '/dashboard/settings/integrations'
     | '/dashboard/settings/webhooks'
     | '/dashboard/students/$studentId'
     | '/admin/series/'
@@ -632,7 +654,9 @@ export interface FileRouteTypes {
     | '/dashboard/courses/ai-wizard'
     | '/dashboard/settings/branding'
     | '/dashboard/settings/checkout'
+    | '/dashboard/settings/domain'
     | '/dashboard/settings/gamification'
+    | '/dashboard/settings/integrations'
     | '/dashboard/settings/webhooks'
     | '/dashboard/students/$studentId'
     | '/admin/series'
@@ -691,7 +715,9 @@ export interface FileRouteTypes {
     | '/_authed/dashboard/courses/ai-wizard'
     | '/_authed/dashboard/settings/branding'
     | '/_authed/dashboard/settings/checkout'
+    | '/_authed/dashboard/settings/domain'
     | '/_authed/dashboard/settings/gamification'
+    | '/_authed/dashboard/settings/integrations'
     | '/_authed/dashboard/settings/webhooks'
     | '/_authed/dashboard/students/$studentId'
     | '/_authed/admin/series/'
@@ -1043,11 +1069,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedDashboardSettingsWebhooksRouteImport
       parentRoute: typeof AuthedDashboardRoute
     }
+    '/_authed/dashboard/settings/integrations': {
+      id: '/_authed/dashboard/settings/integrations'
+      path: '/settings/integrations'
+      fullPath: '/dashboard/settings/integrations'
+      preLoaderRoute: typeof AuthedDashboardSettingsIntegrationsRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
     '/_authed/dashboard/settings/gamification': {
       id: '/_authed/dashboard/settings/gamification'
       path: '/settings/gamification'
       fullPath: '/dashboard/settings/gamification'
       preLoaderRoute: typeof AuthedDashboardSettingsGamificationRouteImport
+      parentRoute: typeof AuthedDashboardRoute
+    }
+    '/_authed/dashboard/settings/domain': {
+      id: '/_authed/dashboard/settings/domain'
+      path: '/settings/domain'
+      fullPath: '/dashboard/settings/domain'
+      preLoaderRoute: typeof AuthedDashboardSettingsDomainRouteImport
       parentRoute: typeof AuthedDashboardRoute
     }
     '/_authed/dashboard/settings/checkout': {
@@ -1178,7 +1218,9 @@ interface AuthedDashboardRouteChildren {
   AuthedDashboardCoursesAiWizardRoute: typeof AuthedDashboardCoursesAiWizardRoute
   AuthedDashboardSettingsBrandingRoute: typeof AuthedDashboardSettingsBrandingRoute
   AuthedDashboardSettingsCheckoutRoute: typeof AuthedDashboardSettingsCheckoutRoute
+  AuthedDashboardSettingsDomainRoute: typeof AuthedDashboardSettingsDomainRoute
   AuthedDashboardSettingsGamificationRoute: typeof AuthedDashboardSettingsGamificationRoute
+  AuthedDashboardSettingsIntegrationsRoute: typeof AuthedDashboardSettingsIntegrationsRoute
   AuthedDashboardSettingsWebhooksRoute: typeof AuthedDashboardSettingsWebhooksRoute
   AuthedDashboardStudentsStudentIdRoute: typeof AuthedDashboardStudentsStudentIdRoute
   AuthedDashboardAnalyticsIndexRoute: typeof AuthedDashboardAnalyticsIndexRoute
@@ -1202,8 +1244,11 @@ const AuthedDashboardRouteChildren: AuthedDashboardRouteChildren = {
   AuthedDashboardCoursesAiWizardRoute: AuthedDashboardCoursesAiWizardRoute,
   AuthedDashboardSettingsBrandingRoute: AuthedDashboardSettingsBrandingRoute,
   AuthedDashboardSettingsCheckoutRoute: AuthedDashboardSettingsCheckoutRoute,
+  AuthedDashboardSettingsDomainRoute: AuthedDashboardSettingsDomainRoute,
   AuthedDashboardSettingsGamificationRoute:
     AuthedDashboardSettingsGamificationRoute,
+  AuthedDashboardSettingsIntegrationsRoute:
+    AuthedDashboardSettingsIntegrationsRoute,
   AuthedDashboardSettingsWebhooksRoute: AuthedDashboardSettingsWebhooksRoute,
   AuthedDashboardStudentsStudentIdRoute: AuthedDashboardStudentsStudentIdRoute,
   AuthedDashboardAnalyticsIndexRoute: AuthedDashboardAnalyticsIndexRoute,

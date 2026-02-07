@@ -1,10 +1,18 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
+
+/** Strip script/event-handler injection from AI-generated HTML. */
+const sanitizeHtml = (html: string): string =>
+  html
+    .replace(/<script[\s>][\s\S]*?<\/script>/gi, "")
+    .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, "")
+    .replace(/javascript\s*:/gi, "");
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/react";
 import {
-  BookOpen,
   Check,
+  ChevronDown,
   Eraser,
+  Globe,
   Lightbulb,
   Loader2,
   Maximize2,
@@ -16,6 +24,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -67,6 +91,19 @@ const REWRITE_ACTIONS: ReadonlyArray<RewriteAction> = [
   },
 ];
 
+const TRANSLATION_LANGUAGES = [
+  { code: "es", label: "Spanish" },
+  { code: "fr", label: "French" },
+  { code: "de", label: "German" },
+  { code: "pt", label: "Portuguese" },
+  { code: "ja", label: "Japanese" },
+  { code: "zh", label: "Chinese (Simplified)" },
+  { code: "ko", label: "Korean" },
+  { code: "ar", label: "Arabic" },
+  { code: "hi", label: "Hindi" },
+  { code: "ru", label: "Russian" },
+] as const;
+
 interface CourseContext {
   readonly title: string;
   readonly description: string;
@@ -84,62 +121,191 @@ interface AIRewriteToolbarProps {
   readonly className?: string;
 }
 
-// ---------- Diff display helper ----------
+// ---------- Diff helpers ----------
 
-function ContentPreview({
+interface DiffLine {
+  readonly type: "added" | "removed" | "unchanged";
+  readonly text: string;
+}
+
+const stripHtml = (html: string): string =>
+  html.replace(/<[^>]*>/g, "").trim();
+
+/**
+ * Produces a simple line-level diff between two plain text strings.
+ * Unchanged lines are kept as-is; removed lines come from `a` only,
+ * added lines come from `b` only.
+ */
+const computeLineDiff = (a: string, b: string): ReadonlyArray<DiffLine> => {
+  const linesA = a.split("\n");
+  const linesB = b.split("\n");
+  const result: DiffLine[] = [];
+
+  // Simple LCS-based diff using a map for matching lines
+  const bLineIndices = new Map<string, number[]>();
+  for (const [idx, line] of linesB.entries()) {
+    const existing = bLineIndices.get(line);
+    if (existing) {
+      existing.push(idx);
+    } else {
+      bLineIndices.set(line, [idx]);
+    }
+  }
+
+  let bIdx = 0;
+
+  for (const lineA of linesA) {
+    const matches = bLineIndices.get(lineA);
+    const nextMatch = matches?.find((i) => i >= bIdx);
+
+    if (nextMatch !== undefined) {
+      // Emit any added lines from B that come before this match
+      while (bIdx < nextMatch) {
+        result.push({ type: "added", text: linesB[bIdx] });
+        bIdx += 1;
+      }
+      result.push({ type: "unchanged", text: lineA });
+      bIdx = nextMatch + 1;
+    } else {
+      result.push({ type: "removed", text: lineA });
+    }
+  }
+
+  // Remaining lines in B are additions
+  while (bIdx < linesB.length) {
+    result.push({ type: "added", text: linesB[bIdx] });
+    bIdx += 1;
+  }
+
+  return result;
+};
+
+// ---------- Diff View Dialog ----------
+
+function DiffViewDialog({
+  open,
+  onOpenChange,
   original,
   rewritten,
+  actionLabel,
+  onAccept,
+  onReject,
 }: {
+  readonly open: boolean;
+  readonly onOpenChange: (open: boolean) => void;
   readonly original: string;
   readonly rewritten: string;
+  readonly actionLabel: string;
+  readonly onAccept: () => void;
+  readonly onReject: () => void;
 }) {
-  const [showOriginal, setShowOriginal] = useState(false);
+  const [viewMode, setViewMode] = useState<"diff" | "preview">("diff");
 
-  // Strip HTML for plain text comparison display
-  const stripHtml = (html: string): string =>
-    html.replace(/<[^>]*>/g, "").trim();
+  const diffLines = useMemo(
+    () => computeLineDiff(stripHtml(original), stripHtml(rewritten)),
+    [original, rewritten],
+  );
+
+  const hasChanges = diffLines.some((l) => l.type !== "unchanged");
 
   return (
-    <div className="space-y-2">
-      <div className="flex gap-2">
-        <Button
-          type="button"
-          variant={showOriginal ? "outline" : "default"}
-          size="sm"
-          onClick={() => setShowOriginal(false)}
-          className="text-xs"
-        >
-          <Sparkles className="size-3" />
-          AI Result
-        </Button>
-        <Button
-          type="button"
-          variant={showOriginal ? "default" : "outline"}
-          size="sm"
-          onClick={() => setShowOriginal(true)}
-          className="text-xs"
-        >
-          <BookOpen className="size-3" />
-          Original
-        </Button>
-      </div>
-      <ScrollArea className="max-h-64 rounded-md border bg-muted/30 p-3">
-        {showOriginal ? (
-          <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-            {stripHtml(original).length > 0 ? (
-              <p className="whitespace-pre-wrap">{stripHtml(original)}</p>
-            ) : (
-              <p className="italic">No original content</p>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{`${actionLabel} - Review Changes`}</DialogTitle>
+          <DialogDescription>
+            Review the AI-generated changes before applying them to your lesson.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-3">
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant={viewMode === "diff" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setViewMode("diff")}
+              className="text-xs"
+            >
+              Diff View
+            </Button>
+            <Button
+              type="button"
+              variant={viewMode === "preview" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setViewMode("preview")}
+              className="text-xs"
+            >
+              <Sparkles className="size-3" />
+              Preview Result
+            </Button>
+            {!hasChanges && (
+              <span className="ml-auto self-center text-xs text-muted-foreground">
+                No text-level differences detected
+              </span>
             )}
           </div>
-        ) : (
-          <div
-            className="prose prose-sm dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: rewritten }}
-          />
-        )}
-      </ScrollArea>
-    </div>
+
+          <ScrollArea className="max-h-96 rounded-md border bg-muted/20 p-0">
+            {viewMode === "diff" ? (
+              <div className="font-mono text-xs leading-relaxed">
+                {diffLines.map((line, idx) => {
+                  const key = `${line.type}-${String(idx)}`;
+                  if (line.type === "removed") {
+                    return (
+                      <div
+                        key={key}
+                        className="bg-red-50 px-3 py-0.5 text-red-800 line-through dark:bg-red-950/30 dark:text-red-300"
+                      >
+                        <span className="mr-2 select-none text-red-400">-</span>
+                        {line.text || "\u00A0"}
+                      </div>
+                    );
+                  }
+                  if (line.type === "added") {
+                    return (
+                      <div
+                        key={key}
+                        className="bg-green-50 px-3 py-0.5 text-green-800 dark:bg-green-950/30 dark:text-green-300"
+                      >
+                        <span className="mr-2 select-none text-green-400">+</span>
+                        {line.text || "\u00A0"}
+                      </div>
+                    );
+                  }
+                  return (
+                    <div key={key} className="px-3 py-0.5 text-muted-foreground">
+                      <span className="mr-2 select-none opacity-30">&nbsp;</span>
+                      {line.text || "\u00A0"}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div
+                className="prose prose-sm dark:prose-invert max-w-none p-4"
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(rewritten) }}
+              />
+            )}
+          </ScrollArea>
+        </div>
+
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onReject}
+          >
+            <X className="size-3.5" />
+            Discard
+          </Button>
+          <Button type="button" onClick={onAccept}>
+            <Check className="size-3.5" />
+            Apply Changes
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -155,6 +321,7 @@ function AIRewriteToolbar({
 
   const [activeAction, setActiveAction] = useState<string | null>(null);
   const [rewrittenHtml, setRewrittenHtml] = useState<string | null>(null);
+  const [showDiffDialog, setShowDiffDialog] = useState(false);
 
   // Credit balance query
   const { data: credits } = useQuery(trpc.ai.getCredits.queryOptions());
@@ -164,7 +331,8 @@ function AIRewriteToolbar({
     trpc.ai.rewriteLesson.mutationOptions({
       onSuccess: (data) => {
         setRewrittenHtml(data.contentHtml);
-        toast.success("AI rewrite complete. Review the result below.");
+        setShowDiffDialog(true);
+        toast.success("AI rewrite complete. Review the changes.");
       },
       onError: (error) => {
         toast.error(error.message || "Failed to rewrite content");
@@ -181,9 +349,28 @@ function AIRewriteToolbar({
       }
       setActiveAction(action.id);
       setRewrittenHtml(null);
+      setShowDiffDialog(false);
       rewriteMutation.mutate({
         content: currentContent,
         instruction: action.instruction,
+        outlineContext: courseContext,
+      });
+    },
+    [currentContent, courseContext, rewriteMutation],
+  );
+
+  const handleTranslate = useCallback(
+    (languageLabel: string) => {
+      if (currentContent.trim().length < 10) {
+        toast.error("Write some content first before using AI rewrite");
+        return;
+      }
+      setActiveAction("translate");
+      setRewrittenHtml(null);
+      setShowDiffDialog(false);
+      rewriteMutation.mutate({
+        content: currentContent,
+        instruction: `Translate the following lesson content into ${languageLabel}. Preserve all formatting, code blocks, headings, and structure. Translate only the natural language text, not code or technical identifiers. Maintain the educational tone and accuracy.`,
         outlineContext: courseContext,
       });
     },
@@ -195,6 +382,7 @@ function AIRewriteToolbar({
       onAcceptRewrite(rewrittenHtml);
       setRewrittenHtml(null);
       setActiveAction(null);
+      setShowDiffDialog(false);
       toast.success("Content updated with AI rewrite");
     }
   }, [rewrittenHtml, onAcceptRewrite]);
@@ -202,9 +390,15 @@ function AIRewriteToolbar({
   const handleDismiss = useCallback(() => {
     setRewrittenHtml(null);
     setActiveAction(null);
+    setShowDiffDialog(false);
   }, []);
 
   const isProcessing = rewriteMutation.isPending;
+
+  const activeLabel = useMemo(() => {
+    if (activeAction === "translate") return "Translate";
+    return REWRITE_ACTIONS.find((a) => a.id === activeAction)?.label ?? "AI";
+  }, [activeAction]);
 
   return (
     <div className={cn("space-y-2", className)}>
@@ -214,7 +408,7 @@ function AIRewriteToolbar({
           <Sparkles className="size-3.5 text-violet-500" />
           AI
         </div>
-        <div className="mx-1 h-4 w-px bg-border" role="separator" />
+        <div className="mx-1 h-4 w-px bg-border" />
         {REWRITE_ACTIONS.map((action) => {
           const Icon = action.icon;
           const isActive = activeAction === action.id;
@@ -238,6 +432,41 @@ function AIRewriteToolbar({
             </Button>
           );
         })}
+
+        {/* Translate dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              variant={activeAction === "translate" ? "secondary" : "ghost"}
+              size="sm"
+              className="h-7 gap-1 px-2 text-xs"
+              disabled={isProcessing || rewriteCredits < 1}
+              aria-label="Translate lesson content"
+            >
+              {activeAction === "translate" && isProcessing ? (
+                <Loader2 className="size-3 animate-spin" />
+              ) : (
+                <Globe className="size-3" />
+              )}
+              Translate
+              <ChevronDown className="size-3 opacity-50" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            <DropdownMenuLabel>Select language</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {TRANSLATION_LANGUAGES.map((lang) => (
+              <DropdownMenuItem
+                key={lang.code}
+                onClick={() => handleTranslate(lang.label)}
+              >
+                {lang.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <div className="ml-auto">
           <Badge variant="outline" className="text-[10px]">
             {`${String(rewriteCredits)} credits`}
@@ -245,54 +474,33 @@ function AIRewriteToolbar({
         </div>
       </div>
 
-      {/* Preview panel */}
-      {(rewrittenHtml || isProcessing) && (
+      {/* Inline processing indicator */}
+      {isProcessing && (
         <div className="rounded-md border border-violet-200 bg-violet-50/50 p-3 dark:border-violet-800 dark:bg-violet-950/20">
-          {isProcessing ? (
-            <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
-              <Loader2 className="size-4 animate-spin text-violet-500" />
-              <span>
-                {`AI is ${REWRITE_ACTIONS.find((a) => a.id === activeAction)?.label.toLowerCase() ?? "processing"}ing your content...`}
-              </span>
-            </div>
-          ) : rewrittenHtml ? (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-medium text-violet-700 dark:text-violet-300">
-                  {`${REWRITE_ACTIONS.find((a) => a.id === activeAction)?.label ?? "AI"} Result`}
-                </p>
-                <span className="text-[10px] text-muted-foreground">
-                  Review before applying
-                </span>
-              </div>
-
-              <ContentPreview
-                original={currentContent}
-                rewritten={rewrittenHtml}
-              />
-
-              <div className="flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleDismiss}
-                >
-                  <X className="size-3.5" />
-                  Discard
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={handleAccept}
-                >
-                  <Check className="size-3.5" />
-                  Apply Changes
-                </Button>
-              </div>
-            </div>
-          ) : null}
+          <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+            <Loader2 className="size-4 animate-spin text-violet-500" />
+            <span>
+              {`AI is ${activeLabel.toLowerCase()}ing your content...`}
+            </span>
+          </div>
         </div>
+      )}
+
+      {/* Diff dialog for reviewing changes */}
+      {rewrittenHtml && (
+        <DiffViewDialog
+          open={showDiffDialog}
+          onOpenChange={(open) => {
+            if (!open) {
+              handleDismiss();
+            }
+          }}
+          original={currentContent}
+          rewritten={rewrittenHtml}
+          actionLabel={activeLabel}
+          onAccept={handleAccept}
+          onReject={handleDismiss}
+        />
       )}
 
       {rewriteCredits < 1 && (

@@ -10,7 +10,7 @@ Version 2.0 | February 2026 | Apostle Digital
 |---|---|
 | Document Type | PRD + Agent Task List |
 | Total Tasks | 53 executable tasks across 12 modules |
-| Target Stack | TanStack Start, Turso, R2, Better Auth, Stripe |
+| Target Stack | TanStack Start, Neon Postgres, R2, Better Auth, Stripe |
 | Pricing Tiers | $29 / $79 / $149 / $199 per month |
 | Competitors | Kajabi, Teachable, Thinkific, Uscreen, Whop |
 | Gross Margins | 60-99% across all tiers (verified) |
@@ -70,7 +70,7 @@ We are building the platform that bridges the gap between Uscreen (video-first O
 | Layer | Technology | Rationale |
 |---|---|---|
 | Framework | TanStack Start + React 19 | SSR, file-based routing, server functions |
-| Database | Turso (libSQL) + Drizzle ORM | Edge replicas, $0-25/mo, embedded read replicas |
+| Database | Neon Postgres + Drizzle ORM | Serverless Postgres, branching, $0-25/mo |
 | Auth | Better Auth + Stripe plugin | Auto customer creation, subscription management |
 | Storage | Cloudflare R2 | Zero egress, S3-compatible, $0.015/GB/mo |
 | Video | R2 + HLS.js (self-hosted) | No per-minute delivery fees, signed URLs |
@@ -86,7 +86,7 @@ We are building the platform that bridges the gap between Uscreen (video-first O
 
 ## 2.2 Multi-Tenant Architecture
 
-Each creator (tenant) operates within a single database with row-level isolation via creator_id foreign keys. This is the Turso single-database model with embedded read replicas at the edge for student-facing reads, while writes go to the primary. The creator_id column exists on every tenant-scoped table.
+Each creator (tenant) operates within a single Neon Postgres database with row-level isolation via creator_id foreign keys. Neon's serverless driver handles connection pooling and scaling. The creator_id column exists on every tenant-scoped table.
 
 ## 2.3 Project File Structure
 
@@ -96,8 +96,8 @@ All new routes, schemas, and components follow this structure. Agents must creat
 - `src/routes/_authed/` - Protected creator routes (auth guard)
 - `src/routes/_authed/admin/` - Platform admin routes
 - `src/routes/_public/` - Public student-facing routes
-- `src/lib/db/schema.ts` - All Drizzle table definitions
-- `src/lib/trpc/routers/` - tRPC sub-routers by domain
+- `src/lib/db/schema/` - Drizzle table definitions (modular: auth.ts, creator.ts, course.ts, enrollment.ts, billing.ts, community.ts, marketing.ts)
+- `src/server/routes/` - tRPC sub-routers by domain
 - `src/lib/ai/` - AI generation services (Claude, DALL-E, HeyGen)
 - `src/lib/billing/` - Usage metering, credit tracking, Stripe helpers
 - `src/lib/email/` - SES client, template rendering, queue
@@ -168,8 +168,8 @@ These extend Better Auth's auto-generated user/session/account/verification tabl
 
 | Field | Detail |
 |---|---|
-| **Description** | Define ALL tables listed in Section 3.1 using Drizzle ORM with Turso/libSQL dialect. Include all indexes, foreign keys, enums, and relations. Use text IDs (nanoid), snake_case columns, and timestamp with timezone. |
-| **Files** | `src/lib/db/schema.ts`, `src/lib/db/index.ts`, `drizzle.config.ts` |
+| **Description** | Define ALL tables listed in Section 3.1 using Drizzle ORM with PostgreSQL dialect (Neon). Include all indexes, foreign keys, enums, and relations. Use UUID IDs, snake_case columns, and timestamp with timezone. |
+| **Files** | `src/lib/db/schema/` (modular files), `src/lib/db/index.ts`, `drizzle.config.ts` |
 | **Acceptance** | All tables created. drizzle-kit push succeeds. TypeScript types export correctly. Relations are queryable. |
 | **Priority** | P0 - Critical Path |
 | **Estimate** | 4 hours |
@@ -328,7 +328,7 @@ TipTap (ProseMirror-based) with these extensions: StarterKit (paragraphs, headin
 | Field | Detail |
 |---|---|
 | **Description** | Create courses tRPC router with: create, update, delete, list (with pagination, search, status filter), getBySlug, duplicate, updateSortOrder. All mutations scoped to creator_id via middleware. Slug auto-generates from title (with collision handling). Include enrollment_count and completion_rate as computed fields on list queries. |
-| **Files** | `src/lib/trpc/routers/courses.ts` |
+| **Files** | `src/server/routes/courses.ts` |
 | **Acceptance** | CRUD operations work. Slug uniqueness enforced per-creator. Duplicate creates deep copy (modules + lessons + quizzes). Sort order persists. Pagination works with cursor-based approach. |
 | **Priority** | P0 - Critical Path |
 | **Estimate** | 3 hours |
@@ -338,7 +338,7 @@ TipTap (ProseMirror-based) with these extensions: StarterKit (paragraphs, headin
 | Field | Detail |
 |---|---|
 | **Description** | Create modules and lessons tRPC routers. Modules: create, update, delete, reorder. Lessons: create (with type), update, delete, reorder (within module and across modules via drag), updateContent (separate mutation for autosave). Implement optimistic reordering - the UI updates immediately, server confirms. |
-| **Files** | `src/lib/trpc/routers/modules.ts`, `src/lib/trpc/routers/lessons.ts` |
+| **Files** | `src/server/routes/modules.ts`, `src/server/routes/lessons.ts` |
 | **Acceptance** | Modules nest under courses correctly. Lessons nest under modules. Cross-module drag works (lesson moves from Module A to Module B). Autosave debounces at 2 seconds. Delete cascades correctly. |
 | **Priority** | P0 - Critical Path |
 | **Estimate** | 4 hours |
@@ -588,7 +588,7 @@ The student experience must be best-in-class. This is what creators show to thei
 | Field | Detail |
 |---|---|
 | **Description** | Allow students to take timestamped notes during video lessons. Notes panel slides out from the right side. Each note is linked to the current video timestamp - clicking a note seeks to that point. Notes persist across sessions. Export notes as PDF or markdown. |
-| **Files** | `src/components/student/NotesPanel.tsx`, `src/lib/trpc/routers/notes.ts` |
+| **Files** | `src/components/student/NotesPanel.tsx`, `src/server/routes/notes.ts` |
 | **Acceptance** | Notes save with correct timestamp. Clicking note seeks video. Notes persist and load on return. Export generates clean document. Mobile: notes accessible via bottom sheet. |
 | **Priority** | P2 - Medium |
 | **Estimate** | 3 hours |
@@ -606,7 +606,7 @@ Community is the retention engine. Kajabi just redesigned their community in 202
 | Field | Detail |
 |---|---|
 | **Description** | Build channel CRUD for creators: create/edit/delete channels, set channel type (feed or chat), access level (public/members-only/specific-course), custom emoji icon, sort order. Feed channels support threaded posts. Chat channels support real-time messages. Channel list renders in the student sidebar. |
-| **Files** | `src/lib/trpc/routers/community-channels.ts`, `src/components/community/ChannelManager.tsx` |
+| **Files** | `src/server/routes/community-channels.ts`, `src/components/community/ChannelManager.tsx` |
 | **Acceptance** | CRUD works. Access levels enforced (non-enrolled students can't see course-specific channels). Feed and chat types render differently. Sort order persists via drag-and-drop. |
 | **Priority** | P1 - High |
 | **Estimate** | 3 hours |
@@ -616,7 +616,7 @@ Community is the retention engine. Kajabi just redesigned their community in 202
 | Field | Detail |
 |---|---|
 | **Description** | Build the community feed for feed-type channels. Posts support: rich text (TipTap), image uploads (R2), video uploads (short-form, max 60 seconds), polls (multi-option, single or multi-answer), and GIF picker. Threaded comments up to 2 levels deep. Reactions on posts (like, love, fire, clap). Pin posts. Infinite scroll with cursor-based pagination. Polling for new posts (every 30 seconds). |
-| **Files** | `src/components/community/PostFeed.tsx`, `src/components/community/PostComposer.tsx`, `src/components/community/PostCard.tsx`, `src/components/community/CommentThread.tsx`, `src/lib/trpc/routers/community-posts.ts` |
+| **Files** | `src/components/community/PostFeed.tsx`, `src/components/community/PostComposer.tsx`, `src/components/community/PostCard.tsx`, `src/components/community/CommentThread.tsx`, `src/server/routes/community-posts.ts` |
 | **Acceptance** | Posts create with all media types. Comments thread correctly to 2 levels. Reactions toggle on/off. Pinned posts stay at top. Pagination loads smoothly. New post poll shows notification badge. Image/video uploads to R2. |
 | **Priority** | P1 - High |
 | **Estimate** | 6 hours |

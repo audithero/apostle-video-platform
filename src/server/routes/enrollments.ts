@@ -70,6 +70,8 @@ export const enrollmentsRouter = createTRPCRouter({
           lastAccessedAt: lastAccess?.lastAt ?? row.enrollment.enrolledAt,
           enrolledAt: row.enrollment.enrolledAt,
           completedAt: row.enrollment.completedAt,
+          certificateSerial: row.enrollment.certificateSerial,
+          certificatePdfUrl: row.enrollment.certificatePdfUrl,
         };
       }),
     );

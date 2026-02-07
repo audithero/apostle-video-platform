@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useReducer, useState, useCallback, useMemo, useRef, useEffect } from "react";
+import { useReducer, useState, useCallback, useMemo, useRef, useEffect, type KeyboardEvent } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/react";
 import { toast } from "sonner";
@@ -49,7 +49,10 @@ import {
   Type,
   User,
   X,
+  ChevronDown,
+  ChevronUp,
   CreditCard,
+  ExternalLink,
   HelpCircle,
   Save,
 } from "lucide-react";
@@ -97,6 +100,11 @@ type BlockType =
   | "curriculum"
   | "html";
 
+type SocialLink = {
+  readonly label: string;
+  readonly url: string;
+};
+
 type BlockProps = {
   readonly heading?: string;
   readonly body?: string;
@@ -113,6 +121,8 @@ type BlockProps = {
   readonly instructorName?: string;
   readonly instructorTitle?: string;
   readonly instructorPhotoUrl?: string;
+  readonly socialLinks?: ReadonlyArray<SocialLink>;
+  readonly highlightIndex?: number;
   readonly courseId?: string;
   readonly htmlContent?: string;
 };
@@ -205,10 +215,13 @@ const getDefaultProps = (blockType: BlockType): BlockProps => {
       return {
         heading: "Simple, Transparent Pricing",
         body: "Choose the plan that works best for you.",
+        buttonText: "Choose Plan",
         items: [
           { title: "Starter -- $29/mo", description: "Access to 3 courses, community forum, email support." },
           { title: "Pro -- $79/mo", description: "Unlimited courses, priority support, downloadable resources." },
+          { title: "Enterprise -- $199/mo", description: "Everything in Pro plus custom branding, API access, and dedicated support." },
         ],
+        highlightIndex: 1,
         backgroundColor: "#ffffff",
       };
     }
@@ -268,6 +281,10 @@ const getDefaultProps = (blockType: BlockType): BlockProps => {
         instructorTitle: "Professional Filmmaker & Educator",
         body: "With over 15 years of experience in the film industry, Jane has worked on award-winning documentaries and feature films. She is passionate about sharing her knowledge with aspiring filmmakers.",
         instructorPhotoUrl: "",
+        socialLinks: [
+          { label: "Website", url: "" },
+          { label: "Twitter", url: "" },
+        ],
         backgroundColor: "#ffffff",
       };
     }
@@ -481,44 +498,70 @@ const PAGE_TEMPLATES: readonly PageTemplate[] = [
   {
     id: "webinar",
     name: "Webinar Registration",
-    description: "Countdown, instructor bio, features, and CTA",
+    description: "Countdown, instructor bio, features, FAQ, and CTA",
     icon: Clock,
     blocks: [
-      { id: "t-1", type: "countdown", props: getDefaultProps("countdown") },
-      { id: "t-2", type: "instructor", props: getDefaultProps("instructor") },
-      { id: "t-3", type: "features", props: { ...getDefaultProps("features"), heading: "What You Will Discover" } },
-      { id: "t-4", type: "cta", props: { ...getDefaultProps("cta"), heading: "Reserve Your Seat", buttonText: "Register Free" } },
+      { id: "t-1", type: "countdown", props: { ...getDefaultProps("countdown"), heading: "Live Webinar Starts In", buttonText: "Register Now", backgroundColor: "#0f172a" } },
+      { id: "t-2", type: "instructor", props: { ...getDefaultProps("instructor"), instructorName: "Your Name", instructorTitle: "Expert Instructor & Industry Leader" } },
+      { id: "t-3", type: "features", props: { ...getDefaultProps("features"), heading: "What You Will Discover", items: [
+        { title: "Proven Strategies", description: "Learn the exact frameworks used by top professionals." },
+        { title: "Live Q&A Session", description: "Get your questions answered in real time during the webinar." },
+        { title: "Exclusive Bonus", description: "Attendees receive a free downloadable resource pack." },
+      ] } },
+      { id: "t-4", type: "faq", props: { ...getDefaultProps("faq"), heading: "Webinar FAQ", items: [
+        { title: "Is the webinar free?", description: "Yes, the webinar is completely free to attend. Just register to save your spot." },
+        { title: "Will there be a replay?", description: "A replay will be available for 48 hours after the live session." },
+        { title: "What if I have more questions?", description: "You can ask questions during the live Q&A at the end of the webinar." },
+      ] } },
+      { id: "t-5", type: "cta", props: { ...getDefaultProps("cta"), heading: "Reserve Your Seat", body: "Spots are limited. Register now to guarantee your place.", buttonText: "Register Free" } },
     ],
   },
   {
     id: "coming-soon",
     name: "Coming Soon",
-    description: "Hero and call-to-action for pre-launch",
+    description: "Countdown, hero, features preview, and email CTA",
     icon: Eye,
     blocks: [
-      { id: "t-1", type: "hero", props: { ...getDefaultProps("hero"), heading: "Something Amazing Is Coming", body: "Be the first to know when we launch.", buttonText: "Join the Waitlist" } },
-      { id: "t-2", type: "cta", props: { ...getDefaultProps("cta"), heading: "Stay in the Loop", buttonText: "Notify Me" } },
+      { id: "t-1", type: "hero", props: { ...getDefaultProps("hero"), heading: "Something Amazing Is Coming", body: "A brand-new course experience designed to transform how you learn. Be the first to know when we launch.", buttonText: "Join the Waitlist", backgroundColor: "#0f172a" } },
+      { id: "t-2", type: "countdown", props: { ...getDefaultProps("countdown"), heading: "Launching In" } },
+      { id: "t-3", type: "features", props: { ...getDefaultProps("features"), heading: "What to Expect", items: [
+        { title: "Premium Content", description: "Hours of expert-led video lessons and hands-on projects." },
+        { title: "Community Access", description: "Join a private community of motivated learners." },
+        { title: "Early Bird Pricing", description: "Waitlist members get an exclusive launch discount." },
+      ] } },
+      { id: "t-4", type: "cta", props: { ...getDefaultProps("cta"), heading: "Do Not Miss the Launch", body: "Join the waitlist to get early access and a special discount.", buttonText: "Notify Me" } },
     ],
   },
   {
     id: "about-instructor",
     name: "About / Instructor",
-    description: "Instructor bio, features, and rich text",
+    description: "Instructor bio, expertise, testimonials, and story",
     icon: User,
     blocks: [
-      { id: "t-1", type: "instructor", props: getDefaultProps("instructor") },
-      { id: "t-2", type: "features", props: { ...getDefaultProps("features"), heading: "Areas of Expertise" } },
-      { id: "t-3", type: "richtext", props: { ...getDefaultProps("richtext"), heading: "My Story", body: "Share your journey and what drives you as an educator." } },
+      { id: "t-1", type: "instructor", props: { ...getDefaultProps("instructor"), instructorName: "Your Name", instructorTitle: "Your Title & Expertise", body: "Share a compelling summary about yourself, your background, and why students love learning from you." } },
+      { id: "t-2", type: "features", props: { ...getDefaultProps("features"), heading: "Areas of Expertise", items: [
+        { title: "Skill Area 1", description: "Describe your first area of deep expertise." },
+        { title: "Skill Area 2", description: "Describe your second area of deep expertise." },
+        { title: "Skill Area 3", description: "Describe your third area of deep expertise." },
+      ] } },
+      { id: "t-3", type: "testimonials", props: { ...getDefaultProps("testimonials"), heading: "What Students Say About Me" } },
+      { id: "t-4", type: "richtext", props: { ...getDefaultProps("richtext"), heading: "My Story", body: "Share your journey and what drives you as an educator. Talk about your background, key milestones, and the impact you want to make through teaching.", backgroundColor: "#f8fafc" } },
+      { id: "t-5", type: "cta", props: { ...getDefaultProps("cta"), heading: "Ready to Learn With Me?", body: "Check out my courses and start your journey today.", buttonText: "View My Courses" } },
     ],
   },
   {
     id: "minimal",
     name: "Minimal",
-    description: "Simple hero and CTA - quick start",
+    description: "Clean hero, single feature block, and CTA",
     icon: LayoutTemplate,
     blocks: [
-      { id: "t-1", type: "hero", props: getDefaultProps("hero") },
-      { id: "t-2", type: "cta", props: getDefaultProps("cta") },
+      { id: "t-1", type: "hero", props: { ...getDefaultProps("hero"), heading: "Learn Something New", body: "A focused, no-nonsense course to help you level up fast.", buttonText: "Start Now" } },
+      { id: "t-2", type: "features", props: { ...getDefaultProps("features"), heading: "What You Get", items: [
+        { title: "Video Lessons", description: "Concise, actionable video content." },
+        { title: "Practical Exercises", description: "Hands-on assignments to reinforce learning." },
+        { title: "Lifetime Access", description: "Learn at your own pace, forever." },
+      ] } },
+      { id: "t-3", type: "cta", props: { ...getDefaultProps("cta"), heading: "Start Learning Today", body: "No fluff. Just results.", buttonText: "Enroll Now" } },
     ],
   },
 ];
@@ -589,6 +632,11 @@ function TestimonialsBlockPreview({ props }: { readonly props: BlockProps }) {
 }
 
 function PricingBlockPreview({ props }: { readonly props: BlockProps }) {
+  const highlightIdx = props.highlightIndex ?? -1;
+  const columnClass = props.items && props.items.length >= 3
+    ? "sm:grid-cols-3"
+    : "sm:grid-cols-2";
+
   return (
     <div className="px-6 py-12" style={{ backgroundColor: props.backgroundColor ?? "#ffffff" }}>
       <h3 className="text-center font-bold text-lg">{props.heading}</h3>
@@ -596,16 +644,37 @@ function PricingBlockPreview({ props }: { readonly props: BlockProps }) {
         <p className="mt-1 text-center text-muted-foreground text-sm">{props.body}</p>
       )}
       {props.items && (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          {props.items.map((item) => (
-            <div key={item.title} className="rounded-lg border p-5 text-center">
-              <p className="font-bold text-sm">{item.title}</p>
-              <p className="mt-2 text-muted-foreground text-xs">{item.description}</p>
-              <span className="mt-4 inline-block rounded-md bg-primary px-4 py-1.5 font-medium text-primary-foreground text-xs">
-                Choose Plan
-              </span>
-            </div>
-          ))}
+        <div className={`mx-auto mt-6 grid max-w-3xl gap-4 ${columnClass}`}>
+          {props.items.map((item, index) => {
+            const isHighlighted = index === highlightIdx;
+            return (
+              <div
+                key={item.title}
+                className={`relative rounded-lg border p-5 text-center transition-shadow ${
+                  isHighlighted
+                    ? "border-primary shadow-lg ring-2 ring-primary/20"
+                    : "border-border"
+                }`}
+              >
+                {isHighlighted && (
+                  <span className="-top-3 absolute inset-x-0 mx-auto w-fit rounded-full bg-primary px-3 py-0.5 font-semibold text-primary-foreground text-[10px] uppercase tracking-wide">
+                    Recommended
+                  </span>
+                )}
+                <p className="font-bold text-sm">{item.title}</p>
+                <p className="mt-2 text-muted-foreground text-xs">{item.description}</p>
+                <span
+                  className={`mt-4 inline-block rounded-md px-4 py-1.5 font-medium text-xs ${
+                    isHighlighted
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-secondary-foreground"
+                  }`}
+                >
+                  {props.buttonText ?? "Choose Plan"}
+                </span>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -631,17 +700,61 @@ function CtaBlockPreview({ props }: { readonly props: BlockProps }) {
   );
 }
 
+function FaqAccordionItem({ item }: { readonly item: { readonly title: string; readonly description: string } }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [contentHeight, setContentHeight] = useState(0);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setContentHeight(contentRef.current.scrollHeight);
+    }
+  }, [item.description]);
+
+  const toggle = () => setIsOpen((prev) => !prev);
+  const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggle();
+    }
+  };
+
+  return (
+    <div className="rounded-lg border">
+      <button
+        type="button"
+        className="flex w-full items-center justify-between p-4 text-left"
+        onClick={toggle}
+        onKeyDown={handleKeyDown}
+        aria-expanded={isOpen}
+      >
+        <span className="font-semibold text-sm">{item.title}</span>
+        {isOpen ? (
+          <ChevronUp className="size-4 shrink-0 text-muted-foreground" />
+        ) : (
+          <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
+        )}
+      </button>
+      <div
+        className="overflow-hidden transition-[max-height] duration-200 ease-in-out"
+        style={{ maxHeight: isOpen ? `${String(contentHeight)}px` : "0px" }}
+      >
+        <div ref={contentRef} className="px-4 pb-4">
+          <p className="text-muted-foreground text-xs leading-relaxed">{item.description}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function FaqBlockPreview({ props }: { readonly props: BlockProps }) {
   return (
     <div className="px-6 py-12" style={{ backgroundColor: props.backgroundColor ?? "#ffffff" }}>
       <h3 className="text-center font-bold text-lg">{props.heading}</h3>
       {props.items && (
-        <div className="mx-auto mt-6 max-w-lg space-y-3">
+        <div className="mx-auto mt-6 max-w-lg space-y-2">
           {props.items.map((item) => (
-            <div key={item.title} className="rounded-lg border p-4">
-              <p className="font-semibold text-sm">{item.title}</p>
-              <p className="mt-1 text-muted-foreground text-xs">{item.description}</p>
-            </div>
+            <FaqAccordionItem key={item.title} item={item} />
           ))}
         </div>
       )}
@@ -716,15 +829,30 @@ function VideoBlockPreview({ props }: { readonly props: BlockProps }) {
   );
 }
 
-function CountdownBlockPreview({ props }: { readonly props: BlockProps }) {
-  const target = props.targetDate ? new Date(props.targetDate) : null;
-  const now = new Date();
-  const diff = target ? Math.max(0, target.getTime() - now.getTime()) : 0;
+function useCountdown(targetDate: string | undefined) {
+  const [now, setNow] = useState(() => Date.now());
 
-  const days = Math.floor(diff / (1_000 * 60 * 60 * 24));
-  const hours = Math.floor((diff % (1_000 * 60 * 60 * 24)) / (1_000 * 60 * 60));
-  const minutes = Math.floor((diff % (1_000 * 60 * 60)) / (1_000 * 60));
-  const seconds = Math.floor((diff % (1_000 * 60)) / 1_000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 1_000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const target = targetDate ? new Date(targetDate).getTime() : 0;
+  const diff = Math.max(0, target - now);
+
+  return {
+    days: Math.floor(diff / (1_000 * 60 * 60 * 24)),
+    hours: Math.floor((diff % (1_000 * 60 * 60 * 24)) / (1_000 * 60 * 60)),
+    minutes: Math.floor((diff % (1_000 * 60 * 60)) / (1_000 * 60)),
+    seconds: Math.floor((diff % (1_000 * 60)) / 1_000),
+    isExpired: diff === 0 && target > 0,
+  };
+}
+
+function CountdownBlockPreview({ props }: { readonly props: BlockProps }) {
+  const { days, hours, minutes, seconds, isExpired } = useCountdown(props.targetDate);
 
   const units = [
     { label: "Days", value: days },
@@ -739,21 +867,32 @@ function CountdownBlockPreview({ props }: { readonly props: BlockProps }) {
       style={{ backgroundColor: props.backgroundColor ?? "#1e293b" }}
     >
       <h3 className="font-bold text-xl">{props.heading}</h3>
-      <div className="mt-6 flex gap-4">
-        {units.map((unit) => (
-          <div key={unit.label} className="flex flex-col items-center">
-            <span className="flex size-16 items-center justify-center rounded-lg bg-white/10 font-bold text-2xl tabular-nums">
-              {String(unit.value).padStart(2, "0")}
-            </span>
-            <span className="mt-1.5 text-xs uppercase opacity-60">{unit.label}</span>
-          </div>
-        ))}
-      </div>
+      {isExpired ? (
+        <p className="mt-6 font-medium text-lg opacity-80">This event has started!</p>
+      ) : (
+        <div className="mt-6 flex gap-4">
+          {units.map((unit) => (
+            <div key={unit.label} className="flex flex-col items-center">
+              <span className="flex size-16 items-center justify-center rounded-lg bg-white/10 font-bold text-2xl tabular-nums">
+                {String(unit.value).padStart(2, "0")}
+              </span>
+              <span className="mt-1.5 text-xs uppercase opacity-60">{unit.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      {props.buttonText && (
+        <span className="mt-6 inline-block rounded-md bg-white px-5 py-2 font-medium text-slate-900 text-sm">
+          {props.buttonText}
+        </span>
+      )}
     </div>
   );
 }
 
 function InstructorBlockPreview({ props }: { readonly props: BlockProps }) {
+  const visibleLinks = (props.socialLinks ?? []).filter((link) => link.url.length > 0);
+
   return (
     <div className="px-6 py-12" style={{ backgroundColor: props.backgroundColor ?? "#ffffff" }}>
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 sm:flex-row sm:items-start">
@@ -776,6 +915,19 @@ function InstructorBlockPreview({ props }: { readonly props: BlockProps }) {
           )}
           {props.body && (
             <p className="mt-3 text-muted-foreground text-sm leading-relaxed">{props.body}</p>
+          )}
+          {visibleLinks.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {visibleLinks.map((link) => (
+                <span
+                  key={link.label}
+                  className="inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-xs font-medium text-muted-foreground"
+                >
+                  <ExternalLink className="size-3" />
+                  {link.label}
+                </span>
+              ))}
+            </div>
           )}
         </div>
       </div>
@@ -1146,6 +1298,13 @@ function BlockSettingsPanel({ block, dispatch }: BlockSettingsPanelProps) {
     });
   };
 
+  const updateProps = (props: Partial<BlockProps>) => {
+    dispatch({
+      type: "UPDATE_BLOCK_PROPS",
+      payload: { blockId: block.id, props },
+    });
+  };
+
   return (
     <aside className="flex h-full w-72 shrink-0 flex-col border-l bg-muted/30">
       <div className="flex items-center justify-between border-b px-3 py-3">
@@ -1356,26 +1515,161 @@ function BlockSettingsPanel({ block, dispatch }: BlockSettingsPanelProps) {
             </div>
           </div>
 
-          {/* Items list */}
-          {block.props.items && block.props.items.length > 0 && (
+          {/* Highlight index for pricing */}
+          {block.props.highlightIndex !== undefined && block.props.items && (
+            <div className="grid gap-1.5">
+              <Label htmlFor="block-highlight-index">Highlighted Plan (0-based index)</Label>
+              <Input
+                id="block-highlight-index"
+                type="number"
+                min={-1}
+                max={block.props.items.length - 1}
+                value={String(block.props.highlightIndex)}
+                onChange={(e) => {
+                  updateProps({ highlightIndex: Number.parseInt(e.target.value, 10) });
+                }}
+              />
+              <p className="text-muted-foreground text-xs">
+                Set to -1 to disable. Highlighted plan shows a "Recommended" badge.
+              </p>
+            </div>
+          )}
+
+          {/* Social links for instructor */}
+          {block.props.socialLinks !== undefined && (
+            <div className="space-y-2">
+              <Separator />
+              <Label>Social Links</Label>
+              {(block.props.socialLinks ?? []).map((link, index) => (
+                <div key={`social-${String(index)}`} className="flex items-end gap-1.5">
+                  <div className="grid flex-1 gap-1">
+                    <Input
+                      value={link.label}
+                      onChange={(e) => {
+                        const updated = [...(block.props.socialLinks ?? [])];
+                        updated[index] = { ...updated[index], label: e.target.value };
+                        updateProps({ socialLinks: updated });
+                      }}
+                      placeholder="Label"
+                      className="h-7 text-xs"
+                      aria-label={`Social link ${String(index + 1)} label`}
+                    />
+                    <Input
+                      value={link.url}
+                      onChange={(e) => {
+                        const updated = [...(block.props.socialLinks ?? [])];
+                        updated[index] = { ...updated[index], url: e.target.value };
+                        updateProps({ socialLinks: updated });
+                      }}
+                      placeholder="https://..."
+                      className="h-7 text-xs"
+                      aria-label={`Social link ${String(index + 1)} URL`}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-7 shrink-0"
+                    onClick={() => {
+                      const updated = (block.props.socialLinks ?? []).filter((_, i) => i !== index);
+                      updateProps({ socialLinks: updated });
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        const updated = (block.props.socialLinks ?? []).filter((_, i) => i !== index);
+                        updateProps({ socialLinks: updated });
+                      }
+                    }}
+                    aria-label={`Remove social link ${String(index + 1)}`}
+                  >
+                    <Trash2 className="size-3" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="w-full gap-1 text-xs"
+                onClick={() => {
+                  const updated = [...(block.props.socialLinks ?? []), { label: "", url: "" }];
+                  updateProps({ socialLinks: updated });
+                }}
+              >
+                <Plus className="size-3" />
+                Add Link
+              </Button>
+            </div>
+          )}
+
+          {/* Items list with add/edit/remove */}
+          {block.props.items !== undefined && (
             <div className="space-y-2">
               <Separator />
               <Label>Items ({block.props.items.length})</Label>
               <div className="space-y-2">
-                {block.props.items.map((item) => (
-                  <Card key={item.title} className="p-0">
-                    <CardContent className="p-2.5">
-                      <p className="font-medium text-xs">{item.title}</p>
-                      <p className="mt-0.5 line-clamp-2 text-muted-foreground text-xs">
-                        {item.description}
-                      </p>
+                {block.props.items.map((item, index) => (
+                  <Card key={`item-${String(index)}`} className="p-0">
+                    <CardContent className="space-y-1.5 p-2.5">
+                      <Input
+                        value={item.title}
+                        onChange={(e) => {
+                          const updated = [...(block.props.items ?? [])];
+                          updated[index] = { ...updated[index], title: e.target.value };
+                          updateProps({ items: updated });
+                        }}
+                        className="h-7 text-xs font-medium"
+                        placeholder="Title"
+                        aria-label={`Item ${String(index + 1)} title`}
+                      />
+                      <Textarea
+                        value={item.description}
+                        onChange={(e) => {
+                          const updated = [...(block.props.items ?? [])];
+                          updated[index] = { ...updated[index], description: e.target.value };
+                          updateProps({ items: updated });
+                        }}
+                        className="min-h-[48px] text-xs"
+                        placeholder="Description"
+                        aria-label={`Item ${String(index + 1)} description`}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 gap-1 text-destructive text-xs hover:text-destructive"
+                        onClick={() => {
+                          const updated = (block.props.items ?? []).filter((_, i) => i !== index);
+                          updateProps({ items: updated });
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            const updated = (block.props.items ?? []).filter((_, i) => i !== index);
+                            updateProps({ items: updated });
+                          }
+                        }}
+                      >
+                        <Trash2 className="size-3" />
+                        Remove
+                      </Button>
                     </CardContent>
                   </Card>
                 ))}
               </div>
-              <p className="text-muted-foreground text-xs">
-                Item editing coming soon.
-              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="w-full gap-1 text-xs"
+                onClick={() => {
+                  const updated = [...(block.props.items ?? []), { title: "New Item", description: "Description here." }];
+                  updateProps({ items: updated });
+                }}
+              >
+                <Plus className="size-3" />
+                Add Item
+              </Button>
             </div>
           )}
         </div>

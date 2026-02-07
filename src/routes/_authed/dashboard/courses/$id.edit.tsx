@@ -60,6 +60,7 @@ import { AIImageGenerator } from "@/components/course/AIImageGenerator";
 import { AIRewriteToolbar } from "@/components/course/AIRewriteToolbar";
 import type { CourseContext } from "@/components/course/AIRewriteToolbar";
 import type { JSONContent } from "@tiptap/react";
+import { CertificatePreview } from "@/components/course/CertificatePreview";
 import { useTRPC } from "@/lib/trpc/react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -630,9 +631,8 @@ function VideoLessonEditor({ lesson }: { readonly lesson: LessonData }) {
               controls
               className="size-full"
               aria-label={`Video for lesson: ${lesson.title}`}
-            >
-              <track kind="captions" label="Captions" />
-            </video>
+            />
+            {/* Captions track will be added when caption uploads are supported */}
           </div>
           <p className="text-sm text-muted-foreground">
             Video uploaded successfully. You can replace it by uploading a new file.
@@ -1528,22 +1528,14 @@ function CertificateConfigPanel({ courseId }: CertificateConfigPanelProps) {
       </div>
 
       {/* Certificate Preview Card */}
-      <div className="rounded-lg border bg-gradient-to-br from-amber-50 to-orange-50 p-4 text-center dark:from-amber-950/20 dark:to-orange-950/20">
-        <Award className="mx-auto size-8 text-amber-600 dark:text-amber-400" />
-        <p className="mt-2 text-sm font-bold text-amber-900 dark:text-amber-100">{certTitle}</p>
-        {certSubtitle && (
-          <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">{certSubtitle}</p>
-        )}
-        <p className="mt-3 text-xs text-amber-600 dark:text-amber-400">Student Name</p>
-        {includeDate && (
-          <p className="mt-1 text-[10px] text-amber-500">
-            {new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric" }).format(new Date())}
-          </p>
-        )}
-        {includeSerial && (
-          <p className="mt-1 font-mono text-[10px] text-amber-400 dark:text-amber-600">CERT-XXXXXX-XXXXX</p>
-        )}
-      </div>
+      <CertificatePreview
+        title={certTitle}
+        subtitle={certSubtitle}
+        logoUrl={logoUrl}
+        backgroundImageUrl={bgImageUrl}
+        includeDate={includeDate}
+        includeSerial={includeSerial}
+      />
     </div>
   );
 }
