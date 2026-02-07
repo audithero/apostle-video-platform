@@ -56,14 +56,6 @@ export const changeLanguage = (language: string) => {
   return false;
 };
 
-// Preload languages and namespaces
-// const languages = Object.keys(resources);
-// console.log("🌐 Pre loading languages", languages);
-// await Promise.all([
-//   i18n.loadLanguages(languages), // TODO: load languages from options
-//   i18n.loadNamespaces(["translation"]), // TODO: load namespaces from options
-// ]);
-
 i18n.on("languageChanged", (lng) => {
   console.log("🌐 Language changed", lng);
 });
