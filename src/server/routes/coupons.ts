@@ -150,8 +150,8 @@ export const couponsRouter = createTRPCRouter({
       };
     }),
 
-  // Apply coupon (atomically validate + increment to prevent race conditions)
-  apply: protectedProcedure
+  // Redeem coupon (atomically validate + increment to prevent race conditions)
+  redeem: protectedProcedure
     .input(z.object({ couponId: z.string() }))
     .mutation(async ({ input }) => {
       // Atomic: only increment if still within limits
