@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   BookOpen,
@@ -18,8 +18,15 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { RouteErrorBoundary } from "@/components/error-boundary";
+import { isCreator } from "@/lib/auth/permissions";
 
 export const Route = createFileRoute("/_authed/dashboard")({
+  beforeLoad: async ({ context }) => {
+    const session = context.session;
+    if (!session?.user || !isCreator(session.user.role as string | undefined)) {
+      throw redirect({ to: "/onboarding" });
+    }
+  },
   component: DashboardLayout,
   errorComponent: RouteErrorBoundary,
 });

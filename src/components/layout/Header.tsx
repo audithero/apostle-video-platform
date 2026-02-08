@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, Menu, Shield, User, X } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, Shield, User, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -67,6 +67,10 @@ export function Header() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate({ to: "/dashboard" })}>
+                    <LayoutDashboard className="mr-2 size-4" />
+                    Dashboard
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate({ to: "/account" })}>
                     <User className="mr-2 size-4" />
                     Account
@@ -140,6 +144,13 @@ export function Header() {
               {user ? (
                 <div className="flex flex-col items-center gap-6">
                   <p className="text-sm text-muted-foreground">{user.email}</p>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setMobileOpen(false)}
+                    className="text-lg font-medium uppercase tracking-widest"
+                  >
+                    Dashboard
+                  </Link>
                   <Link
                     to="/account"
                     onClick={() => setMobileOpen(false)}

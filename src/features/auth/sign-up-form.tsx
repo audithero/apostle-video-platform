@@ -62,13 +62,13 @@ export function SignUpForm() {
         password: data.password,
         name: `${data.firstName} ${data.lastName}`,
         image: data.image ? await convertImageToBase64(data.image) : "",
-        callbackURL: "/",
+        callbackURL: "/dashboard",
         fetchOptions: {
           onError: (ctx) => {
             toast.error(ctx.error.message);
           },
           onSuccess: async () => {
-            navigate({ to: "/" });
+            navigate({ to: "/dashboard" });
           },
         },
       });

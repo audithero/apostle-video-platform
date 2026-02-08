@@ -54,6 +54,10 @@ export const creatorSettingsRouter = createTRPCRouter({
 
       let slug = input.slug ?? slugify(input.businessName);
 
+      if (!slug) {
+        throw new Error("Could not generate a valid URL slug from that business name. Please provide a slug manually.");
+      }
+
       // Check slug uniqueness
       const existingSlug = await db
         .select({ id: creator.id })

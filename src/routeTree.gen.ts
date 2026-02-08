@@ -16,6 +16,7 @@ import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as PublicSearchRouteImport } from './routes/_public/search'
 import { Route as PublicPricingRouteImport } from './routes/_public/pricing'
 import { Route as PublicOfflineRouteImport } from './routes/_public/offline'
+import { Route as AuthedOnboardingRouteImport } from './routes/_authed/onboarding'
 import { Route as AuthedMyDashboardRouteImport } from './routes/_authed/my-dashboard'
 import { Route as AuthedFavoritesRouteImport } from './routes/_authed/favorites'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
@@ -100,6 +101,11 @@ const PublicOfflineRoute = PublicOfflineRouteImport.update({
   id: '/offline',
   path: '/offline',
   getParentRoute: () => PublicRoute,
+} as any)
+const AuthedOnboardingRoute = AuthedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AuthedRoute,
 } as any)
 const AuthedMyDashboardRoute = AuthedMyDashboardRouteImport.update({
   id: '/my-dashboard',
@@ -395,6 +401,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthedDashboardRouteWithChildren
   '/favorites': typeof AuthedFavoritesRoute
   '/my-dashboard': typeof AuthedMyDashboardRoute
+  '/onboarding': typeof AuthedOnboardingRoute
   '/offline': typeof PublicOfflineRoute
   '/pricing': typeof PublicPricingRoute
   '/search': typeof PublicSearchRoute
@@ -451,6 +458,7 @@ export interface FileRoutesByTo {
   '/community': typeof AuthedCommunityRoute
   '/favorites': typeof AuthedFavoritesRoute
   '/my-dashboard': typeof AuthedMyDashboardRoute
+  '/onboarding': typeof AuthedOnboardingRoute
   '/offline': typeof PublicOfflineRoute
   '/pricing': typeof PublicPricingRoute
   '/search': typeof PublicSearchRoute
@@ -512,6 +520,7 @@ export interface FileRoutesById {
   '/_authed/dashboard': typeof AuthedDashboardRouteWithChildren
   '/_authed/favorites': typeof AuthedFavoritesRoute
   '/_authed/my-dashboard': typeof AuthedMyDashboardRoute
+  '/_authed/onboarding': typeof AuthedOnboardingRoute
   '/_public/offline': typeof PublicOfflineRoute
   '/_public/pricing': typeof PublicPricingRoute
   '/_public/search': typeof PublicSearchRoute
@@ -573,6 +582,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/favorites'
     | '/my-dashboard'
+    | '/onboarding'
     | '/offline'
     | '/pricing'
     | '/search'
@@ -629,6 +639,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/favorites'
     | '/my-dashboard'
+    | '/onboarding'
     | '/offline'
     | '/pricing'
     | '/search'
@@ -689,6 +700,7 @@ export interface FileRouteTypes {
     | '/_authed/dashboard'
     | '/_authed/favorites'
     | '/_authed/my-dashboard'
+    | '/_authed/onboarding'
     | '/_public/offline'
     | '/_public/pricing'
     | '/_public/search'
@@ -795,6 +807,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/offline'
       preLoaderRoute: typeof PublicOfflineRouteImport
       parentRoute: typeof PublicRoute
+    }
+    '/_authed/onboarding': {
+      id: '/_authed/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthedOnboardingRouteImport
+      parentRoute: typeof AuthedRoute
     }
     '/_authed/my-dashboard': {
       id: '/_authed/my-dashboard'
@@ -1275,6 +1294,7 @@ interface AuthedRouteChildren {
   AuthedDashboardRoute: typeof AuthedDashboardRouteWithChildren
   AuthedFavoritesRoute: typeof AuthedFavoritesRoute
   AuthedMyDashboardRoute: typeof AuthedMyDashboardRoute
+  AuthedOnboardingRoute: typeof AuthedOnboardingRoute
   AuthedLearnCourseIdRoute: typeof AuthedLearnCourseIdRoute
   AuthedLearnLeaderboardRoute: typeof AuthedLearnLeaderboardRoute
   AuthedMyCoursesIndexRoute: typeof AuthedMyCoursesIndexRoute
@@ -1287,6 +1307,7 @@ const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedDashboardRoute: AuthedDashboardRouteWithChildren,
   AuthedFavoritesRoute: AuthedFavoritesRoute,
   AuthedMyDashboardRoute: AuthedMyDashboardRoute,
+  AuthedOnboardingRoute: AuthedOnboardingRoute,
   AuthedLearnCourseIdRoute: AuthedLearnCourseIdRoute,
   AuthedLearnLeaderboardRoute: AuthedLearnLeaderboardRoute,
   AuthedMyCoursesIndexRoute: AuthedMyCoursesIndexRoute,

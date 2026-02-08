@@ -30,7 +30,7 @@ export const useLogin = () => {
     },
     onSuccess(response) {
       if (response.data?.user.id) {
-        router.navigate({ to: "/" });
+        router.navigate({ to: "/dashboard" });
       }
     },
     onError(error: any) {
