@@ -47,8 +47,15 @@ async function main() {
 
   // Write the compiled JS
   writeFileSync(SW_DEST, compiled, "utf-8");
-
   console.log(`[generate-sw] Service worker written to ${SW_DEST}`);
+
+  // Also write to Vercel static output if it exists (nitro builds before this script runs)
+  const VERCEL_STATIC = resolve(ROOT, ".vercel/output/static/sw.js");
+  if (existsSync(dirname(VERCEL_STATIC))) {
+    writeFileSync(VERCEL_STATIC, compiled, "utf-8");
+    console.log(`[generate-sw] Service worker also written to ${VERCEL_STATIC}`);
+  }
+
   console.log(
     `[generate-sw] Size: ${(Buffer.byteLength(compiled) / 1024).toFixed(1)} KB`,
   );

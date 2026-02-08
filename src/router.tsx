@@ -6,7 +6,6 @@ import * as TanstackQuery from "./lib/trpc/root-provider";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 
-import "./styles.css";
 import DefaultLoading from "./components/default-loading";
 import NotFound from "./components/not-found";
 

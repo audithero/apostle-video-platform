@@ -60,7 +60,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
       {
         rel: "apple-touch-icon",
-        href: "/icon-192.png",
+        href: "/logo192.png",
       },
     ],
   }),
@@ -81,19 +81,21 @@ function RootDocument() {
             <Toaster />
             <RegisterSW />
             <InstallPrompt />
-            <TanStackDevtools
-              config={{ defaultOpen: false }}
-              plugins={[
-                {
-                  name: "Tanstack Query",
-                  render: <ReactQueryDevtoolsPanel />,
-                },
-                {
-                  name: "Tanstack Router",
-                  render: <TanStackRouterDevtoolsPanel />,
-                },
-              ]}
-            />
+            {import.meta.env.DEV && (
+              <TanStackDevtools
+                config={{ defaultOpen: false }}
+                plugins={[
+                  {
+                    name: "Tanstack Query",
+                    render: <ReactQueryDevtoolsPanel />,
+                  },
+                  {
+                    name: "Tanstack Router",
+                    render: <TanStackRouterDevtoolsPanel />,
+                  },
+                ]}
+              />
+            )}
             <Scripts />
           </I18nextProvider>
         </ThemeProvider>

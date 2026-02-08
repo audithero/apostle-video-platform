@@ -314,7 +314,7 @@ function CreatorDashboard() {
               className="w-full justify-start gap-2"
               asChild
             >
-              <Link to="/admin/series/new" aria-label="Create a new course">
+              <Link to="/dashboard/courses/ai-wizard" aria-label="Create a new course">
                 <BookPlus className="size-4" />
                 Create Course
               </Link>
@@ -324,7 +324,7 @@ function CreatorDashboard() {
               className="w-full justify-start gap-2"
               asChild
             >
-              <Link to="/admin" aria-label="Send an email to students">
+              <Link to="/dashboard/emails" aria-label="Send an email to students">
                 <Send className="size-4" />
                 Send Email
               </Link>
