@@ -26,9 +26,10 @@ export const Route = createFileRoute("/_authed")({
 });
 
 function AuthedLayout() {
+  const { session } = Route.useRouteContext();
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header serverSession={session} />
       <main className="flex-1">
         <Outlet />
       </main>

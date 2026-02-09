@@ -13,8 +13,13 @@ import {
 import { useSession, useLogout } from "@/features/auth/auth-hooks";
 import { isAdmin } from "@/lib/auth/permissions";
 
-export function Header() {
-  const { data: session } = useSession();
+interface HeaderProps {
+  readonly serverSession?: { user: Record<string, unknown> } | null;
+}
+
+export function Header({ serverSession }: HeaderProps = {}) {
+  const { data: clientSession } = useSession();
+  const session = serverSession ?? clientSession;
   const logout = useLogout();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);

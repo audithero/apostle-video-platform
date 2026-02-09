@@ -20,7 +20,9 @@ export const Route = createFileRoute("/_authed/account")({
 });
 
 function AccountPage() {
-  const { data: session } = useSession();
+  const { session: serverSession } = Route.useRouteContext();
+  const { data: clientSession } = useSession();
+  const session = serverSession ?? clientSession;
   const user = session?.user;
 
   return (
@@ -53,7 +55,7 @@ function AccountPage() {
         <ChangePasswordCard />
 
         {/* Billing */}
-        <BillingCard />
+        <BillingCard session={session} />
       </div>
     </div>
   );
@@ -144,8 +146,7 @@ function ChangePasswordCard() {
   );
 }
 
-function BillingCard() {
-  const { data: session } = useSession();
+function BillingCard({ session }: { readonly session: Record<string, unknown> | null }) {
   const [isLoading, setIsLoading] = useState(false);
   const hasSubscription = !!(session as Record<string, unknown>)?.activeSubscription;
 
