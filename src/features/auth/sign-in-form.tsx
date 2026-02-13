@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
@@ -45,15 +44,20 @@ export default function SignInForm() {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
-        <CardDescription className="text-xs md:text-sm">
-          Enter your credentials to access your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
+    <div className="w-full max-w-md">
+      {/* Heading */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+          Welcome back
+        </h1>
+        <p className="mt-2 text-muted-foreground">
+          Sign in to continue to your account
+        </p>
+      </div>
+
+      {/* Card */}
+      <div className="rounded-2xl border border-border/60 bg-card p-8 shadow-sm">
+        <form className="grid gap-5" onSubmit={handleSubmit(onSubmit)}>
           {loginWithCredentials.error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -66,7 +70,7 @@ export default function SignInForm() {
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <InputGroup>
-              <InputGroupInput id="email" placeholder="m@example.com" type="email" {...register("email")} />
+              <InputGroupInput id="email" placeholder="you@example.com" type="email" {...register("email")} />
             </InputGroup>
             <FieldError errors={errors.email ? [{ message: errors.email.message }] : undefined} />
           </Field>
@@ -74,12 +78,12 @@ export default function SignInForm() {
           <Field>
             <div className="flex items-center">
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Link className="ml-auto inline-block text-sm underline" to="/forgot-password">
+              <Link className="ml-auto text-sm font-medium text-primary hover:text-primary/80 transition-colors" to="/forgot-password">
                 Forgot password?
               </Link>
             </div>
             <InputGroup>
-              <InputGroupInput id="password" placeholder="password" type="password" {...register("password")} />
+              <InputGroupInput id="password" placeholder="Enter your password" type="password" {...register("password")} />
             </InputGroup>
             <FieldError errors={errors.password?.message ? [{ message: errors.password.message }] : undefined} />
           </Field>
@@ -98,21 +102,23 @@ export default function SignInForm() {
             </FieldLabel>
           </Field>
 
-          <Button className="w-full" disabled={isSubmitting || loginWithCredentials.isPending} type="submit">
+          <Button
+            className="w-full rounded-full mt-1"
+            disabled={isSubmitting || loginWithCredentials.isPending}
+            type="submit"
+          >
             {loginWithCredentials.isPending || isSubmitting ? <Spinner /> : "Sign In"}
           </Button>
         </form>
-      </CardContent>
-      <CardFooter>
-        <div className="flex w-full justify-center border-t py-4">
-          <p className="text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Link className="underline" to="/register">
-              Sign up
-            </Link>
-          </p>
-        </div>
-      </CardFooter>
-    </Card>
+      </div>
+
+      {/* Footer link */}
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Don&apos;t have an account?{" "}
+        <Link className="font-medium text-primary hover:text-primary/80 transition-colors" to="/register">
+          Create one
+        </Link>
+      </p>
+    </div>
   );
 }

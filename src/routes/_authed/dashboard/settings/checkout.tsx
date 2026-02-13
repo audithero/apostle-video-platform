@@ -26,7 +26,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTRPC } from "@/lib/trpc/react";
 import { RouteErrorBoundary } from "@/components/error-boundary";
@@ -222,7 +221,7 @@ function CheckoutSettings() {
       <div className="space-y-4">
         <Skeleton className="h-8 w-64" />
         <Skeleton className="mt-2 h-4 w-96" />
-        <Skeleton className="mt-8 h-64 w-full" />
+        <Skeleton className="mt-8 h-64 w-full rounded-2xl" />
       </div>
     );
   }
@@ -234,9 +233,11 @@ function CheckoutSettings() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <CreditCard className="size-7 text-indigo-500" />
+            <div className="flex size-12 items-center justify-center rounded-2xl bg-gaspar-lavender/20">
+              <CreditCard className="size-6 text-gaspar-purple" />
+            </div>
             <div>
-              <h1 className="text-3xl font-bold">Checkout</h1>
+              <h1 className="font-heading text-3xl font-bold tracking-tight">Checkout</h1>
               <p className="text-muted-foreground">
                 Customize your checkout experience to increase conversions.
               </p>
@@ -247,6 +248,7 @@ function CheckoutSettings() {
             variant="outline"
             size="sm"
             onClick={() => setShowPreview((v) => !v)}
+            className="rounded-full"
           >
             <Eye className="mr-2 size-4" />
             {showPreview ? "Hide Preview" : "Show Preview"}
@@ -254,10 +256,12 @@ function CheckoutSettings() {
         </div>
 
         {/* Branding */}
-        <Card>
+        <Card className="rounded-2xl border-border/50 shadow-sm">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CreditCard className="size-5" />
+            <CardTitle className="flex items-center gap-2 font-heading">
+              <div className="flex size-8 items-center justify-center rounded-xl bg-gaspar-blue/20">
+                <CreditCard className="size-4 text-gaspar-purple" />
+              </div>
               Checkout Branding
             </CardTitle>
             <CardDescription>
@@ -272,26 +276,33 @@ function CheckoutSettings() {
                 value={checkoutLogo}
                 onChange={(e) => setCheckoutLogo(e.target.value)}
                 placeholder="https://..."
-                className="mt-1"
+                className="mt-1.5 rounded-xl"
               />
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="mt-1.5 text-xs text-muted-foreground">
                 Recommended: 512x128px PNG with transparency
               </p>
             </div>
             <div>
               <Label htmlFor="accent-color">Accent Color</Label>
-              <div className="mt-1 flex items-center gap-2">
-                <input
-                  type="color"
-                  id="accent-color"
-                  value={checkoutAccentColor}
-                  onChange={(e) => setCheckoutAccentColor(e.target.value)}
-                  className="size-10 cursor-pointer rounded border"
-                />
+              <div className="mt-1.5 flex items-center gap-2">
+                <label
+                  htmlFor="accent-color"
+                  className="flex size-10 cursor-pointer items-center justify-center rounded-xl border border-border/50 shadow-sm"
+                  style={{ backgroundColor: checkoutAccentColor }}
+                >
+                  <input
+                    type="color"
+                    id="accent-color"
+                    value={checkoutAccentColor}
+                    onChange={(e) => setCheckoutAccentColor(e.target.value)}
+                    className="sr-only"
+                    aria-label="Pick accent color"
+                  />
+                </label>
                 <Input
                   value={checkoutAccentColor}
                   onChange={(e) => setCheckoutAccentColor(e.target.value)}
-                  className="w-32"
+                  className="w-32 rounded-xl font-mono"
                 />
               </div>
             </div>
@@ -299,12 +310,14 @@ function CheckoutSettings() {
         </Card>
 
         {/* Testimonials */}
-        <Card>
+        <Card className="rounded-2xl border-border/50 shadow-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageSquareQuote className="size-5" />
+                <CardTitle className="flex items-center gap-2 font-heading">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gaspar-cream/60">
+                    <MessageSquareQuote className="size-4 text-gaspar-purple" />
+                  </div>
                   Social Proof
                 </CardTitle>
                 <CardDescription>
@@ -316,6 +329,7 @@ function CheckoutSettings() {
                 variant="outline"
                 size="sm"
                 onClick={addTestimonial}
+                className="rounded-full"
               >
                 <Plus className="mr-1 size-4" />
                 Add
@@ -324,28 +338,32 @@ function CheckoutSettings() {
           </CardHeader>
           <CardContent>
             {testimonials.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-6">
-                No testimonials yet. Add one to boost conversions.
-              </p>
+              <div className="flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-border/50 py-10 text-center">
+                <MessageSquareQuote className="size-8 text-muted-foreground/40" />
+                <p className="text-sm text-muted-foreground">
+                  No testimonials yet. Add one to boost conversions.
+                </p>
+              </div>
             ) : (
               <div className="space-y-4">
                 {testimonials.map((t, idx) => (
                   <div
                     key={idx}
-                    className="rounded-lg border p-4 space-y-3"
+                    className="space-y-3 rounded-2xl border border-border/50 bg-muted/10 p-5"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2">
-                        <GripVertical className="size-4 text-muted-foreground" />
-                        <Badge variant="secondary" className="text-xs">
+                        <GripVertical className="size-4 text-muted-foreground/50" />
+                        <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
                           {`#${String(idx + 1)}`}
-                        </Badge>
+                        </span>
                       </div>
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
                         onClick={() => removeTestimonial(idx)}
+                        className="rounded-full"
                       >
                         <Trash2 className="size-4 text-destructive" />
                       </Button>
@@ -359,7 +377,7 @@ function CheckoutSettings() {
                             updateTestimonial(idx, "name", e.target.value)
                           }
                           placeholder="John Doe"
-                          className="mt-1"
+                          className="mt-1.5 rounded-xl"
                         />
                       </div>
                       <div>
@@ -370,7 +388,7 @@ function CheckoutSettings() {
                             updateTestimonial(idx, "role", e.target.value)
                           }
                           placeholder="Marketing Director"
-                          className="mt-1"
+                          className="mt-1.5 rounded-xl"
                         />
                       </div>
                     </div>
@@ -382,7 +400,7 @@ function CheckoutSettings() {
                           updateTestimonial(idx, "text", e.target.value)
                         }
                         placeholder="This course changed my life..."
-                        className="mt-1"
+                        className="mt-1.5 rounded-xl"
                         rows={2}
                       />
                     </div>
@@ -394,7 +412,7 @@ function CheckoutSettings() {
                           updateTestimonial(idx, "imageUrl", e.target.value)
                         }
                         placeholder="https://..."
-                        className="mt-1"
+                        className="mt-1.5 rounded-xl"
                       />
                     </div>
                   </div>
@@ -405,12 +423,14 @@ function CheckoutSettings() {
         </Card>
 
         {/* Guarantee Badge */}
-        <Card>
+        <Card className="rounded-2xl border-border/50 shadow-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="flex items-center gap-2">
-                  <ShieldCheck className="size-5" />
+                <CardTitle className="flex items-center gap-2 font-heading">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/30">
+                    <ShieldCheck className="size-4 text-emerald-600" />
+                  </div>
                   Money-Back Guarantee
                 </CardTitle>
                 <CardDescription>
@@ -435,7 +455,7 @@ function CheckoutSettings() {
                   onChange={(e) =>
                     setGuarantee((prev) => ({ ...prev, text: e.target.value }))
                   }
-                  className="mt-1"
+                  className="mt-1.5 rounded-xl"
                 />
               </div>
               <div>
@@ -452,7 +472,7 @@ function CheckoutSettings() {
                       setGuarantee((prev) => ({ ...prev, days }));
                     }
                   }}
-                  className="mt-1 w-32"
+                  className="mt-1.5 w-32 rounded-xl"
                 />
               </div>
             </CardContent>
@@ -460,12 +480,14 @@ function CheckoutSettings() {
         </Card>
 
         {/* Order Bump */}
-        <Card>
+        <Card className="rounded-2xl border-border/50 shadow-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="flex items-center gap-2">
-                  <Tag className="size-5" />
+                <CardTitle className="flex items-center gap-2 font-heading">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gaspar-pink/20">
+                    <Tag className="size-4 text-gaspar-purple" />
+                  </div>
                   Order Bump
                 </CardTitle>
                 <CardDescription>
@@ -494,7 +516,7 @@ function CheckoutSettings() {
                     }))
                   }
                   placeholder="Add the VIP Community Access"
-                  className="mt-1"
+                  className="mt-1.5 rounded-xl"
                 />
               </div>
               <div>
@@ -509,7 +531,7 @@ function CheckoutSettings() {
                     }))
                   }
                   placeholder="Get lifetime access to our exclusive community..."
-                  className="mt-1"
+                  className="mt-1.5 rounded-xl"
                   rows={2}
                 />
               </div>
@@ -526,12 +548,12 @@ function CheckoutSettings() {
                       }))
                     }
                     placeholder="price_..."
-                    className="mt-1 font-mono text-sm"
+                    className="mt-1.5 rounded-xl font-mono text-sm"
                   />
                 </div>
                 <div>
                   <Label htmlFor="bump-price">Display Price (cents)</Label>
-                  <div className="mt-1 flex items-center gap-2">
+                  <div className="mt-1.5 flex items-center gap-2">
                     <Input
                       id="bump-price"
                       type="number"
@@ -546,7 +568,7 @@ function CheckoutSettings() {
                           }));
                         }
                       }}
-                      className="w-32"
+                      className="w-32 rounded-xl"
                     />
                     <span className="text-sm text-muted-foreground">
                       {`= $${(orderBump.priceCents / 100).toFixed(2)}`}
@@ -559,12 +581,14 @@ function CheckoutSettings() {
         </Card>
 
         {/* Custom Fields */}
-        <Card>
+        <Card className="rounded-2xl border-border/50 shadow-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="flex items-center gap-2">
-                  <FormInput className="size-5" />
+                <CardTitle className="flex items-center gap-2 font-heading">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gaspar-blue/20">
+                    <FormInput className="size-4 text-gaspar-purple" />
+                  </div>
                   Custom Checkout Fields
                 </CardTitle>
                 <CardDescription>
@@ -577,6 +601,7 @@ function CheckoutSettings() {
                 variant="outline"
                 size="sm"
                 onClick={addCustomField}
+                className="rounded-full"
               >
                 <Plus className="mr-1 size-4" />
                 Add Field
@@ -585,26 +610,30 @@ function CheckoutSettings() {
           </CardHeader>
           <CardContent>
             {customFields.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-6">
-                No custom fields. Standard Stripe fields (name, email, card)
-                are always included.
-              </p>
+              <div className="flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-border/50 py-10 text-center">
+                <FormInput className="size-8 text-muted-foreground/40" />
+                <p className="text-sm text-muted-foreground">
+                  No custom fields. Standard Stripe fields (name, email, card)
+                  are always included.
+                </p>
+              </div>
             ) : (
               <div className="space-y-4">
                 {customFields.map((field, idx) => (
                   <div
                     key={field.id}
-                    className="rounded-lg border p-4 space-y-3"
+                    className="space-y-3 rounded-2xl border border-border/50 bg-muted/10 p-5"
                   >
                     <div className="flex items-start justify-between">
-                      <Badge variant="secondary" className="text-xs">
+                      <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
                         {`Field #${String(idx + 1)}`}
-                      </Badge>
+                      </span>
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
                         onClick={() => removeCustomField(idx)}
+                        className="rounded-full"
                       >
                         <Trash2 className="size-4 text-destructive" />
                       </Button>
@@ -620,7 +649,7 @@ function CheckoutSettings() {
                             })
                           }
                           placeholder="Company Name"
-                          className="mt-1"
+                          className="mt-1.5 rounded-xl"
                         />
                       </div>
                       <div>
@@ -632,7 +661,7 @@ function CheckoutSettings() {
                               type: e.target.value as "text" | "select",
                             })
                           }
-                          className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                          className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                         >
                           <option value="text">Text Input</option>
                           <option value="select">Dropdown</option>
@@ -664,7 +693,7 @@ function CheckoutSettings() {
                             })
                           }
                           placeholder="Option 1, Option 2, Option 3"
-                          className="mt-1"
+                          className="mt-1.5 rounded-xl"
                         />
                       </div>
                     ) : null}
@@ -681,6 +710,7 @@ function CheckoutSettings() {
             type="button"
             onClick={handleSave}
             disabled={updateSettings.isPending}
+            className="pill"
           >
             {updateSettings.isPending ? (
               <>
@@ -698,7 +728,7 @@ function CheckoutSettings() {
       {showPreview ? (
         <div className="hidden w-80 shrink-0 lg:block">
           <div className="sticky top-24 space-y-4">
-            <h3 className="text-sm font-semibold text-muted-foreground">
+            <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-muted-foreground">
               Checkout Preview
             </h3>
             <CheckoutPreview
@@ -737,10 +767,10 @@ function CheckoutPreview({
   readonly customFields: CustomField[];
 }) {
   return (
-    <div className="rounded-xl border bg-white shadow-lg overflow-hidden dark:bg-zinc-950">
+    <div className="overflow-hidden rounded-2xl border border-border/50 bg-white shadow-lg dark:bg-zinc-950">
       {/* Header */}
       <div
-        className="px-4 py-3 text-white text-center"
+        className="px-4 py-3 text-center text-white"
         style={{ backgroundColor: accentColor }}
       >
         {logo ? (
@@ -754,20 +784,20 @@ function CheckoutPreview({
         )}
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="space-y-4 p-4">
         {/* Product */}
-        <div className="rounded-lg bg-muted/50 p-3">
+        <div className="rounded-xl bg-muted/30 p-3">
           <p className="text-sm font-medium">Course Name</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
             One-time payment
           </p>
-          <p className="mt-1 text-lg font-bold">$97.00</p>
+          <p className="mt-1 font-heading text-lg font-bold">$97.00</p>
         </div>
 
         {/* Order Bump Preview */}
         {orderBump.enabled && orderBump.title ? (
           <div
-            className="rounded-lg border-2 border-dashed p-3"
+            className="rounded-xl border-2 border-dashed p-3"
             style={{ borderColor: accentColor }}
           >
             <div className="flex items-start gap-2">
@@ -775,7 +805,7 @@ function CheckoutPreview({
               <div>
                 <p className="text-xs font-semibold">{orderBump.title}</p>
                 {orderBump.description ? (
-                  <p className="mt-0.5 text-[10px] text-muted-foreground line-clamp-2">
+                  <p className="mt-0.5 line-clamp-2 text-[10px] text-muted-foreground">
                     {orderBump.description}
                   </p>
                 ) : null}
@@ -798,7 +828,7 @@ function CheckoutPreview({
                     <span className="text-destructive"> *</span>
                   ) : null}
                 </p>
-                <div className="mt-0.5 h-7 rounded border bg-muted/30" />
+                <div className="mt-0.5 h-7 rounded-lg border border-border/50 bg-muted/20" />
               </div>
             ))}
           </div>
@@ -807,7 +837,7 @@ function CheckoutPreview({
         {/* Pay Button */}
         <button
           type="button"
-          className="w-full rounded-lg py-2.5 text-sm font-semibold text-white"
+          className="w-full rounded-full py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           style={{ backgroundColor: accentColor }}
         >
           Pay Now
@@ -815,7 +845,7 @@ function CheckoutPreview({
 
         {/* Guarantee Badge Preview */}
         {guarantee.enabled ? (
-          <div className="flex items-center justify-center gap-1.5 rounded-lg border bg-emerald-50 p-2 dark:bg-emerald-950">
+          <div className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 p-2 dark:border-emerald-800 dark:bg-emerald-950">
             <ShieldCheck className="size-4 text-emerald-600" />
             <span className="text-[10px] font-medium text-emerald-700 dark:text-emerald-400">
               {guarantee.text}
@@ -826,11 +856,11 @@ function CheckoutPreview({
         {/* Testimonials Preview */}
         {testimonials.length > 0 ? (
           <div className="space-y-2">
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               What others say
             </p>
             {testimonials.slice(0, 2).map((t, idx) => (
-              <div key={idx} className="rounded-lg bg-muted/30 p-2">
+              <div key={idx} className="rounded-xl bg-muted/20 p-2.5">
                 <div className="flex gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
@@ -839,7 +869,7 @@ function CheckoutPreview({
                     />
                   ))}
                 </div>
-                <p className="mt-1 text-[10px] text-muted-foreground line-clamp-2">
+                <p className="mt-1 line-clamp-2 text-[10px] text-muted-foreground">
                   {t.text || "Testimonial text..."}
                 </p>
                 <p className="mt-1 text-[10px] font-medium">

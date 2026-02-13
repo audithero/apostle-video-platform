@@ -21,7 +21,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTRPC } from "@/lib/trpc/react";
@@ -200,7 +199,7 @@ function IntegrationSettingsPage() {
       <div className="space-y-6">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-80" />
-        <Skeleton className="mt-4 h-64 w-full" />
+        <Skeleton className="mt-4 h-64 w-full rounded-2xl" />
       </div>
     );
   }
@@ -210,9 +209,11 @@ function IntegrationSettingsPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <BarChart3 className="size-7 text-indigo-500" />
+          <div className="flex size-12 items-center justify-center rounded-2xl bg-gaspar-lavender/20">
+            <BarChart3 className="size-6 text-gaspar-purple" />
+          </div>
           <div>
-            <h1 className="text-3xl font-bold">Integrations</h1>
+            <h1 className="font-heading text-3xl font-bold tracking-tight">Integrations</h1>
             <p className="mt-1 text-muted-foreground">
               Connect analytics pixels and tracking services to your student-facing pages.
             </p>
@@ -224,6 +225,7 @@ function IntegrationSettingsPage() {
             variant="outline"
             onClick={handleValidateAll}
             disabled={isSaving}
+            className="rounded-full"
           >
             <Check className="size-4" />
             Validate All
@@ -232,6 +234,7 @@ function IntegrationSettingsPage() {
             type="button"
             onClick={handleSave}
             disabled={isSaving || !hasUnsavedChanges}
+            className="pill"
           >
             {isSaving ? (
               <Loader2 className="size-4 animate-spin" />
@@ -246,12 +249,14 @@ function IntegrationSettingsPage() {
       <div className="mt-8 space-y-6">
         {/* Active Pixels Summary */}
         {activePixelCount > 0 && (
-          <div className="rounded-md border border-green-200 bg-green-50 p-3 dark:border-green-900 dark:bg-green-950">
+          <div className="rounded-2xl border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-950">
             <div className="flex items-center gap-2 text-sm font-medium text-green-800 dark:text-green-200">
-              <Check className="size-4" />
+              <div className="flex size-6 items-center justify-center rounded-full bg-green-200 dark:bg-green-800">
+                <Check className="size-3.5 text-green-700 dark:text-green-300" />
+              </div>
               {`${String(activePixelCount)} pixel${activePixelCount === 1 ? "" : "s"} configured`}
             </div>
-            <p className="mt-1 text-xs text-green-600 dark:text-green-400">
+            <p className="mt-1.5 pl-8 text-xs text-green-600 dark:text-green-400">
               {PIXEL_CONFIGS
                 .filter((c) => getValue(c.key).trim().length > 0)
                 .map((c) => c.label.split(" ").at(0))
@@ -262,9 +267,9 @@ function IntegrationSettingsPage() {
         )}
 
         {/* Analytics Pixels */}
-        <Card>
+        <Card className="rounded-2xl border-border/50 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-base">Analytics & Tracking Pixels</CardTitle>
+            <CardTitle className="font-heading text-base">Analytics & Tracking Pixels</CardTitle>
             <CardDescription>
               Enter your pixel and tracking IDs below. These scripts are automatically injected
               into all student-facing pages for conversion tracking and analytics.
@@ -276,20 +281,20 @@ function IntegrationSettingsPage() {
               const status = validation[config.key];
 
               return (
-                <div key={config.key} className="space-y-1.5">
+                <div key={config.key} className="space-y-2 rounded-2xl border border-border/50 bg-muted/10 p-5">
                   <div className="flex items-center gap-2">
-                    <Label htmlFor={config.key}>{config.label}</Label>
+                    <Label htmlFor={config.key} className="font-heading text-sm">{config.label}</Label>
                     {status === "valid" && (
-                      <Badge variant="secondary" className="gap-1 text-green-700 dark:text-green-400">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
                         <Check className="size-3" />
                         Valid
-                      </Badge>
+                      </span>
                     )}
                     {status === "invalid" && (
-                      <Badge variant="destructive" className="gap-1">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
                         <AlertCircle className="size-3" />
                         Invalid format
-                      </Badge>
+                      </span>
                     )}
                   </div>
                   <Input
@@ -299,8 +304,8 @@ function IntegrationSettingsPage() {
                     placeholder={config.placeholder}
                     className={
                       status === "invalid"
-                        ? "border-red-300 focus-visible:ring-red-500 dark:border-red-700"
-                        : ""
+                        ? "rounded-xl border-red-300 focus-visible:ring-red-500 dark:border-red-700"
+                        : "rounded-xl"
                     }
                   />
                   <div className="flex items-start justify-between gap-4">
@@ -318,10 +323,12 @@ function IntegrationSettingsPage() {
         </Card>
 
         {/* Webhooks Link */}
-        <Card>
+        <Card className="rounded-2xl border-border/50 shadow-sm">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Webhook className="size-4" />
+            <CardTitle className="flex items-center gap-2 font-heading text-base">
+              <div className="flex size-8 items-center justify-center rounded-xl bg-gaspar-blue/20">
+                <Webhook className="size-4 text-gaspar-purple" />
+              </div>
               Webhooks
             </CardTitle>
             <CardDescription>
@@ -331,7 +338,7 @@ function IntegrationSettingsPage() {
           </CardHeader>
           <CardContent>
             <Link to="/dashboard/settings/webhooks">
-              <Button type="button" variant="outline" className="gap-2">
+              <Button type="button" variant="outline" className="gap-2 rounded-full">
                 <ExternalLink className="size-4" />
                 Manage Webhooks
               </Button>
@@ -339,7 +346,7 @@ function IntegrationSettingsPage() {
           </CardContent>
         </Card>
 
-        <Separator />
+        <Separator className="bg-border/50" />
 
         {/* Save button at bottom for mobile */}
         <div className="flex items-center gap-3">
@@ -347,6 +354,7 @@ function IntegrationSettingsPage() {
             type="button"
             onClick={handleSave}
             disabled={isSaving || !hasUnsavedChanges}
+            className="pill"
           >
             {isSaving ? (
               <>

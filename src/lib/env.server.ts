@@ -29,6 +29,7 @@ export const env = createEnv({
     // AI
     ANTHROPIC_API_KEY: z.string().optional(),
     OPENAI_API_KEY: z.string().optional(),
+    OPENROUTER_API_KEY: z.string().optional(),
     // HeyGen
     HEYGEN_API_KEY: z.string().optional(),
     HEYGEN_WEBHOOK_SECRET: z.string().optional(),

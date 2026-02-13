@@ -1,5 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useCallback, useReducer, useRef, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useTRPC } from "@/lib/trpc/react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -358,191 +361,6 @@ const wizardReducer = (state: WizardState, action: WizardAction): WizardState =>
     }
   }
 };
-
-// ---------- Mock Data Generator ----------
-
-const MOCK_OUTLINE: CourseOutline = {
-  title: "Mastering Modern React Development",
-  slug: "mastering-modern-react-development",
-  description:
-    "A comprehensive course covering the latest React patterns, hooks, and best practices for building production-ready applications. You will learn to build scalable, maintainable frontends using modern tooling.",
-  audience: "Intermediate JavaScript developers looking to level up their React skills",
-  level: "intermediate",
-  prerequisites: ["Basic JavaScript/TypeScript", "HTML & CSS fundamentals", "Basic React knowledge"],
-  learningOutcomes: [
-    "Build complex UIs with advanced React patterns",
-    "Implement performant state management solutions",
-    "Write comprehensive tests for React applications",
-    "Deploy and monitor production React applications",
-  ],
-  estimatedHours: 12,
-  modules: [
-    {
-      title: "Advanced Hooks & Patterns",
-      description: "Deep dive into custom hooks, compound components, and render props",
-      lessons: [
-        {
-          title: "Custom Hooks Best Practices",
-          description: "Learn to extract and compose reusable logic with custom hooks",
-          bloomLevel: "apply",
-          objectives: [
-            "Create custom hooks that encapsulate complex logic",
-            "Compose multiple hooks together effectively",
-            "Handle cleanup and dependency management",
-          ],
-          lessonType: "text",
-          estimatedMinutes: 25,
-          isFreePreview: true,
-        },
-        {
-          title: "Compound Component Pattern",
-          description: "Build flexible component APIs using the compound component pattern",
-          bloomLevel: "analyze",
-          objectives: [
-            "Implement the compound component pattern",
-            "Use React.Children and context for implicit state sharing",
-          ],
-          lessonType: "video",
-          estimatedMinutes: 30,
-          isFreePreview: false,
-        },
-        {
-          title: "Module 1 Quiz",
-          description: "Test your understanding of advanced hooks and patterns",
-          bloomLevel: "evaluate",
-          objectives: ["Demonstrate understanding of custom hooks and patterns"],
-          lessonType: "quiz",
-          estimatedMinutes: 10,
-          isFreePreview: false,
-        },
-      ],
-    },
-    {
-      title: "State Management at Scale",
-      description: "Exploring state management solutions for large applications",
-      lessons: [
-        {
-          title: "React Context Optimization",
-          description: "Prevent unnecessary re-renders when using React Context",
-          bloomLevel: "apply",
-          objectives: [
-            "Identify context performance pitfalls",
-            "Split contexts for optimal updates",
-          ],
-          lessonType: "text",
-          estimatedMinutes: 20,
-          isFreePreview: false,
-        },
-        {
-          title: "External State with Zustand",
-          description: "Lightweight state management with Zustand",
-          bloomLevel: "apply",
-          objectives: [
-            "Set up Zustand stores",
-            "Implement selectors for performance",
-          ],
-          lessonType: "video",
-          estimatedMinutes: 35,
-          isFreePreview: false,
-        },
-        {
-          title: "Server State with TanStack Query",
-          description: "Managing async data fetching and caching",
-          bloomLevel: "apply",
-          objectives: [
-            "Configure query clients and defaults",
-            "Implement mutations with optimistic updates",
-          ],
-          lessonType: "text",
-          estimatedMinutes: 30,
-          isFreePreview: false,
-        },
-      ],
-    },
-    {
-      title: "Testing React Applications",
-      description: "Comprehensive testing strategies for React components and hooks",
-      lessons: [
-        {
-          title: "Component Testing with Vitest",
-          description: "Write fast, reliable component tests",
-          bloomLevel: "apply",
-          objectives: [
-            "Set up Vitest with React Testing Library",
-            "Write tests that resemble how users interact with your app",
-          ],
-          lessonType: "text",
-          estimatedMinutes: 25,
-          isFreePreview: false,
-        },
-        {
-          title: "Testing Custom Hooks",
-          description: "Test hooks in isolation with renderHook",
-          bloomLevel: "apply",
-          objectives: [
-            "Use renderHook for hook testing",
-            "Mock dependencies and timers",
-          ],
-          lessonType: "video",
-          estimatedMinutes: 20,
-          isFreePreview: false,
-        },
-      ],
-    },
-    {
-      title: "Performance & Deployment",
-      description: "Optimize and deploy your React application",
-      lessons: [
-        {
-          title: "React Performance Profiling",
-          description: "Identify and fix performance bottlenecks",
-          bloomLevel: "analyze",
-          objectives: [
-            "Use React DevTools Profiler",
-            "Implement React.memo and useMemo correctly",
-          ],
-          lessonType: "text",
-          estimatedMinutes: 25,
-          isFreePreview: false,
-        },
-        {
-          title: "Production Deployment Strategies",
-          description: "Deploy with CI/CD, monitoring, and error tracking",
-          bloomLevel: "apply",
-          objectives: [
-            "Configure CI/CD pipelines for React apps",
-            "Set up error monitoring with Sentry",
-          ],
-          lessonType: "video",
-          estimatedMinutes: 30,
-          isFreePreview: false,
-        },
-        {
-          title: "Final Assessment",
-          description: "Comprehensive quiz covering all course material",
-          bloomLevel: "evaluate",
-          objectives: ["Demonstrate mastery of modern React development"],
-          lessonType: "quiz",
-          estimatedMinutes: 15,
-          isFreePreview: false,
-        },
-      ],
-    },
-  ],
-};
-
-const MOCK_LESSON_CONTENT = `<h2>Introduction</h2>
-<p>In this lesson, we will explore the fundamental concepts and best practices that form the foundation of this topic. By the end, you will have a solid understanding of the key principles.</p>
-<h3>Key Concepts</h3>
-<ul>
-<li>Understanding the core architecture and design patterns</li>
-<li>Implementing solutions with practical examples</li>
-<li>Handling edge cases and error scenarios</li>
-</ul>
-<h3>Practical Example</h3>
-<p>Let us walk through a real-world example that demonstrates these concepts in action. Pay attention to how each piece fits together to create a cohesive solution.</p>
-<h3>Summary</h3>
-<p>We covered the essential building blocks and how they work together. In the next lesson, we will build on this foundation with more advanced techniques.</p>`;
 
 // ---------- Step indicators ----------
 
@@ -1229,9 +1047,14 @@ const LESSON_STATUS_CONFIG: Record<
 interface ContentGenerationStepProps {
   readonly state: WizardState;
   readonly dispatch: React.Dispatch<WizardAction>;
+  readonly expandLesson: (input: {
+    outlineContext: { title: string; description: string; level: string };
+    lessonTitle: string;
+    lessonObjectives: string[];
+  }) => Promise<{ contentHtml: string }>;
 }
 
-function ContentGenerationStep({ state, dispatch }: ContentGenerationStepProps) {
+function ContentGenerationStep({ state, dispatch, expandLesson }: ContentGenerationStepProps) {
   const abortRef = useRef<AbortController | null>(null);
 
   const allLessons = (state.outline ?? []).flatMap((mod) => mod.lessons);
@@ -1239,32 +1062,37 @@ function ContentGenerationStep({ state, dispatch }: ContentGenerationStepProps) 
   const totalCount = allLessons.length;
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  const simulateGeneration = useCallback(
+  const generateLesson = useCallback(
     async (lesson: MutableLesson) => {
       dispatch({ type: "SET_LESSON_STATUS", lessonId: lesson.id, status: "generating" });
-      await new Promise<void>((resolve) => {
-        const timer = setTimeout(resolve, 1_500 + Math.random() * 1_500);
-        abortRef.current?.signal.addEventListener("abort", () => {
-          clearTimeout(timer);
-          resolve();
-        }, { once: true });
-      });
-      if (abortRef.current?.signal.aborted) return;
-      dispatch({
-        type: "SET_LESSON_CONTENT",
-        lessonId: lesson.id,
-        content: MOCK_LESSON_CONTENT,
-      });
+      try {
+        const result = await expandLesson({
+          outlineContext: {
+            title: state.courseTitle,
+            description: state.courseDescription,
+            level: state.topicInput.level,
+          },
+          lessonTitle: lesson.title,
+          lessonObjectives: [...lesson.objectives],
+        });
+        dispatch({
+          type: "SET_LESSON_CONTENT",
+          lessonId: lesson.id,
+          content: result.contentHtml,
+        });
+      } catch {
+        dispatch({ type: "SET_LESSON_STATUS", lessonId: lesson.id, status: "error" });
+      }
     },
-    [dispatch],
+    [dispatch, expandLesson, state.courseTitle, state.courseDescription, state.topicInput.level],
   );
 
   const handleGenerateSingle = useCallback(
     async (lesson: MutableLesson) => {
       abortRef.current = new AbortController();
-      await simulateGeneration(lesson);
+      await generateLesson(lesson);
     },
-    [simulateGeneration],
+    [generateLesson],
   );
 
   const handleGenerateAll = useCallback(async () => {
@@ -1275,10 +1103,10 @@ function ContentGenerationStep({ state, dispatch }: ContentGenerationStepProps) 
     );
     for (const lesson of pending) {
       if (abortRef.current.signal.aborted) break;
-      await simulateGeneration(lesson);
+      await generateLesson(lesson);
     }
     dispatch({ type: "SET_GENERATING_CONTENT", value: false });
-  }, [allLessons, dispatch, simulateGeneration]);
+  }, [allLessons, dispatch, generateLesson]);
 
   const handleStopGeneration = useCallback(() => {
     abortRef.current?.abort();
@@ -1567,6 +1395,20 @@ function ReviewStep({ state, onCreateCourse }: ReviewStepProps) {
 
 function AIWizardPage() {
   const [state, dispatch] = useReducer(wizardReducer, initialState);
+  const trpc = useTRPC();
+  const navigate = useNavigate();
+
+  const generateOutlineMutation = useMutation(
+    trpc.ai.generateOutline.mutationOptions({}),
+  );
+
+  const expandLessonMutation = useMutation(
+    trpc.ai.expandLesson.mutationOptions({}),
+  );
+
+  const createCourseMutation = useMutation(
+    trpc.courses.createFromAI.mutationOptions({}),
+  );
 
   const canNavigateTo = useCallback(
     (step: WizardStep): boolean => {
@@ -1591,26 +1433,57 @@ function AIWizardPage() {
   const handleGenerate = useCallback(async () => {
     dispatch({ type: "SET_GENERATING_OUTLINE", value: true });
     dispatch({ type: "SET_STEP", step: 1 });
-
-    // Simulate AI generation delay
-    await new Promise<void>((resolve) => {
-      setTimeout(resolve, 2_500);
-    });
-
-    dispatch({ type: "SET_OUTLINE", outline: MOCK_OUTLINE });
-  }, []);
+    try {
+      const outline = await generateOutlineMutation.mutateAsync({
+        topic: state.topicInput.topic,
+        audience: state.topicInput.audience,
+        level: state.topicInput.level,
+        moduleCount: state.topicInput.moduleCount,
+      });
+      dispatch({ type: "SET_OUTLINE", outline });
+    } catch {
+      toast.error("Failed to generate course outline. Please try again.");
+      dispatch({ type: "SET_GENERATING_OUTLINE", value: false });
+      dispatch({ type: "SET_STEP", step: 0 });
+    }
+  }, [state.topicInput, generateOutlineMutation]);
 
   const handleCreateCourse = useCallback(async () => {
+    if (!state.outline) return;
     dispatch({ type: "SET_CREATING_COURSE", value: true });
+    try {
+      const slug = state.courseTitle
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .trim();
 
-    // Simulate API call
-    await new Promise<void>((resolve) => {
-      setTimeout(resolve, 2_000);
-    });
+      await createCourseMutation.mutateAsync({
+        title: state.courseTitle,
+        slug,
+        description: state.courseDescription,
+        modules: state.outline.map((mod) => ({
+          title: mod.title,
+          description: mod.description,
+          lessons: mod.lessons.map((l) => ({
+            title: l.title,
+            lessonType: l.lessonType,
+            contentHtml: l.content ?? undefined,
+            estimatedMinutes: l.estimatedMinutes,
+            isFreePreview: l.isFreePreview,
+          })),
+        })),
+      });
 
-    dispatch({ type: "SET_CREATING_COURSE", value: false });
-    // In production, navigate to the created course
-  }, []);
+      toast.success("Course created successfully!");
+      navigate({ to: "/dashboard/courses" });
+    } catch {
+      toast.error("Failed to create course. Please try again.");
+    } finally {
+      dispatch({ type: "SET_CREATING_COURSE", value: false });
+    }
+  }, [state, createCourseMutation, navigate]);
 
   const handleNext = useCallback(() => {
     if (state.step < 3) {
@@ -1678,7 +1551,14 @@ function AIWizardPage() {
         )}
 
         {state.step === 2 && (
-          <ContentGenerationStep state={state} dispatch={dispatch} />
+          <ContentGenerationStep
+            state={state}
+            dispatch={dispatch}
+            expandLesson={async (input) => {
+              const result = await expandLessonMutation.mutateAsync(input);
+              return result;
+            }}
+          />
         )}
 
         {state.step === 3 && (

@@ -45,6 +45,7 @@ interface Tier {
   readonly description: string;
   readonly highlights: ReadonlyArray<string>;
   readonly cta: string;
+  readonly gasparBg: string;
 }
 
 const TIERS: ReadonlyArray<Tier> = [
@@ -65,6 +66,7 @@ const TIERS: ReadonlyArray<Tier> = [
       "Basic analytics",
     ],
     cta: "Start Free Trial",
+    gasparBg: "bg-gaspar-cream",
   },
   {
     id: "grow",
@@ -84,6 +86,7 @@ const TIERS: ReadonlyArray<Tier> = [
       "Priority rendering",
     ],
     cta: "Start Free Trial",
+    gasparBg: "bg-gaspar-blue",
   },
   {
     id: "scale",
@@ -105,6 +108,7 @@ const TIERS: ReadonlyArray<Tier> = [
       "Advanced analytics",
     ],
     cta: "Start Free Trial",
+    gasparBg: "bg-gaspar-pink",
   },
   {
     id: "pro",
@@ -124,6 +128,7 @@ const TIERS: ReadonlyArray<Tier> = [
       "Priority support",
     ],
     cta: "Start Free Trial",
+    gasparBg: "bg-gaspar-navy",
   },
 ];
 
@@ -187,10 +192,10 @@ function PricingPage() {
         transition={{ duration: 0.5 }}
         className="mx-auto max-w-3xl text-center"
       >
-        <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">
+        <Badge variant="outline" className="rounded-full border-primary/30 px-4 py-1 text-xs font-medium uppercase tracking-widest text-primary">
           Pricing
-        </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-5xl">
+        </Badge>
+        <h1 className="mt-4 text-3xl font-bold tracking-tight md:text-5xl">
           Simple, Transparent Pricing
         </h1>
         <p className="mt-6 text-lg text-muted-foreground">
@@ -225,7 +230,7 @@ function PricingPage() {
             Annual
           </Label>
           {isAnnual && (
-            <Badge variant="secondary" className="ml-1">
+            <Badge variant="secondary" className="ml-1 rounded-full bg-emerald-100 text-emerald-700">
               Save ~17%
             </Badge>
           )}
@@ -263,7 +268,7 @@ function PricingPage() {
           A detailed breakdown of what each plan includes.
         </p>
 
-        <Card className="mt-8">
+        <Card className="mt-8 overflow-hidden rounded-2xl border-border/40">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -368,45 +373,51 @@ function TierCard({ tier, isAnnual, isLoggedIn, onSubscribe }: TierCardProps) {
   const price = isAnnual ? tier.annualPrice : tier.monthlyPrice;
   const period = isAnnual ? "year" : "month";
   const isPopular = tier.badge !== null;
+  const isNavy = tier.id === "pro";
 
   return (
     <Card
       className={cn(
-        "relative flex h-full flex-col",
-        isPopular && "border-primary shadow-xl shadow-primary/10",
+        "relative flex h-full flex-col overflow-hidden rounded-2xl border-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl",
+        tier.gasparBg,
+        isPopular && "ring-2 ring-primary shadow-xl shadow-primary/10",
+        isNavy && "text-white",
       )}
     >
       {isPopular && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <Badge className="rounded-full px-4 py-1 text-xs">
+        <div className="absolute -top-0.5 left-1/2 -translate-x-1/2">
+          <Badge className="rounded-b-xl rounded-t-none bg-primary px-5 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground">
             {tier.badge}
           </Badge>
         </div>
       )}
 
-      <CardHeader className={cn(isPopular && "pt-8")}>
-        <CardTitle className="text-lg">{tier.name}</CardTitle>
-        <CardDescription className="min-h-[40px]">
+      <CardHeader className={cn(isPopular && "pt-10")}>
+        <CardTitle className={cn("text-lg", isNavy && "text-white")}>{tier.name}</CardTitle>
+        <CardDescription className={cn("min-h-[40px]", isNavy && "text-white/70")}>
           {tier.description}
         </CardDescription>
         <div className="mt-4">
-          <span className="text-4xl font-bold">{`$${String(price)}`}</span>
-          <span className="text-muted-foreground">{`/${period}`}</span>
+          <span className={cn("text-4xl font-bold", isNavy && "text-white")}>{`$${String(price)}`}</span>
+          <span className={cn("text-muted-foreground", isNavy && "text-white/60")}>{`/${period}`}</span>
         </div>
         {isAnnual && (
-          <p className="text-sm text-emerald-600">
+          <p className={cn("text-sm", isNavy ? "text-emerald-300" : "text-emerald-600")}>
             {`Save $${String(tier.monthlyPrice * 12 - tier.annualPrice)}/year`}
           </p>
         )}
       </CardHeader>
 
       <CardContent className="flex-1">
-        <Separator className="mb-4" />
+        <Separator className={cn("mb-4", isNavy && "bg-white/20")} />
         <ul className="space-y-3">
           {tier.highlights.map((highlight) => (
             <li key={highlight} className="flex items-start gap-2.5 text-sm">
-              <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                <Check className="size-3 text-primary" />
+              <div className={cn(
+                "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full",
+                isNavy ? "bg-white/20" : "bg-primary/10",
+              )}>
+                <Check className={cn("size-3", isNavy ? "text-white" : "text-primary")} />
               </div>
               <span>{highlight}</span>
             </li>
@@ -418,8 +429,11 @@ function TierCard({ tier, isAnnual, isLoggedIn, onSubscribe }: TierCardProps) {
         {isLoggedIn ? (
           <Button
             type="button"
-            className="w-full rounded-full uppercase tracking-wider"
-            variant={isPopular ? "default" : "outline"}
+            className={cn(
+              "w-full rounded-full px-8 uppercase tracking-wider",
+              isNavy && "bg-white text-gaspar-navy hover:bg-white/90",
+            )}
+            variant={isPopular ? "default" : isNavy ? "default" : "outline"}
             onClick={onSubscribe}
           >
             {tier.cta}
@@ -427,8 +441,11 @@ function TierCard({ tier, isAnnual, isLoggedIn, onSubscribe }: TierCardProps) {
         ) : (
           <Button
             type="button"
-            className="w-full rounded-full uppercase tracking-wider"
-            variant={isPopular ? "default" : "outline"}
+            className={cn(
+              "w-full rounded-full px-8 uppercase tracking-wider",
+              isNavy && "bg-white text-gaspar-navy hover:bg-white/90",
+            )}
+            variant={isPopular ? "default" : isNavy ? "default" : "outline"}
             asChild
           >
             <Link to="/register">{tier.cta}</Link>

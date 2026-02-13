@@ -1,12 +1,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Field,
   FieldContent,
@@ -72,13 +70,13 @@ export function SignUpForm() {
           },
         },
       });
-    } catch (error) {
+    } catch {
       toast.error("An error occurred during sign up");
     }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.at(0);
     if (file) {
       setValue("image", file);
       const reader = new FileReader();
@@ -95,13 +93,20 @@ export function SignUpForm() {
   };
 
   return (
-    <Card className="z-50 max-w-md rounded-2xl">
-      <CardHeader>
-        <CardTitle className="text-lg md:text-xl">{t("SIGN_UP")}</CardTitle>
-        <CardDescription className="text-xs md:text-sm">{t("SIGN_UP_DESC")}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
+    <div className="w-full max-w-md">
+      {/* Heading */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+          Create your account
+        </h1>
+        <p className="mt-2 text-muted-foreground">
+          Start building your learning platform today
+        </p>
+      </div>
+
+      {/* Card */}
+      <div className="rounded-2xl border border-border/60 bg-card p-8 shadow-sm">
+        <form className="grid gap-5" onSubmit={handleSubmit(onSubmit)}>
           <FieldSet>
             <FieldGroup>
               <div className="grid grid-cols-2 gap-4">
@@ -136,7 +141,7 @@ export function SignUpForm() {
                   <InputGroupInput
                     id="email"
                     type="email"
-                    placeholder="m@example.com"
+                    placeholder="you@example.com"
                     {...register("email")}
                   />
                 </InputGroup>
@@ -152,7 +157,7 @@ export function SignUpForm() {
                   <InputGroupInput
                     id="password"
                     type="password"
-                    placeholder={t("PASSWORD")}
+                    placeholder="Min. 8 characters"
                     {...register("password")}
                   />
                 </InputGroup>
@@ -165,7 +170,7 @@ export function SignUpForm() {
                   <InputGroupInput
                     id="passwordConfirmation"
                     type="password"
-                    placeholder={t("CONFIRM_PASSWORD")}
+                    placeholder="Confirm your password"
                     {...register("passwordConfirmation")}
                   />
                 </InputGroup>
@@ -183,18 +188,19 @@ export function SignUpForm() {
                 onChange={handleImageChange}
               />
               {imagePreview && (
-                <div className="mt-2 flex items-center gap-2">
+                <div className="mt-2 flex items-center gap-3">
                   <img
                     src={imagePreview}
                     alt="Profile preview"
-                    className="h-16 w-16 rounded object-cover"
-                    width={16}
-                    height={16}
+                    className="h-14 w-14 rounded-full object-cover ring-2 ring-border"
+                    width={56}
+                    height={56}
                   />
                   <button
                     type="button"
                     onClick={clearImage}
-                    className="text-destructive text-sm hover:text-destructive/80"
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") clearImage(); }}
+                    className="text-sm font-medium text-destructive hover:text-destructive/80 transition-colors"
                   >
                     Remove
                   </button>
@@ -203,20 +209,19 @@ export function SignUpForm() {
             </FieldContent>
           </Field>
 
-          <ButtonGroup>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? <Spinner className="size-4" /> : t("CREATE_ACCOUNT")}
-            </Button>
-          </ButtonGroup>
+          <Button type="submit" className="w-full rounded-full mt-1" disabled={isSubmitting}>
+            {isSubmitting ? <Spinner className="size-4" /> : t("CREATE_ACCOUNT")}
+          </Button>
         </form>
-      </CardContent>
-      <CardFooter>
-        <div className="flex w-full justify-center border-t py-4">
-          <p className="text-center text-neutral-500 text-xs">
-            {t("SECURED_BY")} <span className="text-orange-400">better-auth.</span>
-          </p>
-        </div>
-      </CardFooter>
-    </Card>
+      </div>
+
+      {/* Footer link */}
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Already have an account?{" "}
+        <Link className="font-medium text-primary hover:text-primary/80 transition-colors" to="/login">
+          Sign in
+        </Link>
+      </p>
+    </div>
   );
 }

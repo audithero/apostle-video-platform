@@ -51,16 +51,16 @@ type CourseStatus = "draft" | "published" | "archived";
 
 const statusConfig: Record<
   CourseStatus,
-  { readonly label: string; readonly variant: "default" | "secondary" | "outline" }
+  { readonly label: string; readonly variant: "default" | "secondary" | "outline"; readonly className: string }
 > = {
-  draft: { label: "Draft", variant: "secondary" },
-  published: { label: "Published", variant: "default" },
-  archived: { label: "Archived", variant: "outline" },
+  draft: { label: "Draft", variant: "secondary", className: "rounded-full bg-gaspar-peach/60 text-foreground border-0" },
+  published: { label: "Published", variant: "default", className: "rounded-full bg-primary/15 text-primary border-0" },
+  archived: { label: "Archived", variant: "outline", className: "rounded-full" },
 };
 
 function CourseCardSkeleton() {
   return (
-    <Card>
+    <Card className="rounded-2xl border-border/50">
       <CardHeader className="pb-3">
         <Skeleton className="h-5 w-3/4" />
         <Skeleton className="h-4 w-1/2" />
@@ -114,7 +114,7 @@ function CourseCard({
   }, [onDelete, course.id]);
 
   return (
-    <Card className="group relative transition-shadow hover:shadow-md">
+    <Card className="group relative rounded-2xl border-border/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
@@ -132,7 +132,7 @@ function CourseCard({
             </CardDescription>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <Badge variant={config.variant}>{config.label}</Badge>
+            <Badge variant={config.variant} className={config.className}>{config.label}</Badge>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -219,7 +219,7 @@ function CreateCourseDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button type="button">
+        <Button type="button" className="rounded-full px-6">
           <Plus className="size-4" />
           New Course
         </Button>
@@ -352,7 +352,7 @@ function CoursesListPage() {
             placeholder="Search courses..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            className="rounded-lg border-border/60 pl-9 focus-visible:border-primary/40"
             aria-label="Search courses"
           />
         </div>
@@ -398,12 +398,14 @@ function CoursesListPage() {
           ))}
         </div>
       ) : (
-        <Card className="flex flex-col items-center justify-center py-16">
-          <BookOpen className="size-12 text-muted-foreground/50" />
+        <Card className="flex flex-col items-center justify-center rounded-2xl border-border/50 py-20">
+          <div className="flex size-20 items-center justify-center rounded-full bg-gaspar-lavender/15">
+            <BookOpen className="size-10 text-primary" />
+          </div>
           <CardHeader className="text-center">
-            <CardTitle>No courses yet</CardTitle>
-            <CardDescription>
-              Create your first course and start sharing your knowledge.
+            <CardTitle className="text-xl">No courses yet</CardTitle>
+            <CardDescription className="max-w-sm">
+              Create your first course and start sharing your knowledge with the world.
             </CardDescription>
           </CardHeader>
           <CardContent>

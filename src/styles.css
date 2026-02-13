@@ -5,7 +5,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+/* Gaspar-inspired typography: Space Grotesk for headings, Inter for body */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 body {
   @apply m-0;
@@ -19,19 +20,42 @@ code {
     source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
+/*
+ * Gaspar-inspired Design Tokens
+ *
+ * Palette reference:
+ * - Deep navy/charcoal background
+ * - Peach/cream cards (#F5E0CC)
+ * - Periwinkle/light blue cards (#B5C8E8)
+ * - Soft pink accents (#F0D4E0)
+ * - Dark navy cards (#1A2535)
+ * - Lavender/purple accent (#9B8EC4)
+ * - Pill-shaped buttons, large rounded corners
+ */
+
 :root {
-  --base-50: oklch(0.97 0.005 75);
-  --base-100: oklch(0.93 0.005 75);
-  --base-200: oklch(0.88 0.008 75);
-  --base-300: oklch(0.80 0.008 75);
-  --base-400: oklch(0.65 0.010 75);
-  --base-500: oklch(0.50 0.010 75);
-  --base-600: oklch(0.40 0.008 75);
-  --base-700: oklch(0.30 0.006 75);
-  --base-800: oklch(0.20 0.004 75);
-  --base-900: oklch(0.13 0.003 75);
-  --base-950: oklch(0.08 0.002 75);
-  --base-1000: oklch(0.05 0.001 75);
+  /* Gaspar base scale - cool blue-purple undertone */
+  --base-50: oklch(0.97 0.008 280);
+  --base-100: oklch(0.94 0.010 280);
+  --base-200: oklch(0.90 0.012 280);
+  --base-300: oklch(0.82 0.015 280);
+  --base-400: oklch(0.65 0.018 280);
+  --base-500: oklch(0.50 0.020 280);
+  --base-600: oklch(0.40 0.018 280);
+  --base-700: oklch(0.30 0.015 280);
+  --base-800: oklch(0.20 0.012 280);
+  --base-900: oklch(0.13 0.010 280);
+  --base-950: oklch(0.08 0.015 280);
+  --base-1000: oklch(0.05 0.012 280);
+
+  /* Gaspar accent colors */
+  --gaspar-cream: oklch(0.92 0.035 75);
+  --gaspar-peach: oklch(0.88 0.045 60);
+  --gaspar-blue: oklch(0.82 0.055 260);
+  --gaspar-pink: oklch(0.88 0.045 340);
+  --gaspar-lavender: oklch(0.75 0.080 290);
+  --gaspar-navy: oklch(0.18 0.035 260);
+  --gaspar-purple: oklch(0.55 0.120 290);
 
   --background: var(--base-50);
   --foreground: var(--base-900);
@@ -39,66 +63,66 @@ code {
   --card-foreground: var(--base-900);
   --popover: var(--color-white);
   --popover-foreground: var(--base-900);
-  --primary: var(--base-950);
-  --primary-foreground: var(--base-50);
+  --primary: var(--gaspar-purple);
+  --primary-foreground: oklch(0.98 0.005 290);
   --secondary: var(--base-200);
   --secondary-foreground: var(--base-950);
   --muted: var(--base-100);
   --muted-foreground: var(--base-500);
-  --accent: var(--base-100);
-  --accent-foreground: var(--base-900);
+  --accent: var(--gaspar-lavender);
+  --accent-foreground: var(--base-950);
   --destructive: oklch(0.577 0.245 27.325);
   --border: var(--base-200);
-  --input: var(--base-300);
-  --ring: var(--base-900);
-  --chart-1: var(--base-950);
-  --chart-2: var(--base-600);
-  --chart-3: var(--base-800);
-  --chart-4: var(--base-400);
-  --chart-5: var(--base-300);
+  --input: var(--base-200);
+  --ring: var(--gaspar-purple);
+  --chart-1: var(--gaspar-purple);
+  --chart-2: var(--gaspar-blue);
+  --chart-3: var(--gaspar-peach);
+  --chart-4: var(--gaspar-pink);
+  --chart-5: var(--gaspar-lavender);
   --radius: 1rem;
   --sidebar: var(--color-white);
   --sidebar-foreground: var(--base-900);
-  --sidebar-primary: var(--base-950);
-  --sidebar-primary-foreground: var(--base-50);
-  --sidebar-accent: var(--base-50);
+  --sidebar-primary: var(--gaspar-purple);
+  --sidebar-primary-foreground: oklch(0.98 0.005 290);
+  --sidebar-accent: oklch(0.95 0.025 290);
   --sidebar-accent-foreground: var(--base-900);
   --sidebar-border: var(--base-200);
-  --sidebar-ring: var(--base-900);
+  --sidebar-ring: var(--gaspar-purple);
 }
 
 .dark {
-  --background: oklch(0.05 0.002 75);
-  --foreground: oklch(0.93 0.01 75);
-  --card: oklch(0.10 0.003 75);
-  --card-foreground: oklch(0.93 0.01 75);
-  --popover: oklch(0.10 0.003 75);
-  --popover-foreground: oklch(0.93 0.01 75);
-  --primary: oklch(0.93 0.01 75);
-  --primary-foreground: oklch(0.05 0.002 75);
-  --secondary: oklch(0.18 0.004 75);
-  --secondary-foreground: oklch(0.93 0.01 75);
-  --muted: oklch(0.13 0.003 75);
-  --muted-foreground: oklch(0.55 0.008 75);
-  --accent: oklch(0.13 0.003 75);
-  --accent-foreground: oklch(0.93 0.01 75);
+  --background: oklch(0.06 0.015 280);
+  --foreground: oklch(0.94 0.008 280);
+  --card: oklch(0.11 0.015 280);
+  --card-foreground: oklch(0.94 0.008 280);
+  --popover: oklch(0.11 0.015 280);
+  --popover-foreground: oklch(0.94 0.008 280);
+  --primary: oklch(0.75 0.100 290);
+  --primary-foreground: oklch(0.06 0.015 280);
+  --secondary: oklch(0.16 0.015 280);
+  --secondary-foreground: oklch(0.94 0.008 280);
+  --muted: oklch(0.14 0.012 280);
+  --muted-foreground: oklch(0.60 0.015 280);
+  --accent: oklch(0.20 0.025 280);
+  --accent-foreground: oklch(0.94 0.008 280);
   --destructive: oklch(0.65 0.2 25);
-  --border: oklch(0.16 0.003 75);
-  --input: oklch(0.18 0.004 75);
-  --ring: oklch(0.93 0.01 75);
-  --chart-1: oklch(0.93 0.01 75);
-  --chart-2: oklch(0.55 0.008 75);
-  --chart-3: oklch(0.75 0.008 75);
-  --chart-4: oklch(0.40 0.006 75);
-  --chart-5: oklch(0.25 0.004 75);
-  --sidebar: oklch(0.08 0.002 75);
-  --sidebar-foreground: oklch(0.93 0.01 75);
-  --sidebar-primary: oklch(0.93 0.01 75);
-  --sidebar-primary-foreground: oklch(0.05 0.002 75);
-  --sidebar-accent: oklch(0.13 0.003 75);
-  --sidebar-accent-foreground: oklch(0.93 0.01 75);
-  --sidebar-border: oklch(0.16 0.003 75);
-  --sidebar-ring: oklch(0.93 0.01 75);
+  --border: oklch(0.18 0.015 280);
+  --input: oklch(0.16 0.015 280);
+  --ring: oklch(0.75 0.100 290);
+  --chart-1: oklch(0.75 0.100 290);
+  --chart-2: oklch(0.72 0.060 260);
+  --chart-3: oklch(0.78 0.050 60);
+  --chart-4: oklch(0.80 0.050 340);
+  --chart-5: oklch(0.65 0.080 290);
+  --sidebar: oklch(0.08 0.015 280);
+  --sidebar-foreground: oklch(0.94 0.008 280);
+  --sidebar-primary: oklch(0.75 0.100 290);
+  --sidebar-primary-foreground: oklch(0.06 0.015 280);
+  --sidebar-accent: oklch(0.14 0.020 280);
+  --sidebar-accent-foreground: oklch(0.94 0.008 280);
+  --sidebar-border: oklch(0.18 0.015 280);
+  --sidebar-ring: oklch(0.75 0.100 290);
 }
 
 @theme inline {
@@ -114,6 +138,15 @@ code {
   --color-base-900: var(--base-900);
   --color-base-950: var(--base-950);
   --color-base-1000: var(--base-1000);
+
+  /* Gaspar accent palette - available as Tailwind classes (e.g., bg-gaspar-cream) */
+  --color-gaspar-cream: var(--gaspar-cream);
+  --color-gaspar-peach: var(--gaspar-peach);
+  --color-gaspar-blue: var(--gaspar-blue);
+  --color-gaspar-pink: var(--gaspar-pink);
+  --color-gaspar-lavender: var(--gaspar-lavender);
+  --color-gaspar-navy: var(--gaspar-navy);
+  --color-gaspar-purple: var(--gaspar-purple);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -150,6 +183,9 @@ code {
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Font family tokens */
+  --font-heading: "Space Grotesk", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 @layer base {
@@ -172,9 +208,24 @@ code {
       padding-inline: 2rem;
     }
   }
+
+  /* Gaspar heading typography */
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+  }
+  h1 {
+    font-weight: 700;
+  }
+  h2 {
+    font-weight: 700;
+  }
+  h3 {
+    font-weight: 600;
+  }
 }
 
-/* Selection */
+/* Selection - purple tint */
 ::selection {
   @apply bg-primary/20 text-foreground;
 }
@@ -182,6 +233,31 @@ code {
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
+}
+
+/* Gaspar utility classes */
+
+/* Pill-shaped elements */
+.pill {
+  @apply rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-wider border;
+}
+
+/* Gaspar-style card accents */
+.gaspar-card-cream {
+  background-color: var(--gaspar-cream);
+  color: oklch(0.15 0.02 280);
+}
+.gaspar-card-blue {
+  background-color: var(--gaspar-blue);
+  color: oklch(0.15 0.02 280);
+}
+.gaspar-card-pink {
+  background-color: var(--gaspar-pink);
+  color: oklch(0.15 0.02 280);
+}
+.gaspar-card-navy {
+  background-color: var(--gaspar-navy);
+  color: oklch(0.94 0.008 280);
 }
 
 /* TipTap editor styles */
@@ -248,11 +324,11 @@ html {
 }
 
 .tiptap mark {
-  background-color: #fef08a;
+  background-color: oklch(0.88 0.08 290);
   border-radius: 0.125rem;
   padding: 0.125rem 0.25rem;
 }
 
 .dark .tiptap mark {
-  background-color: #854d0e;
+  background-color: oklch(0.35 0.08 290);
 }

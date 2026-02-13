@@ -2,16 +2,10 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { Rocket } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTRPC } from "@/lib/trpc/react";
@@ -92,26 +86,39 @@ function OnboardingPage() {
   };
 
   return (
-    <div className="container flex max-w-lg flex-col items-center py-16">
-      <h1 className="text-3xl font-bold">Welcome to Apostle</h1>
-      <p className="mt-2 text-muted-foreground">
-        Set up your creator profile to get started.
-      </p>
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-6">
+      <div className="w-full max-w-lg">
+        {/* Welcome header */}
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gaspar-lavender/20">
+            <Rocket className="h-7 w-7 text-primary" />
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+            Welcome to Apostle
+          </h1>
+          <p className="mt-2 text-muted-foreground">
+            Set up your creator profile to start building courses
+          </p>
+        </div>
 
-      <Card className="mt-8 w-full">
-        <CardHeader>
-          <CardTitle>Creator Profile</CardTitle>
-          <CardDescription>
-            Choose a name and URL for your creator page.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Card */}
+        <div className="rounded-2xl border border-border/60 bg-card p-8 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold" style={{ fontFamily: "var(--font-heading)" }}>
+              Creator Profile
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Choose a name and URL for your creator page.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="grid gap-2">
               <Label htmlFor="businessName">Business Name</Label>
               <Input
                 id="businessName"
                 placeholder="My Awesome Business"
+                className="h-11"
                 {...register("businessName")}
                 onChange={handleBusinessNameChange}
               />
@@ -123,13 +130,15 @@ function OnboardingPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="slug">URL Slug</Label>
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <span>apostle.tv/</span>
+              <Label htmlFor="slug">Your URL</Label>
+              <div className="flex items-center gap-0 rounded-lg border border-input bg-muted/30 focus-within:ring-2 focus-within:ring-ring">
+                <span className="shrink-0 border-r border-input bg-muted/50 px-3 py-2.5 text-sm text-muted-foreground">
+                  apostle.tv/
+                </span>
                 <Input
                   id="slug"
                   placeholder="my-business"
-                  className="flex-1"
+                  className="h-11 border-0 bg-transparent shadow-none focus-visible:ring-0"
                   {...register("slug")}
                 />
               </div>
@@ -140,12 +149,21 @@ function OnboardingPage() {
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={createProfile.isPending}>
-              {createProfile.isPending ? "Creating..." : "Create Profile"}
+            <Button
+              type="submit"
+              className="w-full rounded-full mt-2"
+              disabled={createProfile.isPending}
+            >
+              {createProfile.isPending ? "Creating..." : "Launch Your Profile"}
             </Button>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* Subtle bottom note */}
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          You can always change these settings later in your dashboard.
+        </p>
+      </div>
     </div>
   );
 }

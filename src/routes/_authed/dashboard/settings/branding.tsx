@@ -181,8 +181,8 @@ function BrandingSettingsPage() {
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-80" />
         <div className="grid gap-6 lg:grid-cols-2">
-          <Skeleton className="h-[500px]" />
-          <Skeleton className="h-[500px]" />
+          <Skeleton className="h-[500px] rounded-2xl" />
+          <Skeleton className="h-[500px] rounded-2xl" />
         </div>
       </div>
     );
@@ -190,10 +190,11 @@ function BrandingSettingsPage() {
 
   return (
     <div>
+      {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Branding</h1>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="font-heading text-3xl font-bold tracking-tight">Branding</h1>
+          <p className="mt-2 text-muted-foreground">
             Customize your brand identity across all student-facing pages.
           </p>
         </div>
@@ -203,6 +204,7 @@ function BrandingSettingsPage() {
             variant="ghost"
             onClick={handleReset}
             disabled={form === null || isSaving}
+            className="rounded-full"
           >
             <Redo2 className="size-4" />
             Reset
@@ -211,6 +213,7 @@ function BrandingSettingsPage() {
             type="button"
             onClick={handleSave}
             disabled={isSaving}
+            className="pill"
           >
             {isSaving ? (
               <Loader2 className="size-4 animate-spin" />
@@ -226,10 +229,12 @@ function BrandingSettingsPage() {
         {/* Settings Panel (3/5) */}
         <div className="space-y-6 lg:col-span-3">
           {/* Colors */}
-          <Card>
+          <Card className="rounded-2xl border-border/50 shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Palette className="size-4" />
+              <CardTitle className="flex items-center gap-2 font-heading text-base">
+                <div className="flex size-8 items-center justify-center rounded-xl bg-gaspar-lavender/20">
+                  <Palette className="size-4 text-gaspar-purple" />
+                </div>
                 Colors
               </CardTitle>
               <CardDescription>
@@ -239,8 +244,8 @@ function BrandingSettingsPage() {
             <CardContent className="space-y-6">
               {/* Presets */}
               <div>
-                <Label className="text-xs text-muted-foreground">Quick Presets</Label>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Quick Presets</Label>
+                <div className="mt-3 flex flex-wrap gap-2">
                   {COLOR_PRESETS.map((preset) => {
                     const isActive =
                       currentForm.brandColor === preset.primary &&
@@ -250,10 +255,10 @@ function BrandingSettingsPage() {
                         key={preset.label}
                         type="button"
                         className={cn(
-                          "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors",
+                          "flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-medium transition-all",
                           isActive
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "hover:border-primary/50",
+                            ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20"
+                            : "border-border/50 hover:border-primary/40 hover:bg-primary/5",
                         )}
                         onClick={() => {
                           updateField("brandColor", preset.primary);
@@ -262,22 +267,22 @@ function BrandingSettingsPage() {
                         aria-label={`${preset.label} color preset`}
                       >
                         <span
-                          className="size-3 rounded-full"
+                          className="size-4 rounded-full ring-1 ring-black/10"
                           style={{ backgroundColor: preset.primary }}
                         />
                         <span
-                          className="size-3 rounded-full"
+                          className="size-4 rounded-full ring-1 ring-black/10"
                           style={{ backgroundColor: preset.secondary }}
                         />
                         {preset.label}
-                        {isActive && <Check className="ml-1 size-3" />}
+                        {isActive && <Check className="ml-0.5 size-3.5" />}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              <Separator />
+              <Separator className="bg-border/50" />
 
               {/* Primary Color */}
               <div className="grid gap-4 sm:grid-cols-2">
@@ -286,7 +291,7 @@ function BrandingSettingsPage() {
                   <div className="mt-1.5 flex items-center gap-2">
                     <label
                       htmlFor="brand-color-picker"
-                      className="flex size-10 cursor-pointer items-center justify-center rounded-md border"
+                      className="flex size-10 cursor-pointer items-center justify-center rounded-xl border border-border/50 shadow-sm transition-shadow hover:shadow-md"
                       style={{ backgroundColor: currentForm.brandColor }}
                     >
                       <input
@@ -302,7 +307,7 @@ function BrandingSettingsPage() {
                       id="brand-color"
                       value={currentForm.brandColor}
                       onChange={(e) => updateField("brandColor", e.target.value)}
-                      className="w-32 font-mono text-sm"
+                      className="w-32 rounded-xl font-mono text-sm"
                       maxLength={7}
                     />
                   </div>
@@ -314,7 +319,7 @@ function BrandingSettingsPage() {
                   <div className="mt-1.5 flex items-center gap-2">
                     <label
                       htmlFor="secondary-color-picker"
-                      className="flex size-10 cursor-pointer items-center justify-center rounded-md border"
+                      className="flex size-10 cursor-pointer items-center justify-center rounded-xl border border-border/50 shadow-sm transition-shadow hover:shadow-md"
                       style={{ backgroundColor: currentForm.brandSecondaryColor }}
                     >
                       <input
@@ -330,7 +335,7 @@ function BrandingSettingsPage() {
                       id="secondary-color"
                       value={currentForm.brandSecondaryColor}
                       onChange={(e) => updateField("brandSecondaryColor", e.target.value)}
-                      className="w-32 font-mono text-sm"
+                      className="w-32 rounded-xl font-mono text-sm"
                       maxLength={7}
                     />
                   </div>
@@ -340,10 +345,12 @@ function BrandingSettingsPage() {
           </Card>
 
           {/* Typography */}
-          <Card>
+          <Card className="rounded-2xl border-border/50 shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Type className="size-4" />
+              <CardTitle className="flex items-center gap-2 font-heading text-base">
+                <div className="flex size-8 items-center justify-center rounded-xl bg-gaspar-blue/20">
+                  <Type className="size-4 text-gaspar-purple" />
+                </div>
                 Typography
               </CardTitle>
               <CardDescription>
@@ -357,12 +364,12 @@ function BrandingSettingsPage() {
                   value={currentForm.fontFamily}
                   onValueChange={(value) => updateField("fontFamily", value)}
                 >
-                  <SelectTrigger id="font-family" className="mt-1.5 w-full max-w-xs">
+                  <SelectTrigger id="font-family" className="mt-1.5 w-full max-w-xs rounded-xl">
                     <SelectValue placeholder="Select a font" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl">
                     {GOOGLE_FONTS.map((font) => (
-                      <SelectItem key={font.value} value={font.value}>
+                      <SelectItem key={font.value} value={font.value} className="rounded-lg">
                         {font.label}
                       </SelectItem>
                     ))}
@@ -373,10 +380,12 @@ function BrandingSettingsPage() {
           </Card>
 
           {/* Logo & Favicon */}
-          <Card>
+          <Card className="rounded-2xl border-border/50 shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <ImageIcon className="size-4" />
+              <CardTitle className="flex items-center gap-2 font-heading text-base">
+                <div className="flex size-8 items-center justify-center rounded-xl bg-gaspar-pink/20">
+                  <ImageIcon className="size-4 text-gaspar-purple" />
+                </div>
                 Logo & Favicon
               </CardTitle>
               <CardDescription>
@@ -406,9 +415,9 @@ function BrandingSettingsPage() {
           </Card>
 
           {/* Custom CSS */}
-          <Card>
+          <Card className="rounded-2xl border-border/50 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-base">Custom CSS</CardTitle>
+              <CardTitle className="font-heading text-base">Custom CSS</CardTitle>
               <CardDescription>
                 Add custom CSS to override styles on your student-facing pages.
                 Changes apply globally.
@@ -419,7 +428,7 @@ function BrandingSettingsPage() {
                 value={currentForm.customCss}
                 onChange={(e) => updateField("customCss", e.target.value)}
                 placeholder={`/* Custom styles */\n.my-class {\n  color: red;\n}`}
-                className="min-h-[160px] font-mono text-sm"
+                className="min-h-[160px] rounded-xl font-mono text-sm"
                 rows={8}
               />
             </CardContent>
@@ -429,9 +438,9 @@ function BrandingSettingsPage() {
         {/* Preview Panel (2/5) */}
         <div className="lg:col-span-2">
           <div className="sticky top-24">
-            <Card>
+            <Card className="rounded-2xl border-border/50 shadow-sm">
               <CardHeader>
-                <CardTitle className="text-base">Live Preview</CardTitle>
+                <CardTitle className="font-heading text-base">Live Preview</CardTitle>
                 <CardDescription>
                   See how your branding looks on student-facing pages.
                 </CardDescription>
@@ -511,7 +520,7 @@ function ImageUploadField({
       <div className="mt-1.5">
         {currentUrl ? (
           <div className="group relative">
-            <div className="flex h-24 items-center justify-center rounded-md border bg-muted/30 p-2">
+            <div className="flex h-24 items-center justify-center rounded-2xl border border-border/50 bg-muted/20 p-2">
               <img
                 src={currentUrl}
                 alt={`${label} preview`}
@@ -525,6 +534,7 @@ function ImageUploadField({
                 size="sm"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
+                className="rounded-full"
               >
                 {isUploading ? (
                   <Loader2 className="size-3 animate-spin" />
@@ -538,6 +548,7 @@ function ImageUploadField({
                 variant="ghost"
                 size="sm"
                 onClick={() => onUrlChange("")}
+                className="rounded-full"
               >
                 Remove
               </Button>
@@ -546,16 +557,16 @@ function ImageUploadField({
         ) : (
           <button
             type="button"
-            className="flex h-24 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed border-muted-foreground/20 transition-colors hover:border-muted-foreground/40 hover:bg-muted/30"
+            className="flex h-24 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed border-primary/20 bg-primary/5 transition-all hover:border-primary/40 hover:bg-primary/10"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
           >
             {isUploading ? (
-              <Loader2 className="size-5 animate-spin text-muted-foreground" />
+              <Loader2 className="size-5 animate-spin text-primary/60" />
             ) : (
-              <Upload className="size-5 text-muted-foreground" />
+              <Upload className="size-5 text-primary/60" />
             )}
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs font-medium text-primary/70">
               {isUploading ? "Uploading..." : "Click to upload"}
             </span>
           </button>
@@ -568,7 +579,7 @@ function ImageUploadField({
           className="sr-only"
           aria-label={`Upload ${label.toLowerCase()}`}
         />
-        <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
+        <p className="mt-1.5 text-xs text-muted-foreground">{hint}</p>
       </div>
     </div>
   );
@@ -596,7 +607,7 @@ function BrandPreview({ form, businessName }: BrandPreviewProps) {
 
       {/* Preview Container */}
       <div
-        className="overflow-hidden rounded-lg border"
+        className="overflow-hidden rounded-2xl border border-border/50 shadow-sm"
         style={{ fontFamily: `'${form.fontFamily}', sans-serif` }}
       >
         {/* Simulated Navigation */}
@@ -626,7 +637,7 @@ function BrandPreview({ form, businessName }: BrandPreviewProps) {
 
         {/* Simulated Hero Section */}
         <div className="bg-background p-6">
-          <h3 className="text-lg font-bold">Welcome Back</h3>
+          <h3 className="font-heading text-lg font-bold">Welcome Back</h3>
           <p className="mt-1 text-xs text-muted-foreground">
             Continue where you left off in your courses.
           </p>
@@ -634,7 +645,7 @@ function BrandPreview({ form, businessName }: BrandPreviewProps) {
           {/* Simulated CTA Button */}
           <button
             type="button"
-            className="mt-4 rounded-md px-4 py-2 text-xs font-medium text-white transition-opacity hover:opacity-90"
+            className="mt-4 rounded-full px-4 py-2 text-xs font-medium text-white transition-opacity hover:opacity-90"
             style={{ backgroundColor: form.brandColor }}
           >
             Continue Learning
@@ -642,9 +653,9 @@ function BrandPreview({ form, businessName }: BrandPreviewProps) {
 
           {/* Simulated Course Cards */}
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <div className="rounded-md border p-3">
+            <div className="rounded-2xl border border-border/50 p-3">
               <div
-                className="h-16 rounded-md"
+                className="h-16 rounded-xl"
                 style={{
                   background: `linear-gradient(135deg, ${form.brandColor}, ${form.brandSecondaryColor})`,
                 }}
@@ -657,8 +668,8 @@ function BrandPreview({ form, businessName }: BrandPreviewProps) {
                 />
               </div>
             </div>
-            <div className="rounded-md border p-3">
-              <div className="flex h-16 items-center justify-center rounded-md bg-muted">
+            <div className="rounded-2xl border border-border/50 p-3">
+              <div className="flex h-16 items-center justify-center rounded-xl bg-muted/50">
                 <span className="text-[10px] text-muted-foreground">Thumbnail</span>
               </div>
               <p className="mt-2 text-xs font-medium">Advanced Techniques</p>
@@ -684,7 +695,7 @@ function BrandPreview({ form, businessName }: BrandPreviewProps) {
         </div>
 
         {/* Simulated Footer */}
-        <div className="border-t bg-muted/30 px-4 py-3">
+        <div className="border-t border-border/50 bg-muted/20 px-4 py-3">
           <div className="flex items-center justify-between">
             <span className="text-[10px] text-muted-foreground">
               {`Powered by ${businessName}`}
@@ -701,16 +712,16 @@ function BrandPreview({ form, businessName }: BrandPreviewProps) {
       </div>
 
       {/* Font Preview */}
-      <div className="rounded-md border p-3">
-        <p className="text-xs text-muted-foreground">Font Preview</p>
+      <div className="rounded-2xl border border-border/50 p-4">
+        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Font Preview</p>
         <p
-          className="mt-1 text-sm font-medium"
+          className="mt-2 text-sm font-medium"
           style={{ fontFamily: `'${form.fontFamily}', sans-serif` }}
         >
           {form.fontFamily}
         </p>
         <p
-          className="mt-1 text-xs"
+          className="mt-1 text-xs text-muted-foreground"
           style={{ fontFamily: `'${form.fontFamily}', sans-serif` }}
         >
           The quick brown fox jumps over the lazy dog. 0123456789
@@ -719,9 +730,9 @@ function BrandPreview({ form, businessName }: BrandPreviewProps) {
 
       {/* Custom CSS Indicator */}
       {form.customCss.trim().length > 0 && (
-        <div className="flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 p-2 dark:border-amber-800 dark:bg-amber-950">
-          <Check className="size-3 text-amber-600" />
-          <span className="text-xs text-amber-700 dark:text-amber-300">
+        <div className="flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950">
+          <Check className="size-3.5 text-amber-600" />
+          <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
             Custom CSS active ({form.customCss.trim().split("\n").length} lines)
           </span>
         </div>

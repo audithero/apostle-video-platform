@@ -15,17 +15,16 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTRPC } from "@/lib/trpc/react";
+import { cn } from "@/lib/utils";
 import { RouteErrorBoundary } from "@/components/error-boundary";
 import { formatDistanceToNow } from "date-fns";
 import { z } from "zod";
@@ -200,10 +199,10 @@ function AvatarPacksPage() {
       : 0;
 
   return (
-    <div>
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold">Avatar Packs</h1>
-        <p className="text-muted-foreground">
+    <div className="space-y-8">
+      <div className="flex flex-col gap-2">
+        <h1 className="font-heading text-3xl font-bold tracking-tight">Avatar Packs</h1>
+        <p className="text-base text-muted-foreground">
           Purchase HeyGen AI avatar minutes to create video lessons with
           realistic AI presenters.
         </p>
@@ -211,7 +210,7 @@ function AvatarPacksPage() {
 
       {/* Success Banner */}
       {fulfillMutation.isSuccess && (
-        <div className="mt-4 flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-800 dark:bg-emerald-950">
+        <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-800 dark:bg-emerald-950">
           <CheckCircle className="size-5 text-emerald-600" />
           <div>
             <p className="font-medium text-emerald-900 dark:text-emerald-100">
@@ -225,60 +224,66 @@ function AvatarPacksPage() {
       )}
 
       {/* Balance Overview */}
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardDescription>Available Minutes</CardDescription>
-            <Zap className="size-5 text-amber-500" />
-          </CardHeader>
-          <CardContent>
+      <div className="grid gap-5 sm:grid-cols-3">
+        <div className="gaspar-card-cream rounded-2xl p-6">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Available Minutes</p>
+            <div className="flex size-9 items-center justify-center rounded-full bg-black/8">
+              <Zap className="size-4" />
+            </div>
+          </div>
+          <div className="mt-3">
             {isLoadingBalance ? (
               <Skeleton className="h-9 w-20" />
             ) : (
-              <p className="text-3xl font-bold">{String(avatarBalance)}</p>
+              <p className="font-heading text-3xl font-bold tracking-tight">{String(avatarBalance)}</p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardDescription>Total Purchased</CardDescription>
-            <Package className="size-5 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
+        <div className="gaspar-card-blue rounded-2xl p-6">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Total Purchased</p>
+            <div className="flex size-9 items-center justify-center rounded-full bg-black/8">
+              <Package className="size-4" />
+            </div>
+          </div>
+          <div className="mt-3">
             {isLoadingPacks ? (
               <Skeleton className="h-9 w-20" />
             ) : (
-              <p className="text-3xl font-bold">
+              <p className="font-heading text-3xl font-bold tracking-tight">
                 {`${String(Math.round(totalMinutesPurchased))} min`}
               </p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardDescription>Usage</CardDescription>
-            <TrendingUp className="size-5 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
+        <div className="gaspar-card-pink rounded-2xl p-6">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Usage</p>
+            <div className="flex size-9 items-center justify-center rounded-full bg-black/8">
+              <TrendingUp className="size-4" />
+            </div>
+          </div>
+          <div className="mt-3">
             {isLoadingPacks ? (
               <Skeleton className="h-9 w-20" />
             ) : (
               <div className="space-y-2">
-                <p className="text-3xl font-bold">
+                <p className="font-heading text-3xl font-bold tracking-tight">
                   {`${String(Math.round(totalMinutesUsed))} min`}
                 </p>
-                <Progress value={usagePercent} className="h-2" aria-label="Avatar minutes usage" />
+                <Progress value={usagePercent} className="h-2 [&>div]:bg-gaspar-purple" aria-label="Avatar minutes usage" />
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Pack Tiers */}
-      <section className="mt-10">
-        <h2 className="text-xl font-semibold">Purchase Minutes</h2>
+      <section>
+        <h2 className="font-heading text-xl font-bold tracking-tight">Purchase Minutes</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           One-time purchases via Stripe. Minutes never expire and can be used
           across all your courses.
@@ -300,20 +305,20 @@ function AvatarPacksPage() {
 
       {/* Purchase History */}
       {!isLoadingPacks && packs && packs.length > 0 && (
-        <section className="mt-10">
-          <h2 className="text-xl font-semibold">Purchase History</h2>
-          <div className="mt-4 space-y-2">
+        <section>
+          <h2 className="font-heading text-xl font-bold tracking-tight">Purchase History</h2>
+          <div className="mt-4 space-y-3">
             {packs.map((pack) => (
               <div
                 key={pack.id}
-                className="flex items-center justify-between rounded-lg border p-4"
+                className="flex items-center justify-between rounded-2xl border border-border/50 bg-card p-5 transition-shadow hover:shadow-md"
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-full bg-muted">
-                    <CreditCard className="size-5 text-muted-foreground" />
+                <div className="flex items-center gap-4">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-gaspar-lavender/20">
+                    <CreditCard className="size-5 text-gaspar-purple" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium">
+                    <p className="text-sm font-semibold">
                       {`${pack.packType.charAt(0).toUpperCase()}${pack.packType.slice(1)} Pack`}
                     </p>
                     <p className="text-xs text-muted-foreground">
@@ -322,7 +327,7 @@ function AvatarPacksPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-medium">
+                  <p className="text-sm font-semibold">
                     {`${String(Math.round(pack.minutesTotal - pack.minutesUsed))} min remaining`}
                   </p>
                   <p className="text-xs text-muted-foreground">
@@ -350,43 +355,63 @@ interface PackCardProps {
   readonly isPurchasing: boolean;
 }
 
+const TIER_BG_CLASSES: Record<string, string> = {
+  starter: "gaspar-card-cream",
+  creator: "gaspar-card-blue",
+  pro: "gaspar-card-pink",
+  studio: "gaspar-card-navy",
+};
+
 function PackCard({ tier, onPurchase, isPurchasing }: PackCardProps) {
   const Icon = tier.icon;
   const price = (tier.priceCents / 100).toFixed(0);
+  const bgClass = TIER_BG_CLASSES[tier.id] ?? "";
 
   return (
     <Card
-      className={
-        tier.popular ? "border-primary ring-2 ring-primary/20" : ""
-      }
+      className={cn(
+        "relative overflow-hidden rounded-2xl border-0 shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5",
+        bgClass,
+        tier.popular ? "ring-2 ring-gaspar-purple/40" : "",
+      )}
     >
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-full bg-muted">
-              <Icon className="size-4" />
-            </div>
-            <CardTitle className="text-lg">{tier.name}</CardTitle>
-          </div>
-          {tier.popular && <Badge>Best Value</Badge>}
+      {tier.popular && (
+        <div className="absolute right-3 top-3">
+          <span className="pill border-white/30 bg-white/90 text-gaspar-purple shadow-sm">
+            Most Popular
+          </span>
         </div>
-        <div className="mt-3">
-          <span className="text-3xl font-bold">{`$${price}`}</span>
-          <span className="text-sm text-muted-foreground">
+      )}
+      <CardHeader className="pb-3">
+        <div className="flex items-center gap-2.5">
+          <div className={cn(
+            "flex size-10 items-center justify-center rounded-full",
+            tier.id === "studio" ? "bg-white/15" : "bg-black/8",
+          )}>
+            <Icon className="size-5" />
+          </div>
+          <CardTitle className="font-heading text-xl font-bold tracking-tight">{tier.name}</CardTitle>
+        </div>
+        <div className="mt-4">
+          <span className="font-heading text-4xl font-bold tracking-tight">{`$${price}`}</span>
+          <span className="ml-1 text-sm opacity-70">
             {` / ${String(tier.minutes)} min`}
           </span>
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs opacity-60">
           {`${tier.pricePerMinute} per minute`}
         </p>
       </CardHeader>
 
       <CardContent>
-        <Separator className="mb-4" />
-        <ul className="space-y-2">
+        <Separator className={cn("mb-4", tier.id === "studio" ? "bg-white/20" : "bg-black/10")} />
+        <ul className="space-y-2.5">
           {tier.features.map((feature) => (
             <li key={feature} className="flex items-start gap-2 text-sm">
-              <Check className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+              <Check className={cn(
+                "mt-0.5 size-4 shrink-0",
+                tier.id === "studio" ? "text-emerald-400" : "text-emerald-600",
+              )} />
               <span>{feature}</span>
             </li>
           ))}
@@ -396,8 +421,12 @@ function PackCard({ tier, onPurchase, isPurchasing }: PackCardProps) {
       <CardFooter>
         <Button
           type="button"
-          className="w-full"
-          variant={tier.popular ? "default" : "outline"}
+          className={cn(
+            "w-full rounded-full font-medium",
+            tier.id === "studio"
+              ? "bg-white text-gaspar-navy hover:bg-white/90"
+              : "bg-gaspar-navy text-white hover:bg-gaspar-navy/90",
+          )}
           onClick={onPurchase}
           disabled={isPurchasing}
         >

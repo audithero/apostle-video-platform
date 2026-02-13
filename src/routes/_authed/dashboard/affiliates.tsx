@@ -174,13 +174,13 @@ function AffiliateDashboard() {
   if (isLoading) {
     return (
       <div>
-        <Skeleton className="h-9 w-48" />
-        <div className="mt-8 grid gap-6 md:grid-cols-4">
+        <Skeleton className="h-9 w-48 rounded-xl" />
+        <div className="mt-8 grid gap-5 md:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Card key={i}>
-              <CardHeader><Skeleton className="h-4 w-20" /></CardHeader>
-              <CardContent><Skeleton className="h-8 w-16" /></CardContent>
-            </Card>
+            <div key={i} className="rounded-2xl bg-muted/50 p-6">
+              <Skeleton className="h-4 w-20 rounded-lg" />
+              <Skeleton className="mt-3 h-8 w-16 rounded-lg" />
+            </div>
           ))}
         </div>
       </div>
@@ -188,10 +188,10 @@ function AffiliateDashboard() {
   }
 
   return (
-    <div>
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Affiliates</h1>
+          <h1 className="font-heading text-3xl font-bold tracking-tight">Affiliates</h1>
           <p className="mt-1 text-muted-foreground">
             Manage your affiliate partners and track referral commissions.
           </p>
@@ -199,12 +199,12 @@ function AffiliateDashboard() {
         <div className="flex gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button type="button" variant="outline" size="sm">
+              <Button type="button" variant="outline" size="sm" className="rounded-full">
                 <Download className="mr-2 size-4" />
                 Export CSV
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="rounded-xl">
               <DropdownMenuItem onSelect={() => { setCsvFilter("all"); setTimeout(downloadCsv, 500); }}>
                 All Referrals
               </DropdownMenuItem>
@@ -222,12 +222,12 @@ function AffiliateDashboard() {
 
           <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
             <DialogTrigger asChild>
-              <Button type="button" size="sm">
+              <Button type="button" size="sm" className="rounded-full">
                 <Plus className="mr-2 size-4" />
                 Invite Affiliate
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="rounded-2xl">
               <InviteAffiliateForm
                 onSubmit={(data) => inviteMutation.mutate(data)}
                 isPending={inviteMutation.isPending}
@@ -239,45 +239,29 @@ function AffiliateDashboard() {
       </div>
 
       {/* Summary Stats */}
-      <div className="mt-8 grid gap-6 md:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Affiliates</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{totalAffiliates}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Referrals</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{totalReferrals}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Commission</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{`$${(totalCommission / 100).toFixed(2)}`}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Pending Payouts</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-orange-600">{pendingPayouts}</p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-5 md:grid-cols-4">
+        <div className="gaspar-card-cream rounded-2xl p-6 shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-lg">
+          <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Total Affiliates</p>
+          <p className="mt-2 font-heading text-3xl font-bold tracking-tight">{totalAffiliates}</p>
+        </div>
+        <div className="gaspar-card-blue rounded-2xl p-6 shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-lg">
+          <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Total Referrals</p>
+          <p className="mt-2 font-heading text-3xl font-bold tracking-tight">{totalReferrals}</p>
+        </div>
+        <div className="gaspar-card-pink rounded-2xl p-6 shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-lg">
+          <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Total Commission</p>
+          <p className="mt-2 font-heading text-3xl font-bold tracking-tight">{`$${(totalCommission / 100).toFixed(2)}`}</p>
+        </div>
+        <div className="gaspar-card-navy rounded-2xl p-6 shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-lg">
+          <p className="text-xs font-semibold uppercase tracking-wider opacity-70">Pending Payouts</p>
+          <p className="mt-2 font-heading text-3xl font-bold tracking-tight">{pendingPayouts}</p>
+        </div>
       </div>
 
       {/* Affiliates Table */}
-      <Card className="mt-8">
+      <Card className="rounded-2xl border-border/30 shadow-sm">
         <CardHeader>
-          <CardTitle>Your Affiliates</CardTitle>
+          <CardTitle className="font-heading">Your Affiliates</CardTitle>
           <CardDescription>
             Invite partners to promote your courses and earn commissions on each sale.
           </CardDescription>
@@ -286,7 +270,7 @@ function AffiliateDashboard() {
           {affiliates && affiliates.length > 0 ? (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="border-border/30">
                   <TableHead>Affiliate</TableHead>
                   <TableHead>Code</TableHead>
                   <TableHead>Commission</TableHead>
@@ -301,7 +285,7 @@ function AffiliateDashboard() {
                 {affiliates.map((aff) => (
                   <TableRow
                     key={aff.id}
-                    className="cursor-pointer"
+                    className="cursor-pointer border-border/20 transition-colors hover:bg-muted/30"
                     onClick={() => setSelectedAffiliate(aff.id === selectedAffiliate ? null : aff.id)}
                   >
                     <TableCell>
@@ -311,13 +295,13 @@ function AffiliateDashboard() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{aff.referralCode}</code>
+                      <div className="flex items-center gap-1.5">
+                        <code className="rounded-lg bg-muted px-2 py-0.5 text-xs">{aff.referralCode}</code>
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="size-6 p-0"
+                          className="size-6 rounded-full p-0"
                           onClick={(e) => { e.stopPropagation(); copyReferralLink(aff.referralCode); }}
                           aria-label="Copy referral link"
                         >
@@ -325,12 +309,12 @@ function AffiliateDashboard() {
                         </Button>
                       </div>
                     </TableCell>
-                    <TableCell>{`${String(aff.commissionPercent ?? 20)}%`}</TableCell>
-                    <TableCell>{`${String(aff.cookieDays ?? 30)}d`}</TableCell>
-                    <TableCell>{aff.referralStats.totalReferrals}</TableCell>
-                    <TableCell>{`$${(aff.referralStats.totalRevenueCents / 100).toFixed(2)}`}</TableCell>
+                    <TableCell className="tabular-nums">{`${String(aff.commissionPercent ?? 20)}%`}</TableCell>
+                    <TableCell className="tabular-nums">{`${String(aff.cookieDays ?? 30)}d`}</TableCell>
+                    <TableCell className="tabular-nums">{aff.referralStats.totalReferrals}</TableCell>
+                    <TableCell className="tabular-nums">{`$${(aff.referralStats.totalRevenueCents / 100).toFixed(2)}`}</TableCell>
                     <TableCell>
-                      <Badge variant={aff.status === "active" ? "default" : "secondary"}>
+                      <Badge className="rounded-full px-3" variant={aff.status === "active" ? "default" : "secondary"}>
                         {aff.status}
                       </Badge>
                     </TableCell>
@@ -341,14 +325,14 @@ function AffiliateDashboard() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="size-8 p-0"
+                            className="size-8 rounded-full p-0"
                             onClick={(e) => e.stopPropagation()}
                             aria-label="Affiliate actions"
                           >
                             <MoreVertical className="size-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent align="end" className="rounded-xl">
                           <DropdownMenuItem
                             onSelect={() => copyReferralLink(aff.referralCode)}
                           >
@@ -385,16 +369,18 @@ function AffiliateDashboard() {
               </TableBody>
             </Table>
           ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <Users className="mb-4 size-12 text-muted-foreground/50" />
-              <p className="font-medium">No affiliates yet</p>
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-muted/50">
+                <Users className="size-8 text-muted-foreground/40" />
+              </div>
+              <p className="font-heading text-lg font-semibold">No affiliates yet</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Invite partners to earn commissions on course sales.
               </p>
               <Button
                 type="button"
                 size="sm"
-                className="mt-4"
+                className="mt-4 rounded-full"
                 onClick={() => setInviteOpen(true)}
               >
                 <Plus className="mr-2 size-4" />
@@ -407,16 +393,17 @@ function AffiliateDashboard() {
 
       {/* Referral Detail Panel */}
       {selectedAffiliate && referrals && (
-        <Card className="mt-6">
+        <Card className="rounded-2xl border-border/30 shadow-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Referral Details</CardTitle>
+              <CardTitle className="font-heading">Referral Details</CardTitle>
               <div className="flex gap-2">
                 {referrals.some((r) => r.status === "pending") && (
                   <Button
                     type="button"
                     size="sm"
                     variant="outline"
+                    className="rounded-full"
                     onClick={() => {
                       const pendingIds = referrals
                         .filter((r) => r.status === "pending")
@@ -432,6 +419,7 @@ function AffiliateDashboard() {
                   <Button
                     type="button"
                     size="sm"
+                    className="rounded-full"
                     onClick={() => {
                       const approvedIds = referrals
                         .filter((r) => r.status === "approved")
@@ -450,7 +438,7 @@ function AffiliateDashboard() {
             {referrals.length > 0 ? (
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="border-border/30">
                     <TableHead>Referred User</TableHead>
                     <TableHead>Commission</TableHead>
                     <TableHead>Status</TableHead>
@@ -460,16 +448,17 @@ function AffiliateDashboard() {
                 </TableHeader>
                 <TableBody>
                   {referrals.map((ref) => (
-                    <TableRow key={ref.id}>
+                    <TableRow key={ref.id} className="border-border/20">
                       <TableCell>
                         <div>
                           <p className="text-sm font-medium">{ref.referredUserName}</p>
                           <p className="text-xs text-muted-foreground">{ref.referredUserEmail}</p>
                         </div>
                       </TableCell>
-                      <TableCell>{`$${(ref.commissionCents / 100).toFixed(2)}`}</TableCell>
+                      <TableCell className="tabular-nums">{`$${(ref.commissionCents / 100).toFixed(2)}`}</TableCell>
                       <TableCell>
                         <Badge
+                          className="rounded-full px-3"
                           variant={
                             ref.status === "paid"
                               ? "default"
@@ -525,7 +514,7 @@ function InviteAffiliateForm({ onSubmit, isPending, error }: InviteFormProps) {
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Invite Affiliate</DialogTitle>
+        <DialogTitle className="font-heading">Invite Affiliate</DialogTitle>
         <DialogDescription>
           Add a partner to your affiliate program. They must have an account on the platform.
         </DialogDescription>
@@ -551,6 +540,7 @@ function InviteAffiliateForm({ onSubmit, isPending, error }: InviteFormProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="rounded-xl"
             />
           </div>
 
@@ -558,7 +548,7 @@ function InviteAffiliateForm({ onSubmit, isPending, error }: InviteFormProps) {
             <div className="grid gap-2">
               <Label htmlFor="aff-commission">Commission %</Label>
               <Select value={commission} onValueChange={setCommission}>
-                <SelectTrigger id="aff-commission">
+                <SelectTrigger id="aff-commission" className="rounded-xl">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -575,7 +565,7 @@ function InviteAffiliateForm({ onSubmit, isPending, error }: InviteFormProps) {
             <div className="grid gap-2">
               <Label htmlFor="aff-cookie">Cookie Window</Label>
               <Select value={cookieDays} onValueChange={setCookieDays}>
-                <SelectTrigger id="aff-cookie">
+                <SelectTrigger id="aff-cookie" className="rounded-xl">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -595,6 +585,7 @@ function InviteAffiliateForm({ onSubmit, isPending, error }: InviteFormProps) {
               placeholder="e.g. partner2026"
               value={customCode}
               onChange={(e) => setCustomCode(e.target.value)}
+              className="rounded-xl"
             />
             <p className="text-xs text-muted-foreground">
               Leave blank to auto-generate. Min 3 characters.
@@ -606,7 +597,7 @@ function InviteAffiliateForm({ onSubmit, isPending, error }: InviteFormProps) {
           )}
         </div>
         <DialogFooter>
-          <Button type="submit" disabled={isPending || !email}>
+          <Button type="submit" className="rounded-full" disabled={isPending || !email}>
             {isPending ? "Inviting..." : "Send Invite"}
           </Button>
         </DialogFooter>

@@ -22,7 +22,6 @@ import {
   Award,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -265,10 +264,10 @@ function LessonItem({
   return (
     <div
       className={cn(
-        "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors cursor-pointer",
+        "group flex items-center gap-2 rounded-xl px-2.5 py-2 text-sm transition-all cursor-pointer",
         isSelected
-          ? "bg-accent text-accent-foreground"
-          : "hover:bg-accent/50",
+          ? "bg-primary/10 text-foreground border border-primary/20"
+          : "hover:bg-muted/60 border border-transparent",
       )}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
@@ -278,16 +277,16 @@ function LessonItem({
       aria-pressed={isSelected}
     >
       <GripVertical className="size-3.5 shrink-0 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity cursor-grab" />
-      <Icon className="size-3.5 shrink-0 text-muted-foreground" />
+      <Icon className={cn("size-3.5 shrink-0", isSelected ? "text-gaspar-purple" : "text-muted-foreground")} />
       <InlineRename
         value={lesson.title}
         onSave={onRename}
         className="flex-1 min-w-0"
       />
       {lesson.isFreePreview && (
-        <Badge variant="outline" className="shrink-0 text-[10px] px-1 py-0">
+        <span className="shrink-0 rounded-full bg-gaspar-cream px-2 py-0.5 text-[10px] font-medium text-gaspar-navy">
           Free
-        </Badge>
+        </span>
       )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -295,13 +294,13 @@ function LessonItem({
             type="button"
             variant="ghost"
             size="icon-sm"
-            className="size-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="size-6 shrink-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
             aria-label={`Actions for lesson ${lesson.title}`}
           >
             <MoreHorizontal className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
+        <DropdownMenuContent align="end" className="w-40 rounded-xl">
           <DropdownMenuItem onSelect={onDelete}>
             <Trash2 className="size-4" />
             Delete Lesson
@@ -375,10 +374,10 @@ function ModuleItem({
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div
         className={cn(
-          "group flex items-center gap-1 rounded-md px-1 py-1.5 transition-colors",
+          "group flex items-center gap-1 rounded-xl px-1.5 py-2 transition-all",
           isModuleSelected
-            ? "bg-accent text-accent-foreground"
-            : "hover:bg-accent/50",
+            ? "bg-primary/10 border border-primary/20"
+            : "hover:bg-muted/60 border border-transparent",
         )}
       >
         <GripVertical className="size-3.5 shrink-0 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity cursor-grab" />
@@ -387,7 +386,7 @@ function ModuleItem({
             type="button"
             variant="ghost"
             size="icon-sm"
-            className="size-6 shrink-0"
+            className="size-6 shrink-0 rounded-full"
             aria-label={isOpen ? "Collapse module" : "Expand module"}
           >
             {isOpen ? (
@@ -408,7 +407,7 @@ function ModuleItem({
           <InlineRename
             value={mod.title}
             onSave={handleRenameModule}
-            className="font-medium"
+            className="font-heading font-semibold"
           />
         </div>
         <DropdownMenu>
@@ -417,13 +416,13 @@ function ModuleItem({
               type="button"
               variant="ghost"
               size="icon-sm"
-              className="size-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="size-6 shrink-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
               aria-label={`Actions for module ${mod.title}`}
             >
               <MoreHorizontal className="size-3.5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44">
+          <DropdownMenuContent align="end" className="w-44 rounded-xl">
             <DropdownMenuItem onSelect={handleAddLesson}>
               <Plus className="size-4" />
               Add Lesson
@@ -437,7 +436,7 @@ function ModuleItem({
         </DropdownMenu>
       </div>
       <CollapsibleContent>
-        <div className="ml-5 mt-0.5 space-y-0.5 border-l pl-2">
+        <div className="ml-5 mt-1 space-y-1 border-l border-border/50 pl-2">
           {mod.lessons.map((lesson) => (
             <LessonItem
               key={lesson.id}
@@ -490,13 +489,14 @@ function CourseOutlinePanel({
   onAddLesson,
 }: CourseOutlinePanelProps) {
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between border-b px-3 py-2">
-        <h2 className="text-sm font-semibold">Course Outline</h2>
+    <div className="flex h-full flex-col bg-card/50">
+      <div className="flex items-center justify-between border-b border-border/50 px-4 py-3">
+        <h2 className="font-heading text-sm font-bold tracking-tight">Course Outline</h2>
         <Button
           type="button"
           variant="ghost"
           size="sm"
+          className="rounded-full text-xs"
           onClick={onAddModule}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
@@ -511,7 +511,7 @@ function CourseOutlinePanel({
         </Button>
       </div>
       <ScrollArea className="flex-1">
-        <div className="space-y-1 p-2">
+        <div className="space-y-1.5 p-3">
           {course.modules.map((mod) => (
             <ModuleItem
               key={mod.id}
@@ -527,7 +527,10 @@ function CourseOutlinePanel({
             />
           ))}
           {course.modules.length === 0 && (
-            <div className="flex flex-col items-center gap-2 py-8 text-center">
+            <div className="flex flex-col items-center gap-3 py-10 text-center">
+              <div className="flex size-12 items-center justify-center rounded-full bg-gaspar-lavender/15">
+                <Plus className="size-5 text-gaspar-purple" />
+              </div>
               <p className="text-sm text-muted-foreground">
                 No modules yet. Add your first module to get started.
               </p>
@@ -535,6 +538,7 @@ function CourseOutlinePanel({
                 type="button"
                 variant="outline"
                 size="sm"
+                className="rounded-full"
                 onClick={onAddModule}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
@@ -595,9 +599,9 @@ function TextLessonEditor({ lesson, courseContext, onSaveContent, isSaving }: Te
   }, [lesson.id, lesson.contentHtml]);
 
   return (
-    <div className="flex h-full flex-col gap-3 p-4">
+    <div className="flex h-full flex-col gap-3 p-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-muted-foreground">Text Content</h3>
+        <h3 className="font-heading text-sm font-semibold text-muted-foreground">Text Content</h3>
         {isSaving && (
           <span className="text-xs text-muted-foreground" aria-live="polite">
             Saving...
@@ -621,11 +625,11 @@ function TextLessonEditor({ lesson, courseContext, onSaveContent, isSaving }: Te
 
 function VideoLessonEditor({ lesson }: { readonly lesson: LessonData }) {
   return (
-    <div className="flex h-full flex-col gap-3 p-4">
-      <h3 className="text-sm font-medium text-muted-foreground">Video Content</h3>
+    <div className="flex h-full flex-col gap-3 p-6">
+      <h3 className="font-heading text-sm font-semibold text-muted-foreground">Video Content</h3>
       {lesson.videoUrl ? (
         <div className="flex flex-col gap-3">
-          <div className="aspect-video w-full overflow-hidden rounded-lg border bg-black">
+          <div className="aspect-video w-full overflow-hidden rounded-2xl border border-border/60 bg-black">
             <video
               src={lesson.videoUrl}
               controls
@@ -640,21 +644,21 @@ function VideoLessonEditor({ lesson }: { readonly lesson: LessonData }) {
         </div>
       ) : (
         <div
-          className="flex flex-1 flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/25 p-8"
+          className="flex flex-1 flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-border/40 bg-muted/20 p-8"
           role="region"
           aria-label="Video upload area"
         >
-          <div className="rounded-full bg-muted p-4">
-            <Upload className="size-8 text-muted-foreground" />
+          <div className="flex size-14 items-center justify-center rounded-full bg-gaspar-lavender/15">
+            <Upload className="size-6 text-gaspar-purple" />
           </div>
           <div className="text-center">
-            <p className="text-sm font-medium">Upload a video</p>
+            <p className="font-heading text-sm font-semibold">Upload a video</p>
             <p className="mt-1 text-xs text-muted-foreground">
               Drag and drop a video file here, or click to browse.
               Supports MP4, MOV, and WebM.
             </p>
           </div>
-          <Button type="button" variant="outline" aria-label="Browse for video file">
+          <Button type="button" variant="outline" className="rounded-full" aria-label="Browse for video file">
             <Upload className="size-4" />
             Choose File
           </Button>
@@ -666,26 +670,26 @@ function VideoLessonEditor({ lesson }: { readonly lesson: LessonData }) {
 
 function QuizLessonEditor({ lesson }: { readonly lesson: LessonData }) {
   return (
-    <div className="flex h-full flex-col gap-3 p-4">
-      <h3 className="text-sm font-medium text-muted-foreground">
+    <div className="flex h-full flex-col gap-3 p-6">
+      <h3 className="font-heading text-sm font-semibold text-muted-foreground">
         {`Quiz: ${lesson.title}`}
       </h3>
       <div
-        className="flex flex-1 flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/25 p-8"
+        className="flex flex-1 flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-border/40 bg-muted/20 p-8"
         role="region"
         aria-label="Quiz builder area"
       >
-        <div className="rounded-full bg-muted p-4">
-          <HelpCircle className="size-8 text-muted-foreground" />
+        <div className="flex size-14 items-center justify-center rounded-full bg-gaspar-pink/20">
+          <HelpCircle className="size-6 text-gaspar-purple" />
         </div>
         <div className="text-center">
-          <p className="text-sm font-medium">Quiz Builder</p>
+          <p className="font-heading text-sm font-semibold">Quiz Builder</p>
           <p className="mt-1 text-xs text-muted-foreground">
             Create multiple choice, true/false, and short answer questions
             for this lesson.
           </p>
         </div>
-        <Button type="button" variant="outline" aria-label="Start building quiz">
+        <Button type="button" variant="outline" className="rounded-full" aria-label="Start building quiz">
           <Plus className="size-4" />
           Add Question
         </Button>
@@ -697,9 +701,9 @@ function QuizLessonEditor({ lesson }: { readonly lesson: LessonData }) {
 function PlaceholderEditor({ lesson }: { readonly lesson: LessonData }) {
   const label = LESSON_TYPE_LABELS[lesson.lessonType];
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-3 p-4">
-      <div className="rounded-full bg-muted p-4">
-        <Pencil className="size-8 text-muted-foreground" />
+    <div className="flex h-full flex-col items-center justify-center gap-4 p-6">
+      <div className="flex size-14 items-center justify-center rounded-full bg-gaspar-cream/50">
+        <Pencil className="size-6 text-gaspar-navy" />
       </div>
       <p className="text-sm text-muted-foreground">
         {`${label} editor coming soon`}
@@ -710,12 +714,12 @@ function PlaceholderEditor({ lesson }: { readonly lesson: LessonData }) {
 
 function LessonPreview({ lesson }: { readonly lesson: LessonData }) {
   return (
-    <div className="flex h-full flex-col p-4">
-      <div className="mb-4 flex items-center gap-2">
-        <Badge variant="outline" className="text-xs">
+    <div className="flex h-full flex-col p-6">
+      <div className="mb-4 flex items-center gap-3">
+        <span className="pill border-gaspar-purple/20 bg-gaspar-lavender/15 text-gaspar-purple">
           {LESSON_TYPE_LABELS[lesson.lessonType]}
-        </Badge>
-        <h3 className="text-lg font-semibold">{lesson.title}</h3>
+        </span>
+        <h3 className="font-heading text-lg font-bold tracking-tight">{lesson.title}</h3>
       </div>
       {lesson.lessonType === "video" && lesson.videoUrl ? (
         <div className="aspect-video w-full overflow-hidden rounded-lg border bg-black">
@@ -762,13 +766,13 @@ function ContentEditorPanel({
 }: ContentEditorPanelProps) {
   if (!selection || selection.type === "module") {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-3 text-center p-6">
-        <div className="rounded-full bg-muted p-4">
-          <FileText className="size-8 text-muted-foreground" />
+      <div className="flex h-full flex-col items-center justify-center gap-4 text-center p-8">
+        <div className="flex size-16 items-center justify-center rounded-full bg-gaspar-lavender/15">
+          <FileText className="size-7 text-gaspar-purple" />
         </div>
         <div>
-          <p className="text-sm font-medium">Select a lesson to edit</p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="font-heading text-base font-semibold">Select a lesson to edit</p>
+          <p className="mt-1 text-sm text-muted-foreground">
             Choose a lesson from the outline on the left to start editing its content.
           </p>
         </div>
@@ -882,11 +886,12 @@ function CourseSettingsPanel({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold">Course Settings</h3>
+        <h3 className="font-heading text-sm font-bold tracking-tight">Course Settings</h3>
         <Button
           type="button"
           variant="outline"
           size="sm"
+          className="rounded-full"
           onClick={handleSave}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -903,23 +908,24 @@ function CourseSettingsPanel({
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="course-settings-title">Title</Label>
+        <Label htmlFor="course-settings-title" className="text-xs font-medium">Title</Label>
         <Input
           id="course-settings-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           maxLength={200}
+          className="rounded-xl"
         />
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="course-settings-description">Description</Label>
+        <Label htmlFor="course-settings-description" className="text-xs font-medium">Description</Label>
         <Textarea
           id="course-settings-description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Describe your course..."
-          className="min-h-[80px]"
+          className="min-h-[80px] rounded-xl"
         />
       </div>
 
@@ -936,17 +942,17 @@ function CourseSettingsPanel({
       <Separator />
 
       <div className="grid gap-2">
-        <Label htmlFor="course-settings-status">Status</Label>
+        <Label htmlFor="course-settings-status" className="text-xs font-medium">Status</Label>
         <Select
           value={status}
           onValueChange={(val) =>
             setStatus(val as "draft" | "published" | "archived")
           }
         >
-          <SelectTrigger id="course-settings-status" className="w-full">
+          <SelectTrigger id="course-settings-status" className="w-full rounded-xl">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="rounded-xl">
             <SelectItem value="draft">Draft</SelectItem>
             <SelectItem value="published">Published</SelectItem>
             <SelectItem value="archived">Archived</SelectItem>
@@ -954,20 +960,20 @@ function CourseSettingsPanel({
         </Select>
       </div>
 
-      <Separator />
+      <Separator className="bg-border/50" />
 
       <div className="grid gap-2">
-        <Label htmlFor="course-settings-price-type">Price Type</Label>
+        <Label htmlFor="course-settings-price-type" className="text-xs font-medium">Price Type</Label>
         <Select
           value={priceType}
           onValueChange={(val) =>
             setPriceType(val as "free" | "paid" | "subscription_only")
           }
         >
-          <SelectTrigger id="course-settings-price-type" className="w-full">
+          <SelectTrigger id="course-settings-price-type" className="w-full rounded-xl">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="rounded-xl">
             <SelectItem value="free">Free</SelectItem>
             <SelectItem value="paid">Paid (One-Time)</SelectItem>
             <SelectItem value="subscription_only">Subscription Only</SelectItem>
@@ -977,7 +983,7 @@ function CourseSettingsPanel({
 
       {priceType === "paid" && (
         <div className="grid gap-2">
-          <Label htmlFor="course-settings-price">Price (USD)</Label>
+          <Label htmlFor="course-settings-price" className="text-xs font-medium">Price (USD)</Label>
           <Input
             id="course-settings-price"
             type="number"
@@ -986,24 +992,25 @@ function CourseSettingsPanel({
             value={priceAmount}
             onChange={(e) => setPriceAmount(e.target.value)}
             placeholder="0.00"
+            className="rounded-xl"
           />
         </div>
       )}
 
-      <Separator />
+      <Separator className="bg-border/50" />
 
       <div className="grid gap-2">
-        <Label htmlFor="course-settings-type">Course Type</Label>
+        <Label htmlFor="course-settings-type" className="text-xs font-medium">Course Type</Label>
         <Select
           value={courseType}
           onValueChange={(val) =>
             setCourseType(val as "self_paced" | "drip" | "cohort")
           }
         >
-          <SelectTrigger id="course-settings-type" className="w-full">
+          <SelectTrigger id="course-settings-type" className="w-full rounded-xl">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="rounded-xl">
             <SelectItem value="self_paced">Self-Paced</SelectItem>
             <SelectItem value="drip">Drip (Scheduled Release)</SelectItem>
             <SelectItem value="cohort">Cohort (Date-Based)</SelectItem>
@@ -1018,7 +1025,7 @@ function CourseSettingsPanel({
 
       {courseType === "drip" && (
         <div className="grid gap-2">
-          <Label htmlFor="course-settings-drip-interval">Default Drip Interval (days)</Label>
+          <Label htmlFor="course-settings-drip-interval" className="text-xs font-medium">Default Drip Interval (days)</Label>
           <Input
             id="course-settings-drip-interval"
             type="number"
@@ -1026,6 +1033,7 @@ function CourseSettingsPanel({
             max="365"
             value={dripIntervalDays}
             onChange={(e) => setDripIntervalDays(e.target.value)}
+            className="rounded-xl"
           />
           <p className="text-xs text-muted-foreground">
             Default days between module releases. Override per module in module settings.
@@ -1074,11 +1082,12 @@ function LessonSettingsPanel({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold">Lesson Settings</h3>
+        <h3 className="font-heading text-sm font-bold tracking-tight">Lesson Settings</h3>
         <Button
           type="button"
           variant="outline"
           size="sm"
+          className="rounded-full"
           onClick={handleSave}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -1095,25 +1104,26 @@ function LessonSettingsPanel({
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="lesson-settings-title">Title</Label>
+        <Label htmlFor="lesson-settings-title" className="text-xs font-medium">Title</Label>
         <Input
           id="lesson-settings-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           maxLength={200}
+          className="rounded-xl"
         />
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="lesson-settings-type">Lesson Type</Label>
+        <Label htmlFor="lesson-settings-type" className="text-xs font-medium">Lesson Type</Label>
         <Select
           value={lessonType}
           onValueChange={(val) => setLessonType(val as LessonType)}
         >
-          <SelectTrigger id="lesson-settings-type" className="w-full">
+          <SelectTrigger id="lesson-settings-type" className="w-full rounded-xl">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="rounded-xl">
             <SelectItem value="video">Video</SelectItem>
             <SelectItem value="text">Text</SelectItem>
             <SelectItem value="quiz">Quiz</SelectItem>
@@ -1123,11 +1133,11 @@ function LessonSettingsPanel({
         </Select>
       </div>
 
-      <Separator />
+      <Separator className="bg-border/50" />
 
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
-          <Label htmlFor="lesson-free-preview">Free Preview</Label>
+          <Label htmlFor="lesson-free-preview" className="text-xs font-medium">Free Preview</Label>
           <p className="text-xs text-muted-foreground">
             Allow non-enrolled students to preview this lesson
           </p>
@@ -1201,14 +1211,15 @@ function ModuleDripSettingsPanel({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="flex items-center gap-1.5 text-sm font-semibold">
-          <Clock className="size-3.5" />
+        <h3 className="flex items-center gap-1.5 font-heading text-sm font-bold tracking-tight">
+          <Clock className="size-3.5 text-gaspar-purple" />
           Drip Schedule
         </h3>
         <Button
           type="button"
           variant="outline"
           size="sm"
+          className="rounded-full"
           onClick={handleSave}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -1230,7 +1241,7 @@ function ModuleDripSettingsPanel({
 
       {courseType === "drip" && (
         <div className="grid gap-2">
-          <Label htmlFor="module-drip-delay">Days After Enrollment</Label>
+          <Label htmlFor="module-drip-delay" className="text-xs font-medium">Days After Enrollment</Label>
           <Input
             id="module-drip-delay"
             type="number"
@@ -1238,6 +1249,7 @@ function ModuleDripSettingsPanel({
             max="365"
             value={delayDays}
             onChange={(e) => setDelayDays(e.target.value)}
+            className="rounded-xl"
           />
           <p className="text-xs text-muted-foreground">
             {Number.parseInt(delayDays, 10) === 0
@@ -1249,12 +1261,13 @@ function ModuleDripSettingsPanel({
 
       {courseType === "cohort" && (
         <div className="grid gap-2">
-          <Label htmlFor="module-drip-date">Unlock Date</Label>
+          <Label htmlFor="module-drip-date" className="text-xs font-medium">Unlock Date</Label>
           <Input
             id="module-drip-date"
             type="date"
             value={dripDate}
             onChange={(e) => setDripDate(e.target.value)}
+            className="rounded-xl"
           />
           <p className="text-xs text-muted-foreground">
             {dripDate.length > 0
@@ -1317,12 +1330,12 @@ function SettingsPanel({
   })();
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="border-b px-3 py-2">
-        <h2 className="text-sm font-semibold">Settings</h2>
+    <div className="flex h-full flex-col bg-card/50">
+      <div className="border-b border-border/50 px-4 py-3">
+        <h2 className="font-heading text-sm font-bold tracking-tight">Settings</h2>
       </div>
       <ScrollArea className="flex-1">
-        <div className="space-y-6 p-3">
+        <div className="space-y-6 p-4">
           <CourseSettingsPanel
             course={course}
             onUpdateCourse={onUpdateCourse}
@@ -1424,10 +1437,10 @@ function CertificateConfigPanel({ courseId }: CertificateConfigPanelProps) {
     return (
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <Award className="size-4 text-muted-foreground" />
-          <h3 className="text-sm font-semibold">Certificate</h3>
+          <Award className="size-4 text-gaspar-purple" />
+          <h3 className="font-heading text-sm font-bold tracking-tight">Certificate</h3>
         </div>
-        <Skeleton className="h-20 w-full" />
+        <Skeleton className="h-20 w-full rounded-xl" />
       </div>
     );
   }
@@ -1436,13 +1449,14 @@ function CertificateConfigPanel({ courseId }: CertificateConfigPanelProps) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Award className="size-4 text-muted-foreground" />
-          <h3 className="text-sm font-semibold">Certificate</h3>
+          <Award className="size-4 text-gaspar-purple" />
+          <h3 className="font-heading text-sm font-bold tracking-tight">Certificate</h3>
         </div>
         <Button
           type="button"
           variant="outline"
           size="sm"
+          className="rounded-full"
           onClick={handleSave}
           onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSave(); } }}
           disabled={upsertMutation.isPending}
@@ -1458,52 +1472,56 @@ function CertificateConfigPanel({ courseId }: CertificateConfigPanelProps) {
       </p>
 
       <div className="grid gap-2">
-        <Label htmlFor="cert-title">Certificate Title</Label>
+        <Label htmlFor="cert-title" className="text-xs font-medium">Certificate Title</Label>
         <Input
           id="cert-title"
           value={certTitle}
           onChange={(e) => setCertTitle(e.target.value)}
           placeholder="Certificate of Completion"
           maxLength={200}
+          className="rounded-xl"
         />
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="cert-subtitle">Subtitle (optional)</Label>
+        <Label htmlFor="cert-subtitle" className="text-xs font-medium">Subtitle (optional)</Label>
         <Input
           id="cert-subtitle"
           value={certSubtitle}
           onChange={(e) => setCertSubtitle(e.target.value)}
           placeholder="For outstanding achievement in..."
           maxLength={300}
+          className="rounded-xl"
         />
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="cert-logo">Logo URL (optional)</Label>
+        <Label htmlFor="cert-logo" className="text-xs font-medium">Logo URL (optional)</Label>
         <Input
           id="cert-logo"
           value={logoUrl}
           onChange={(e) => setLogoUrl(e.target.value)}
           placeholder="https://..."
+          className="rounded-xl"
         />
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="cert-bg">Background Image URL (optional)</Label>
+        <Label htmlFor="cert-bg" className="text-xs font-medium">Background Image URL (optional)</Label>
         <Input
           id="cert-bg"
           value={bgImageUrl}
           onChange={(e) => setBgImageUrl(e.target.value)}
           placeholder="https://..."
+          className="rounded-xl"
         />
       </div>
 
-      <Separator />
+      <Separator className="bg-border/50" />
 
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
-          <Label htmlFor="cert-include-date">Include Completion Date</Label>
+          <Label htmlFor="cert-include-date" className="text-xs font-medium">Include Completion Date</Label>
           <p className="text-xs text-muted-foreground">Show when the student completed</p>
         </div>
         <Switch
@@ -1516,7 +1534,7 @@ function CertificateConfigPanel({ courseId }: CertificateConfigPanelProps) {
 
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
-          <Label htmlFor="cert-include-serial">Include Serial Number</Label>
+          <Label htmlFor="cert-include-serial" className="text-xs font-medium">Include Serial Number</Label>
           <p className="text-xs text-muted-foreground">Add a unique serial for verification</p>
         </div>
         <Switch
@@ -1835,12 +1853,6 @@ function CourseBuilderPage() {
     );
   }
 
-  const statusVariant: Record<string, "default" | "secondary" | "outline"> = {
-    draft: "secondary",
-    published: "default",
-    archived: "outline",
-  };
-
   const courseContext: CourseContext = {
     title: course.title,
     description: course.description ?? "",
@@ -1850,11 +1862,12 @@ function CourseBuilderPage() {
   return (
     <div className="flex h-[calc(100vh-8rem)] flex-col -my-6 -mx-4 sm:-mx-6 lg:-mx-8">
       {/* Top toolbar */}
-      <header className="flex items-center gap-3 border-b bg-background px-4 py-2">
+      <header className="flex items-center gap-3 border-b border-border/50 bg-card/80 px-4 py-2.5 backdrop-blur-sm">
         <Button
           type="button"
           variant="ghost"
           size="sm"
+          className="rounded-full"
           asChild
         >
           <Link to="/dashboard/courses" aria-label="Back to courses list">
@@ -1862,11 +1875,18 @@ function CourseBuilderPage() {
             Courses
           </Link>
         </Button>
-        <Separator orientation="vertical" className="h-5" />
-        <h1 className="truncate text-sm font-semibold">{course.title}</h1>
-        <Badge variant={statusVariant[course.status] ?? "secondary"} className="shrink-0">
+        <Separator orientation="vertical" className="h-5 bg-border/50" />
+        <h1 className="truncate font-heading text-sm font-bold tracking-tight">{course.title}</h1>
+        <span className={cn(
+          "pill shrink-0",
+          course.status === "published"
+            ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+            : course.status === "draft"
+              ? "border-border bg-muted text-muted-foreground"
+              : "border-border bg-muted/50 text-muted-foreground",
+        )}>
           {course.status.charAt(0).toUpperCase() + course.status.slice(1)}
-        </Badge>
+        </span>
         <span className="text-xs text-muted-foreground">
           {`${course.enrollmentCount} enrolled`}
         </span>
@@ -1875,6 +1895,7 @@ function CourseBuilderPage() {
             type="button"
             variant={isPreviewMode ? "default" : "outline"}
             size="sm"
+            className="rounded-full"
             onClick={() => setIsPreviewMode((prev) => !prev)}
             aria-label={isPreviewMode ? "Switch to editor" : "Preview lesson content"}
             aria-pressed={isPreviewMode}
@@ -1895,6 +1916,7 @@ function CourseBuilderPage() {
             <Button
               type="button"
               size="sm"
+              className="rounded-full bg-primary px-5 font-medium text-primary-foreground hover:bg-primary/90"
               onClick={() => handleUpdateCourse({ status: "published" })}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -1918,10 +1940,10 @@ function CourseBuilderPage() {
             onValueChange={setMobileTab}
             className="flex h-full flex-col"
           >
-            <TabsList className="mx-2 mt-2 w-[calc(100%-1rem)]">
-              <TabsTrigger value="outline">Outline</TabsTrigger>
-              <TabsTrigger value="editor">Editor</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsList className="mx-2 mt-2 w-[calc(100%-1rem)] rounded-full bg-muted/60 p-1">
+              <TabsTrigger value="outline" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Outline</TabsTrigger>
+              <TabsTrigger value="editor" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Editor</TabsTrigger>
+              <TabsTrigger value="settings" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
             </TabsList>
             <TabsContent value="outline" className="flex-1 overflow-hidden">
               <CourseOutlinePanel

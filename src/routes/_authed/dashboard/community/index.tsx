@@ -168,10 +168,10 @@ function CommunityManagement() {
   const flaggedCount = flaggedPosts?.length ?? 0;
 
   return (
-    <div>
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Community</h1>
+          <h1 className="font-heading text-3xl font-bold tracking-tight">Community</h1>
           <p className="mt-1 text-muted-foreground">
             Manage channels, moderate content, and engage with members.
           </p>
@@ -179,7 +179,7 @@ function CommunityManagement() {
 
         <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button type="button">
+            <Button type="button" className="rounded-full">
               <Plus className="mr-2 size-4" />
               New Channel
             </Button>
@@ -265,7 +265,7 @@ function CommunityManagement() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="channels" className="mt-8">
+      <Tabs defaultValue="channels">
         <TabsList>
           <TabsTrigger value="channels">Channels</TabsTrigger>
           <TabsTrigger value="moderation">
@@ -522,11 +522,11 @@ function ModerationQueue({
 
   if (flaggedPosts.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <Shield className="size-12 text-muted-foreground/40" />
-          <p className="mt-4 text-lg font-medium">No flagged posts</p>
-          <p className="text-sm text-muted-foreground">
+      <Card className="rounded-2xl border-border/50">
+        <CardContent className="flex flex-col items-center justify-center py-16">
+          <Shield className="size-14 text-muted-foreground/30" />
+          <p className="mt-4 font-heading text-lg font-semibold">No flagged posts</p>
+          <p className="mt-1 text-sm text-muted-foreground">
             Your community is in great shape!
           </p>
         </CardContent>
@@ -592,7 +592,7 @@ function ModerationQueue({
       {/* Flagged posts list */}
       <div className="space-y-3">
         {flaggedPosts.map((item) => (
-          <Card key={item.post.id} className="border-red-200 dark:border-red-900">
+          <Card key={item.post.id} className="rounded-2xl border-red-200 dark:border-red-900">
             <CardContent className="py-4">
               <div className="flex items-start gap-3">
                 <Checkbox
@@ -714,9 +714,9 @@ function KeywordFiltersTab() {
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="rounded-2xl border-border/50">
         <CardHeader>
-          <CardTitle className="text-lg">Add Keyword Filter</CardTitle>
+          <CardTitle className="font-heading text-lg">Add Keyword Filter</CardTitle>
           <CardDescription>
             Posts containing these keywords will be automatically moderated.
           </CardDescription>
@@ -768,11 +768,11 @@ function KeywordFiltersTab() {
           ))}
         </div>
       ) : !filters || filters.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Filter className="size-12 text-muted-foreground/40" />
-            <p className="mt-4 text-lg font-medium">No keyword filters</p>
-            <p className="text-sm text-muted-foreground">
+        <Card className="rounded-2xl border-border/50">
+          <CardContent className="flex flex-col items-center justify-center py-16">
+            <Filter className="size-14 text-muted-foreground/30" />
+            <p className="mt-4 font-heading text-lg font-semibold">No keyword filters</p>
+            <p className="mt-1 text-sm text-muted-foreground">
               Add keywords above to auto-moderate community posts.
             </p>
           </CardContent>
@@ -847,11 +847,11 @@ function BlockedMembersTab() {
 
   if (!blockedMembers || blockedMembers.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <UserX className="size-12 text-muted-foreground/40" />
-          <p className="mt-4 text-lg font-medium">No blocked members</p>
-          <p className="text-sm text-muted-foreground">
+      <Card className="rounded-2xl border-border/50">
+        <CardContent className="flex flex-col items-center justify-center py-16">
+          <UserX className="size-14 text-muted-foreground/30" />
+          <p className="mt-4 font-heading text-lg font-semibold">No blocked members</p>
+          <p className="mt-1 text-sm text-muted-foreground">
             Members can be blocked from the moderation queue.
           </p>
         </CardContent>
@@ -960,11 +960,11 @@ function ModerationLogTab() {
 
   if (!data?.entries || data.entries.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <ScrollText className="size-12 text-muted-foreground/40" />
-          <p className="mt-4 text-lg font-medium">No moderation activity</p>
-          <p className="text-sm text-muted-foreground">
+      <Card className="rounded-2xl border-border/50">
+        <CardContent className="flex flex-col items-center justify-center py-16">
+          <ScrollText className="size-14 text-muted-foreground/30" />
+          <p className="mt-4 font-heading text-lg font-semibold">No moderation activity</p>
+          <p className="mt-1 text-sm text-muted-foreground">
             Actions will be logged here as you moderate your community.
           </p>
         </CardContent>
@@ -1045,13 +1045,13 @@ function ChannelsList({
 
   if (!channels || channels.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <Hash className="size-12 text-muted-foreground/40" />
-          <p className="mt-4 text-lg font-medium">
+      <Card className="rounded-2xl border-border/50">
+        <CardContent className="flex flex-col items-center justify-center py-16">
+          <Hash className="size-14 text-muted-foreground/30" />
+          <p className="mt-4 font-heading text-lg font-semibold">
             Create your first channel
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             Click &quot;New Channel&quot; above to get started with your community.
           </p>
         </CardContent>
@@ -1062,10 +1062,10 @@ function ChannelsList({
   return (
     <div className="space-y-3">
       {channels.map((channel) => (
-        <Card key={channel.id}>
+        <Card key={channel.id} className="rounded-2xl border-border/50 transition-shadow hover:shadow-md">
           <CardContent className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-lg">
+              <div className="flex size-10 items-center justify-center rounded-xl bg-gaspar-cream text-lg">
                 {channel.iconEmoji ?? "\u{1F4AC}"}
               </div>
               <div>

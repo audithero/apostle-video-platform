@@ -23,7 +23,6 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -119,16 +118,22 @@ function WebhooksPage() {
 
   return (
     <div>
+      {/* Header */}
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Webhooks</h1>
-          <p className="mt-1 text-muted-foreground">
-            Configure outbound webhooks to integrate with Zapier, Make, or your own services.
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="flex size-12 items-center justify-center rounded-2xl bg-gaspar-lavender/20">
+            <Webhook className="size-6 text-gaspar-purple" />
+          </div>
+          <div>
+            <h1 className="font-heading text-3xl font-bold tracking-tight">Webhooks</h1>
+            <p className="mt-1 text-muted-foreground">
+              Configure outbound webhooks to integrate with Zapier, Make, or your own services.
+            </p>
+          </div>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
-            <Button type="button">
+            <Button type="button" className="pill">
               <Plus className="size-4" />
               Add Webhook
             </Button>
@@ -144,19 +149,19 @@ function WebhooksPage() {
 
       {/* Webhook Endpoints */}
       <section className="mt-8">
-        <h2 className="text-lg font-semibold">Endpoints</h2>
+        <h2 className="font-heading text-lg font-semibold">Endpoints</h2>
 
         {isLoading ? (
           <div className="mt-4 space-y-3">
             {Array.from({ length: 2 }).map((_, i) => (
-              <Card key={i}>
+              <Card key={i} className="rounded-2xl">
                 <CardContent className="flex items-center gap-4 py-4">
-                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <Skeleton className="size-10 rounded-full" />
                   <div className="flex-1 space-y-2">
                     <Skeleton className="h-4 w-64" />
                     <Skeleton className="h-3 w-40" />
                   </div>
-                  <Skeleton className="h-8 w-20" />
+                  <Skeleton className="h-8 w-20 rounded-full" />
                 </CardContent>
               </Card>
             ))}
@@ -178,13 +183,13 @@ function WebhooksPage() {
             ))}
           </div>
         ) : (
-          <Card className="mt-4">
+          <Card className="mt-4 rounded-2xl border-border/50">
             <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-              <div className="flex size-16 items-center justify-center rounded-full bg-muted">
-                <Webhook className="size-8 text-muted-foreground" />
+              <div className="flex size-16 items-center justify-center rounded-full bg-gaspar-lavender/20">
+                <Webhook className="size-8 text-gaspar-purple/60" />
               </div>
               <div>
-                <p className="font-medium">No webhooks configured</p>
+                <p className="font-heading font-medium">No webhooks configured</p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   Add a webhook endpoint to receive real-time notifications when events occur.
                 </p>
@@ -193,6 +198,7 @@ function WebhooksPage() {
                 type="button"
                 variant="outline"
                 onClick={() => setIsCreateOpen(true)}
+                className="rounded-full"
               >
                 <Plus className="size-4" />
                 Add Your First Webhook
@@ -204,7 +210,7 @@ function WebhooksPage() {
 
       {/* Recent Deliveries */}
       <section className="mt-10">
-        <h2 className="text-lg font-semibold">Recent Deliveries</h2>
+        <h2 className="font-heading text-lg font-semibold">Recent Deliveries</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Last 50 webhook delivery attempts across all endpoints.
         </p>
@@ -212,15 +218,15 @@ function WebhooksPage() {
         {isLoadingLogs ? (
           <div className="mt-4 space-y-2">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-3 rounded-lg border p-3">
+              <div key={i} className="flex items-center gap-3 rounded-2xl border border-border/50 p-3">
                 <Skeleton className="size-6 rounded-full" />
                 <Skeleton className="h-4 w-40 flex-1" />
-                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-24 rounded-full" />
               </div>
             ))}
           </div>
         ) : recentLogs && recentLogs.length > 0 ? (
-          <div className="mt-4 space-y-1">
+          <div className="mt-4 space-y-1.5">
             {recentLogs.map((entry) => (
               <DeliveryLogRow
                 key={entry.log.id}
@@ -230,10 +236,12 @@ function WebhooksPage() {
             ))}
           </div>
         ) : (
-          <Card className="mt-4">
+          <Card className="mt-4 rounded-2xl border-border/50">
             <CardContent className="py-8 text-center">
-              <Send className="mx-auto size-8 text-muted-foreground" />
-              <p className="mt-2 text-sm text-muted-foreground">
+              <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-muted/30">
+                <Send className="size-7 text-muted-foreground/50" />
+              </div>
+              <p className="mt-3 text-sm text-muted-foreground">
                 No deliveries yet. Webhook events will appear here as they are sent.
               </p>
             </CardContent>
@@ -282,14 +290,14 @@ function WebhookEndpointCard({
   }, [config.url]);
 
   return (
-    <Card>
-      <CardContent className="py-4">
+    <Card className="rounded-2xl border-border/50 shadow-sm">
+      <CardContent className="py-5">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3">
             <div
               className={cn(
-                "mt-0.5 flex size-10 items-center justify-center rounded-full",
-                config.active ? "bg-emerald-100 dark:bg-emerald-900/30" : "bg-muted",
+                "mt-0.5 flex size-10 items-center justify-center rounded-xl",
+                config.active ? "bg-emerald-100 dark:bg-emerald-900/30" : "bg-muted/40",
               )}
             >
               <Globe
@@ -301,36 +309,36 @@ function WebhookEndpointCard({
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <p className="truncate text-sm font-medium">{config.url}</p>
+                <p className="truncate font-mono text-sm font-medium">{config.url}</p>
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon-sm"
-                  className="size-6 shrink-0"
+                  className="size-6 shrink-0 rounded-full"
                   onClick={handleCopyUrl}
                   aria-label="Copy webhook URL"
                 >
                   <Copy className="size-3" />
                 </Button>
               </div>
-              <div className="mt-1 flex flex-wrap gap-1">
+              <div className="mt-2 flex flex-wrap gap-1.5">
                 {events.map((event) => (
-                  <Badge key={event} variant="secondary" className="text-[10px]">
+                  <span key={event} className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-medium text-primary">
                     {event}
-                  </Badge>
+                  </span>
                 ))}
               </div>
               {config.secret && (
-                <div className="mt-2 flex items-center gap-2">
+                <div className="mt-2.5 flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">Secret:</span>
-                  <code className="text-xs font-mono text-muted-foreground">
+                  <code className="font-mono text-xs text-muted-foreground">
                     {showSecret ? config.secret : "whsec_********************"}
                   </code>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    className="size-5"
+                    className="size-5 rounded-full"
                     onClick={() => setShowSecret((prev) => !prev)}
                     aria-label={showSecret ? "Hide secret" : "Show secret"}
                   >
@@ -344,7 +352,7 @@ function WebhookEndpointCard({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    className="size-5"
+                    className="size-5 rounded-full"
                     onClick={handleCopySecret}
                     aria-label="Copy secret"
                   >
@@ -356,6 +364,14 @@ function WebhookEndpointCard({
           </div>
 
           <div className="flex items-center gap-2">
+            <span className={cn(
+              "rounded-full px-2.5 py-0.5 text-[10px] font-medium",
+              config.active
+                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                : "bg-muted text-muted-foreground",
+            )}>
+              {config.active ? "Active" : "Inactive"}
+            </span>
             <Switch
               checked={config.active}
               onCheckedChange={onToggle}
@@ -367,18 +383,19 @@ function WebhookEndpointCard({
                   type="button"
                   variant="ghost"
                   size="icon-sm"
+                  className="rounded-full"
                   aria-label="Webhook actions"
                 >
                   <MoreHorizontal className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onSelect={onRegenerateSecret}>
+              <DropdownMenuContent align="end" className="w-48 rounded-xl">
+                <DropdownMenuItem onSelect={onRegenerateSecret} className="rounded-lg">
                   <RefreshCw className="size-4" />
                   Regenerate Secret
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive" onSelect={onDelete}>
+                <DropdownMenuItem variant="destructive" onSelect={onDelete} className="rounded-lg">
                   <Trash2 className="size-4" />
                   Delete Webhook
                 </DropdownMenuItem>
@@ -447,7 +464,7 @@ function CreateWebhookDialog({ onSuccess }: CreateWebhookDialogProps) {
   return (
     <DialogContent className="sm:max-w-lg">
       <DialogHeader>
-        <DialogTitle>Add Webhook Endpoint</DialogTitle>
+        <DialogTitle className="font-heading">Add Webhook Endpoint</DialogTitle>
         <DialogDescription>
           We will send POST requests to this URL when selected events occur.
         </DialogDescription>
@@ -462,6 +479,7 @@ function CreateWebhookDialog({ onSuccess }: CreateWebhookDialogProps) {
             placeholder="https://hooks.zapier.com/..."
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            className="rounded-xl"
           />
         </div>
 
@@ -491,7 +509,7 @@ function CreateWebhookDialog({ onSuccess }: CreateWebhookDialogProps) {
             </div>
           </div>
 
-          <ScrollArea className="h-56 rounded-md border">
+          <ScrollArea className="h-56 rounded-xl border border-border/50">
             <div className="space-y-1 p-3">
               {WEBHOOK_EVENTS.map((event) => {
                 const isSelected = selectedEvents.has(event.value);
@@ -500,16 +518,16 @@ function CreateWebhookDialog({ onSuccess }: CreateWebhookDialogProps) {
                     key={event.value}
                     type="button"
                     className={cn(
-                      "flex w-full items-start gap-3 rounded-md p-2 text-left transition-colors",
+                      "flex w-full items-start gap-3 rounded-xl p-2.5 text-left transition-colors",
                       isSelected
                         ? "bg-primary/10 text-primary"
-                        : "hover:bg-accent/50",
+                        : "hover:bg-muted/50",
                     )}
                     onClick={() => handleToggleEvent(event.value)}
                   >
                     <div
                       className={cn(
-                        "mt-0.5 flex size-5 items-center justify-center rounded border",
+                        "mt-0.5 flex size-5 items-center justify-center rounded-md border",
                         isSelected
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-muted-foreground/30",
@@ -540,6 +558,7 @@ function CreateWebhookDialog({ onSuccess }: CreateWebhookDialogProps) {
             selectedEvents.size === 0 ||
             createMutation.isPending
           }
+          className="pill"
         >
           {createMutation.isPending ? "Creating..." : "Create Webhook"}
         </Button>
@@ -568,38 +587,51 @@ function DeliveryLogRow({ log, webhookUrl }: DeliveryLogRowProps) {
   const isFailed = log.statusCode === null || log.statusCode === 0 || log.statusCode >= 400;
 
   return (
-    <div className="rounded-lg border">
+    <div className="rounded-2xl border border-border/50 transition-colors hover:border-border">
       <button
         type="button"
-        className="flex w-full items-center gap-3 p-3 text-left transition-colors hover:bg-accent/50"
+        className="flex w-full items-center gap-3 p-3.5 text-left transition-colors hover:bg-muted/20"
         onClick={() => setIsExpanded((prev) => !prev)}
       >
         {isSuccess ? (
-          <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
+          <div className="flex size-6 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
+            <CheckCircle2 className="size-3.5 text-emerald-600" />
+          </div>
         ) : isFailed ? (
-          <XCircle className="size-4 shrink-0 text-destructive" />
+          <div className="flex size-6 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+            <XCircle className="size-3.5 text-destructive" />
+          </div>
         ) : (
-          <AlertCircle className="size-4 shrink-0 text-amber-500" />
+          <div className="flex size-6 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
+            <AlertCircle className="size-3.5 text-amber-500" />
+          </div>
         )}
 
-        <Badge variant="secondary" className="shrink-0 text-[10px]">
+        <span className="shrink-0 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-medium text-primary">
           {log.event}
-        </Badge>
+        </span>
 
-        <span className="flex-1 truncate text-xs text-muted-foreground">
+        <span className="flex-1 truncate font-mono text-xs text-muted-foreground">
           {webhookUrl}
         </span>
 
-        <span className="shrink-0 text-xs text-muted-foreground">
+        <span className={cn(
+          "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium",
+          isSuccess
+            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+            : isFailed
+              ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+              : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+        )}>
           {log.statusCode !== null && log.statusCode > 0
             ? `${String(log.statusCode)}`
             : "Failed"}
         </span>
 
         {log.attemptNumber > 1 && (
-          <Badge variant="outline" className="shrink-0 text-[10px]">
+          <span className="shrink-0 rounded-full border border-border/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
             {`Attempt ${String(log.attemptNumber)}`}
-          </Badge>
+          </span>
         )}
 
         <time
@@ -611,9 +643,9 @@ function DeliveryLogRow({ log, webhookUrl }: DeliveryLogRowProps) {
       </button>
 
       {isExpanded && log.responseBody && (
-        <div className="border-t bg-muted/30 p-3">
+        <div className="border-t border-border/50 bg-muted/10 p-4">
           <p className="text-xs font-medium text-muted-foreground">Response Body</p>
-          <pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-all rounded bg-muted p-2 font-mono text-xs">
+          <pre className="mt-2 overflow-x-auto whitespace-pre-wrap break-all rounded-xl bg-muted/30 p-3 font-mono text-xs">
             {log.responseBody}
           </pre>
         </div>

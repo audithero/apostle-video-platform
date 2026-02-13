@@ -2,7 +2,6 @@ import { z } from "zod";
 import { createTRPCRouter, creatorProcedure } from "@/lib/trpc/init";
 import { generateOutline, expandLesson, generateQuiz, generateSummary, rewriteContent } from "@/lib/ai/course-generator";
 import { generateCourseImage } from "@/lib/ai/image-generator";
-import { creditLedgerService } from "@/lib/billing/credit-ledger";
 import { usageTracker } from "@/lib/billing/usage-tracker";
 
 export const aiRouter = createTRPCRouter({
@@ -17,20 +16,6 @@ export const aiRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // Check AI credits
-      const balance = await creditLedgerService.getBalance(ctx.creator.id, "ai_course");
-      if (balance < 1) {
-        throw new Error("Insufficient AI course credits");
-      }
-
-      // Debit credit
-      await creditLedgerService.debitCredit(
-        ctx.creator.id,
-        "ai_course",
-        1,
-        `Course outline: ${input.topic}`,
-      );
-
       // Track usage
       await usageTracker.trackAiGeneration(ctx.creator.id, "outline");
 
@@ -70,18 +55,6 @@ export const aiRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const balance = await creditLedgerService.getBalance(ctx.creator.id, "ai_quiz");
-      if (balance < 1) {
-        throw new Error("Insufficient AI quiz credits");
-      }
-
-      await creditLedgerService.debitCredit(
-        ctx.creator.id,
-        "ai_quiz",
-        1,
-        "Quiz generation",
-      );
-
       await usageTracker.trackAiGeneration(ctx.creator.id, "ai_quiz");
 
       const quiz = await generateQuiz(input);
@@ -110,18 +83,6 @@ export const aiRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const balance = await creditLedgerService.getBalance(ctx.creator.id, "ai_image");
-      if (balance < 1) {
-        throw new Error("Insufficient AI image credits");
-      }
-
-      await creditLedgerService.debitCredit(
-        ctx.creator.id,
-        "ai_image",
-        1,
-        `Image: ${input.description.slice(0, 50)}`,
-      );
-
       await usageTracker.trackAiGeneration(ctx.creator.id, "ai_image");
 
       const image = await generateCourseImage(input);
@@ -142,27 +103,9 @@ export const aiRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const balance = await creditLedgerService.getBalance(ctx.creator.id, "ai_rewrite");
-      if (balance < 1) {
-        throw new Error("Insufficient AI rewrite credits");
-      }
-
-      await creditLedgerService.debitCredit(
-        ctx.creator.id,
-        "ai_rewrite",
-        1,
-        "Lesson rewrite",
-      );
-
       await usageTracker.trackAiGeneration(ctx.creator.id, "ai_rewrite");
 
       const rewritten = await rewriteContent(input);
       return rewritten;
     }),
-
-  // Get AI credit balances
-  getCredits: creatorProcedure.query(async ({ ctx }) => {
-    const balances = await creditLedgerService.getAllBalances(ctx.creator.id);
-    return balances;
-  }),
 });

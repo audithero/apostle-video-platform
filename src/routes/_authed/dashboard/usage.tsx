@@ -55,15 +55,28 @@ function statusColor(percent: number): string {
   return "text-emerald-600";
 }
 
-function progressColor(percent: number): string {
-  if (percent > 100) return "bg-red-500";
-  if (percent > 80) return "bg-orange-500";
-  return "bg-emerald-500";
+function statusBadge(percent: number): { label: string; className: string } {
+  if (percent > 100) return { label: "Over Limit", className: "rounded-full border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300" };
+  if (percent > 80) return { label: "Near Limit", className: "rounded-full border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-300" };
+  return { label: "Within Limit", className: "rounded-full border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" };
+}
+
+function progressGradientClass(percent: number): string {
+  if (percent > 100) return "from-red-500 to-red-400";
+  if (percent > 80) return "from-orange-500 to-amber-400";
+  return "from-gaspar-purple to-gaspar-lavender";
 }
 
 function tierLabel(tier: string): string {
   return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
+
+// Gaspar metric card background styles
+const METRIC_CARD_STYLES = [
+  "gaspar-card-cream",
+  "gaspar-card-blue",
+  "gaspar-card-pink",
+] as const;
 
 // -- Component --
 
@@ -97,14 +110,14 @@ function UsageDashboard() {
     return (
       <div>
         <div className="flex items-center justify-between">
-          <Skeleton className="h-9 w-32" />
-          <Skeleton className="h-6 w-24" />
+          <Skeleton className="h-9 w-32 rounded-xl" />
+          <Skeleton className="h-6 w-24 rounded-full" />
         </div>
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Card key={i}>
-              <CardHeader><Skeleton className="h-4 w-24" /></CardHeader>
-              <CardContent><Skeleton className="h-20 w-full" /></CardContent>
+            <Card key={i} className="rounded-2xl">
+              <CardHeader><Skeleton className="h-4 w-24 rounded-lg" /></CardHeader>
+              <CardContent><Skeleton className="h-20 w-full rounded-xl" /></CardContent>
             </Card>
           ))}
         </div>
@@ -163,53 +176,61 @@ function UsageDashboard() {
   const needsUpgrade = metricCards.some((m) => usagePercent(m.used, m.limit) > 80);
 
   return (
-    <div>
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Usage</h1>
+          <h1 className="font-heading text-3xl font-bold tracking-tight">Usage</h1>
           {billingStart && billingEnd && (
             <p className="mt-1 text-muted-foreground">
               {`${billingStart} - ${billingEnd}`}
             </p>
           )}
         </div>
-        <Badge variant="outline" className="text-sm">
+        <Badge variant="outline" className="pill">
           {`${tierLabel(tier)} Plan`}
         </Badge>
       </div>
 
       {/* Metric Cards */}
-      <div className="mt-8 grid gap-6 md:grid-cols-3">
-        {metricCards.map((metric) => {
+      <div className="grid gap-6 md:grid-cols-3">
+        {metricCards.map((metric, idx) => {
           const percent = usagePercent(metric.used, metric.limit);
           const Icon = metric.icon;
           const suffix = metric.unit ? ` ${metric.unit}` : "";
           const clampedPercent = Math.min(percent, 100);
+          const badge = statusBadge(percent);
+          const gasparBg = METRIC_CARD_STYLES[idx % METRIC_CARD_STYLES.length];
 
           return (
-            <Card key={metric.name}>
+            <Card key={metric.name} className={`rounded-2xl border-0 shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-lg ${gasparBg}`}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">{metric.name}</CardTitle>
-                <Icon className="size-4 text-muted-foreground" />
+                <div className="flex size-8 items-center justify-center rounded-full bg-black/5">
+                  <Icon className="size-4 text-black/40" />
+                </div>
               </CardHeader>
               <CardContent>
-                <p className={`text-2xl font-bold ${statusColor(percent)}`}>
-                  {`${metric.used.toLocaleString()}${suffix}`}
-                </p>
-                <p className="text-xs text-muted-foreground">
+                <div className="flex items-center justify-between">
+                  <p className={`font-heading text-2xl font-bold ${statusColor(percent)}`}>
+                    {`${metric.used.toLocaleString()}${suffix}`}
+                  </p>
+                  <Badge variant="outline" className={badge.className}>
+                    {badge.label}
+                  </Badge>
+                </div>
+                <p className="mt-0.5 text-xs opacity-60">
                   {`of ${metric.limit.toLocaleString()}${suffix} (${String(percent)}%)`}
                 </p>
 
-                <div className="relative mt-3">
-                  <Progress value={clampedPercent} className="h-2" />
+                <div className="relative mt-3 h-2.5 overflow-hidden rounded-full bg-black/10">
                   <div
-                    className={`absolute inset-y-0 left-0 rounded-full ${progressColor(percent)} transition-all`}
+                    className={`absolute inset-y-0 left-0 rounded-full bg-gradient-to-r ${progressGradientClass(percent)} transition-all duration-500`}
                     style={{ width: `${String(clampedPercent)}%` }}
                   />
                 </div>
 
                 {percent > 80 && (
-                  <div className="mt-2 flex items-center gap-1 text-xs text-orange-600">
+                  <div className="mt-2 flex items-center gap-1 text-xs text-orange-700">
                     <AlertTriangle className="size-3" />
                     {percent >= 100 ? "Limit reached" : "Approaching limit"}
                   </div>
@@ -221,11 +242,11 @@ function UsageDashboard() {
       </div>
 
       {/* Overage Billing Toggle + Charges */}
-      <Card className="mt-6">
+      <Card className="rounded-2xl border-border/30 shadow-sm">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Overage Billing</CardTitle>
+              <CardTitle className="font-heading">Overage Billing</CardTitle>
               <CardDescription>
                 {overageEnabled
                   ? "Usage beyond your plan limits will be billed at overage rates."
@@ -249,11 +270,11 @@ function UsageDashboard() {
         </CardHeader>
         {overageEnabled && overageData && overageData.charges.length > 0 && (
           <CardContent>
-            <div className="rounded-lg border">
-              <div className="border-b bg-muted/50 px-4 py-2">
-                <p className="text-sm font-medium">Current Period Overage Charges</p>
+            <div className="overflow-hidden rounded-2xl border border-border/30">
+              <div className="border-b bg-muted/50 px-4 py-2.5">
+                <p className="font-heading text-sm font-medium">Current Period Overage Charges</p>
               </div>
-              <div className="divide-y">
+              <div className="divide-y divide-border/20">
                 {overageData.charges.map((charge) => (
                   <div key={charge.metric} className="flex items-center justify-between px-4 py-3">
                     <div>
@@ -273,8 +294,8 @@ function UsageDashboard() {
                   </div>
                 ))}
               </div>
-              <div className="flex items-center justify-between border-t bg-muted/50 px-4 py-2">
-                <p className="text-sm font-semibold">Estimated Total</p>
+              <div className="flex items-center justify-between border-t bg-muted/50 px-4 py-2.5">
+                <p className="font-heading text-sm font-semibold">Estimated Total</p>
                 <p className="text-sm font-semibold">
                   {`$${(overageData.totalCents / 100).toFixed(2)}`}
                 </p>
@@ -286,18 +307,20 @@ function UsageDashboard() {
 
       {/* Auto-Upgrade Recommendation */}
       {overageData?.upgradeRecommendation.shouldRecommend && (
-        <Card className="mt-6 border-primary/20 bg-primary/5">
-          <CardContent className="flex items-center justify-between py-4">
+        <Card className="rounded-2xl border-primary/20 bg-primary/5 shadow-sm">
+          <CardContent className="flex items-center justify-between py-5">
             <div className="flex items-start gap-3">
-              <ArrowUpRight className="mt-0.5 size-5 text-primary" />
+              <div className="flex size-9 items-center justify-center rounded-full bg-primary/10">
+                <ArrowUpRight className="size-5 text-primary" />
+              </div>
               <div>
-                <p className="font-medium">Upgrade Recommended</p>
+                <p className="font-heading font-medium">Upgrade Recommended</p>
                 <p className="text-sm text-muted-foreground">
                   {overageData.upgradeRecommendation.reason}
                 </p>
               </div>
             </div>
-            <Button type="button" size="sm" asChild>
+            <Button type="button" size="sm" className="rounded-full px-5" asChild>
               <Link to="/dashboard/pricing">
                 {`Upgrade to ${tierLabel(overageData.upgradeRecommendation.recommendedTier ?? "")}`}
               </Link>
@@ -308,15 +331,15 @@ function UsageDashboard() {
 
       {/* Upgrade CTA at 80%+ (only if no overage recommendation already shown) */}
       {needsUpgrade && !overageData?.upgradeRecommendation.shouldRecommend && (
-        <Card className="mt-6 border-primary/20 bg-primary/5">
-          <CardContent className="flex items-center justify-between py-4">
+        <Card className="rounded-2xl border-primary/20 bg-primary/5 shadow-sm">
+          <CardContent className="flex items-center justify-between py-5">
             <div>
-              <p className="font-medium">You are approaching your plan limits</p>
+              <p className="font-heading font-medium">You are approaching your plan limits</p>
               <p className="text-sm text-muted-foreground">
                 Upgrade to get more storage, students, and credits.
               </p>
             </div>
-            <Button type="button" size="sm" asChild>
+            <Button type="button" size="sm" className="rounded-full px-5" asChild>
               <Link to="/dashboard/pricing">Upgrade Plan</Link>
             </Button>
           </CardContent>
@@ -324,22 +347,22 @@ function UsageDashboard() {
       )}
 
       {/* Charts */}
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2">
         {/* Email Volume Chart */}
-        <Card>
+        <Card className="rounded-2xl border-border/30 shadow-sm">
           <CardHeader>
-            <CardTitle>Daily Email Volume</CardTitle>
+            <CardTitle className="font-heading">Daily Email Volume</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64">
               {emailTrend && emailTrend.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={emailTrend.map((d) => ({ day: d.date.slice(-2), emails: d.total }))}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                     <XAxis dataKey="day" className="text-xs" tick={{ fontSize: 10 }} />
                     <YAxis className="text-xs" tick={{ fontSize: 10 }} />
                     <Tooltip />
-                    <Bar dataKey="emails" fill="var(--color-primary)" radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="emails" fill="var(--color-primary)" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -352,9 +375,9 @@ function UsageDashboard() {
         </Card>
 
         {/* Student Growth Chart */}
-        <Card>
+        <Card className="rounded-2xl border-border/30 shadow-sm">
           <CardHeader>
-            <CardTitle>Student Growth</CardTitle>
+            <CardTitle className="font-heading">Student Growth</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64">
@@ -367,7 +390,7 @@ function UsageDashboard() {
                         <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                     <XAxis dataKey="week" className="text-xs" />
                     <YAxis className="text-xs" />
                     <Tooltip />
@@ -376,7 +399,7 @@ function UsageDashboard() {
                       dataKey="total"
                       stroke="var(--color-primary)"
                       fill="url(#studentGrad)"
-                      strokeWidth={2}
+                      strokeWidth={2.5}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -391,9 +414,9 @@ function UsageDashboard() {
       </div>
 
       {/* AI Credits */}
-      <Card className="mt-8">
+      <Card className="rounded-2xl border-border/30 shadow-sm">
         <CardHeader>
-          <CardTitle>AI Credits</CardTitle>
+          <CardTitle className="font-heading">AI Credits</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -403,7 +426,7 @@ function UsageDashboard() {
               return (
                 <div key={credit.key} className="flex flex-col items-center gap-3">
                   <CircularProgress percent={Math.min(percent, 100)} size={80} strokeWidth={6}>
-                    <span className="text-lg font-bold">{remaining}</span>
+                    <span className="font-heading text-lg font-bold">{remaining}</span>
                     <span className="text-[10px] text-muted-foreground">left</span>
                   </CircularProgress>
                   <div className="text-center">
@@ -416,7 +439,7 @@ function UsageDashboard() {
               );
             })}
           </div>
-          <Separator className="my-4" />
+          <Separator className="my-5" />
           <p className="text-sm text-muted-foreground">
             Credits refresh at the start of each billing period. Need more? Upgrade your plan for higher limits.
           </p>
@@ -425,30 +448,32 @@ function UsageDashboard() {
 
       {/* Avatar Pack Balance */}
       {(avatarMinutes?.total ?? 0) > 0 && (
-        <Card className="mt-8">
+        <Card className="rounded-2xl border-border/30 shadow-sm">
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Video className="size-5 text-muted-foreground" />
-              <CardTitle>Avatar Video Minutes</CardTitle>
+              <div className="flex size-8 items-center justify-center rounded-full bg-primary/10">
+                <Video className="size-4 text-primary" />
+              </div>
+              <CardTitle className="font-heading">Avatar Video Minutes</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <div className="flex items-end gap-4">
               <div>
-                <p className={`text-3xl font-bold ${statusColor(usagePercent(avatarMinutes?.used ?? 0, avatarMinutes?.total ?? 1))}`}>
+                <p className={`font-heading text-3xl font-bold ${statusColor(usagePercent(avatarMinutes?.used ?? 0, avatarMinutes?.total ?? 1))}`}>
                   {`${String(Math.round((avatarMinutes?.total ?? 0) - (avatarMinutes?.used ?? 0)))} min`}
                 </p>
                 <p className="text-sm text-muted-foreground">remaining</p>
               </div>
               <div className="flex-1">
-                <div className="relative">
+                <div className="relative h-3 overflow-hidden rounded-full bg-muted">
                   <Progress
                     value={Math.min(usagePercent(avatarMinutes?.used ?? 0, avatarMinutes?.total ?? 1), 100)}
                     className="h-3"
                     aria-label={`Avatar minutes: ${String(avatarMinutes?.used ?? 0)} of ${String(avatarMinutes?.total ?? 0)} used`}
                   />
                   <div
-                    className={`absolute inset-y-0 left-0 rounded-full ${progressColor(usagePercent(avatarMinutes?.used ?? 0, avatarMinutes?.total ?? 1))} transition-all`}
+                    className={`absolute inset-y-0 left-0 rounded-full bg-gradient-to-r ${progressGradientClass(usagePercent(avatarMinutes?.used ?? 0, avatarMinutes?.total ?? 1))} transition-all duration-500`}
                     style={{ width: `${String(Math.min(usagePercent(avatarMinutes?.used ?? 0, avatarMinutes?.total ?? 1), 100))}%` }}
                   />
                 </div>
@@ -462,11 +487,13 @@ function UsageDashboard() {
       )}
 
       {/* Overage Rate Reference */}
-      <Card className="mt-8">
+      <Card className="rounded-2xl border-border/30 shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <DollarSign className="size-5 text-muted-foreground" />
-            <CardTitle>Overage Rates</CardTitle>
+            <div className="flex size-8 items-center justify-center rounded-full bg-primary/10">
+              <DollarSign className="size-4 text-primary" />
+            </div>
+            <CardTitle className="font-heading">Overage Rates</CardTitle>
           </div>
           <CardDescription>
             Rates applied when usage exceeds your plan limits (if overage billing is enabled).
@@ -474,19 +501,19 @@ function UsageDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
-            <div className="rounded-lg border p-4">
-              <p className="text-sm font-medium">Video Storage</p>
-              <p className="mt-1 text-2xl font-bold">$2.00</p>
+            <div className="rounded-2xl border border-border/30 bg-gaspar-cream/40 p-5">
+              <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Video Storage</p>
+              <p className="mt-2 font-heading text-2xl font-bold">$2.00</p>
               <p className="text-xs text-muted-foreground">per hour over limit</p>
             </div>
-            <div className="rounded-lg border p-4">
-              <p className="text-sm font-medium">Additional Students</p>
-              <p className="mt-1 text-2xl font-bold">$0.10</p>
+            <div className="rounded-2xl border border-border/30 bg-gaspar-blue/30 p-5">
+              <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Additional Students</p>
+              <p className="mt-2 font-heading text-2xl font-bold">$0.10</p>
               <p className="text-xs text-muted-foreground">per student over limit</p>
             </div>
-            <div className="rounded-lg border p-4">
-              <p className="text-sm font-medium">Email Sends</p>
-              <p className="mt-1 text-2xl font-bold">$1.50</p>
+            <div className="rounded-2xl border border-border/30 bg-gaspar-pink/30 p-5">
+              <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Email Sends</p>
+              <p className="mt-2 font-heading text-2xl font-bold">$1.50</p>
               <p className="text-xs text-muted-foreground">per 1,000 emails over limit</p>
             </div>
           </div>
@@ -508,8 +535,8 @@ interface CircularProgressProps {
 function ringStrokeColor(percent: number): string {
   if (percent >= 100) return "stroke-red-500";
   if (percent >= 80) return "stroke-orange-500";
-  if (percent >= 60) return "stroke-yellow-500";
-  return "stroke-emerald-500";
+  if (percent >= 60) return "stroke-gaspar-lavender";
+  return "stroke-gaspar-purple";
 }
 
 function CircularProgress({ percent, size, strokeWidth, children }: CircularProgressProps) {

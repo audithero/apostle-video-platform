@@ -1,4 +1,5 @@
 import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   LayoutDashboard,
   BookOpen,
@@ -13,10 +14,17 @@ import {
   Sparkles,
   UserPlus,
   Webhook,
+  Menu,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { RouteErrorBoundary } from "@/components/error-boundary";
 import { isCreator } from "@/lib/auth/permissions";
 
@@ -56,7 +64,13 @@ const secondaryNavItems: ReadonlyArray<NavItem> = [
   { label: "Settings", to: "/dashboard/settings", icon: Settings },
 ];
 
-function SidebarNavLink({ item }: { readonly item: NavItem }) {
+function SidebarNavLink({
+  item,
+  onNavigate,
+}: {
+  readonly item: NavItem;
+  readonly onNavigate?: () => void;
+}) {
   const location = useLocation();
   const isActive =
     item.to === "/dashboard"
@@ -68,47 +82,81 @@ function SidebarNavLink({ item }: { readonly item: NavItem }) {
   return (
     <Link
       to={item.to}
+      onClick={onNavigate}
       className={cn(
-        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+        "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200",
         isActive
-          ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+          ? "bg-primary text-primary-foreground shadow-sm"
+          : "text-muted-foreground hover:bg-base-100 hover:text-foreground",
       )}
     >
-      <Icon className="size-4" />
+      <Icon className="size-[18px] shrink-0" />
       {item.label}
     </Link>
   );
 }
 
+function SidebarNav({ onNavigate }: { readonly onNavigate?: () => void }) {
+  return (
+    <div className="flex h-full flex-col px-3 py-6">
+      <div className="mb-6 px-3">
+        <h2 className="text-lg font-bold tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+          Dashboard
+        </h2>
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          Manage your courses and content
+        </p>
+      </div>
+
+      <nav className="flex flex-col gap-0.5" aria-label="Dashboard navigation">
+        {primaryNavItems.map((item) => (
+          <SidebarNavLink key={item.to} item={item} onNavigate={onNavigate} />
+        ))}
+      </nav>
+
+      <div className="mx-3 my-4 h-px bg-border/60" />
+
+      <nav className="flex flex-col gap-0.5" aria-label="Dashboard settings navigation">
+        {secondaryNavItems.map((item) => (
+          <SidebarNavLink key={item.to} item={item} onNavigate={onNavigate} />
+        ))}
+      </nav>
+    </div>
+  );
+}
+
 function DashboardSidebar() {
   return (
-    <aside className="hidden w-64 shrink-0 border-r bg-muted/40 md:block">
+    <aside className="hidden w-60 shrink-0 border-r border-border/50 bg-card/50 md:block">
       <ScrollArea className="h-full">
-        <div className="flex h-full flex-col p-4">
-          <div className="mb-4 px-2">
-            <h2 className="text-lg font-semibold tracking-tight">Dashboard</h2>
-            <p className="text-xs text-muted-foreground">
-              Manage your courses and content
-            </p>
-          </div>
-
-          <nav className="flex flex-col gap-1" aria-label="Dashboard navigation">
-            {primaryNavItems.map((item) => (
-              <SidebarNavLink key={item.to} item={item} />
-            ))}
-          </nav>
-
-          <Separator className="my-4" />
-
-          <nav className="flex flex-col gap-1" aria-label="Dashboard settings navigation">
-            {secondaryNavItems.map((item) => (
-              <SidebarNavLink key={item.to} item={item} />
-            ))}
-          </nav>
-        </div>
+        <SidebarNav />
       </ScrollArea>
     </aside>
+  );
+}
+
+function MobileSidebarTrigger() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden"
+          aria-label="Open navigation menu"
+        >
+          <Menu className="size-5" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-60 p-0">
+        <SheetTitle className="sr-only">Navigation</SheetTitle>
+        <ScrollArea className="h-full">
+          <SidebarNav onNavigate={() => setOpen(false)} />
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   );
 }
 
@@ -117,7 +165,13 @@ function DashboardLayout() {
     <div className="flex flex-1">
       <DashboardSidebar />
       <div className="flex-1 overflow-auto">
-        <div className="container py-6">
+        <div className="sticky top-0 z-10 flex items-center border-b border-border/50 bg-background/80 px-4 py-3 backdrop-blur-sm md:hidden">
+          <MobileSidebarTrigger />
+          <span className="ml-3 text-sm font-semibold" style={{ fontFamily: "var(--font-heading)" }}>
+            Dashboard
+          </span>
+        </div>
+        <div className="container py-8">
           <Outlet />
         </div>
       </div>

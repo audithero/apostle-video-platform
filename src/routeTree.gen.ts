@@ -37,6 +37,7 @@ import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as PublicWatchSlugRouteImport } from './routes/_public/watch/$slug'
 import { Route as PublicShowsSlugRouteImport } from './routes/_public/shows/$slug'
+import { Route as PublicCoursesSlugRouteImport } from './routes/_public/courses/$slug'
 import { Route as AuthedLearnLeaderboardRouteImport } from './routes/_authed/learn/leaderboard'
 import { Route as AuthedLearnCourseIdRouteImport } from './routes/_authed/learn/$courseId'
 import { Route as AuthedDashboardUsageRouteImport } from './routes/_authed/dashboard/usage'
@@ -205,6 +206,11 @@ const PublicWatchSlugRoute = PublicWatchSlugRouteImport.update({
 const PublicShowsSlugRoute = PublicShowsSlugRouteImport.update({
   id: '/shows/$slug',
   path: '/shows/$slug',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicCoursesSlugRoute = PublicCoursesSlugRouteImport.update({
+  id: '/courses/$slug',
+  path: '/courses/$slug',
   getParentRoute: () => PublicRoute,
 } as any)
 const AuthedLearnLeaderboardRoute = AuthedLearnLeaderboardRouteImport.update({
@@ -413,6 +419,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/usage': typeof AuthedDashboardUsageRoute
   '/learn/$courseId': typeof AuthedLearnCourseIdRoute
   '/learn/leaderboard': typeof AuthedLearnLeaderboardRoute
+  '/courses/$slug': typeof PublicCoursesSlugRoute
   '/shows/$slug': typeof PublicShowsSlugRoute
   '/watch/$slug': typeof PublicWatchSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -470,6 +477,7 @@ export interface FileRoutesByTo {
   '/dashboard/usage': typeof AuthedDashboardUsageRoute
   '/learn/$courseId': typeof AuthedLearnCourseIdRoute
   '/learn/leaderboard': typeof AuthedLearnLeaderboardRoute
+  '/courses/$slug': typeof PublicCoursesSlugRoute
   '/shows/$slug': typeof PublicShowsSlugRoute
   '/watch/$slug': typeof PublicWatchSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -533,6 +541,7 @@ export interface FileRoutesById {
   '/_authed/dashboard/usage': typeof AuthedDashboardUsageRoute
   '/_authed/learn/$courseId': typeof AuthedLearnCourseIdRoute
   '/_authed/learn/leaderboard': typeof AuthedLearnLeaderboardRoute
+  '/_public/courses/$slug': typeof PublicCoursesSlugRoute
   '/_public/shows/$slug': typeof PublicShowsSlugRoute
   '/_public/watch/$slug': typeof PublicWatchSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -594,6 +603,7 @@ export interface FileRouteTypes {
     | '/dashboard/usage'
     | '/learn/$courseId'
     | '/learn/leaderboard'
+    | '/courses/$slug'
     | '/shows/$slug'
     | '/watch/$slug'
     | '/api/auth/$'
@@ -651,6 +661,7 @@ export interface FileRouteTypes {
     | '/dashboard/usage'
     | '/learn/$courseId'
     | '/learn/leaderboard'
+    | '/courses/$slug'
     | '/shows/$slug'
     | '/watch/$slug'
     | '/api/auth/$'
@@ -713,6 +724,7 @@ export interface FileRouteTypes {
     | '/_authed/dashboard/usage'
     | '/_authed/learn/$courseId'
     | '/_authed/learn/leaderboard'
+    | '/_public/courses/$slug'
     | '/_public/shows/$slug'
     | '/_public/watch/$slug'
     | '/api/auth/$'
@@ -953,6 +965,13 @@ declare module '@tanstack/react-router' {
       path: '/shows/$slug'
       fullPath: '/shows/$slug'
       preLoaderRoute: typeof PublicShowsSlugRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/courses/$slug': {
+      id: '/_public/courses/$slug'
+      path: '/courses/$slug'
+      fullPath: '/courses/$slug'
+      preLoaderRoute: typeof PublicCoursesSlugRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_authed/learn/leaderboard': {
@@ -1321,6 +1340,7 @@ interface PublicRouteChildren {
   PublicPricingRoute: typeof PublicPricingRoute
   PublicSearchRoute: typeof PublicSearchRoute
   PublicIndexRoute: typeof PublicIndexRoute
+  PublicCoursesSlugRoute: typeof PublicCoursesSlugRoute
   PublicShowsSlugRoute: typeof PublicShowsSlugRoute
   PublicWatchSlugRoute: typeof PublicWatchSlugRoute
   PublicShowsIndexRoute: typeof PublicShowsIndexRoute
@@ -1331,6 +1351,7 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicPricingRoute: PublicPricingRoute,
   PublicSearchRoute: PublicSearchRoute,
   PublicIndexRoute: PublicIndexRoute,
+  PublicCoursesSlugRoute: PublicCoursesSlugRoute,
   PublicShowsSlugRoute: PublicShowsSlugRoute,
   PublicWatchSlugRoute: PublicWatchSlugRoute,
   PublicShowsIndexRoute: PublicShowsIndexRoute,

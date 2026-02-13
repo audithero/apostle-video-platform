@@ -20,6 +20,7 @@ import {
   TrendingUp,
   TrendingDown,
   Users,
+  ChevronRight,
 } from "lucide-react";
 import {
   Card,
@@ -28,10 +29,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authed/dashboard/")({
   component: CreatorDashboard,
@@ -47,8 +47,8 @@ function usagePercent(used: number, limit: number): number {
 function usageColor(percent: number): string {
   if (percent > 100) return "bg-red-500";
   if (percent > 80) return "bg-orange-500";
-  if (percent >= 60) return "bg-yellow-500";
-  return "bg-green-500";
+  if (percent >= 60) return "bg-amber-400";
+  return "bg-gaspar-purple";
 }
 
 // ── Main component ──────────────────────────────────────────────────────
@@ -80,17 +80,14 @@ function CreatorDashboard() {
 
   const isLoading = overviewLoading || revenueLoading;
 
-  // Build sparkline data from trends
   const sparklineData = (revenueTrend ?? []).map((d) => ({ value: d.revenue }));
   const enrollmentSparkline = (enrollmentTrend ?? []).map((d) => ({ value: d.count }));
 
-  // Revenue display
   const revenueAmountCents = revenue?.totalRevenueCents ?? 0;
   const revenueAmount = Math.round(revenueAmountCents / 100);
   const revenueTrendPct = revenue?.revenueChangePct ?? 0;
   const revenueTrendPositive = revenueTrendPct >= 0;
 
-  // Usage data
   const videoUsed = usageData?.metrics.videoStorageHours ?? 0;
   const videoLimit = usageData?.limits.videoStorageHours ?? 20;
   const studentsUsed = usageData?.metrics.activeStudents ?? 0;
@@ -104,174 +101,171 @@ function CreatorDashboard() {
     usagePercent(emailsUsed, emailsLimit) > 80;
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold">Dashboard</h1>
-      <p className="mt-2 text-muted-foreground">
-        Welcome back. Here is an overview of your creator account.
-      </p>
+    <div className="space-y-10">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <p className="mt-1 text-muted-foreground">
+          Welcome back. Here is an overview of your creator account.
+        </p>
+      </div>
 
       {/* ── Metric Cards ───────────────────────────────────────────── */}
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {isLoading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <Card key={i}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="size-4" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-8 w-20" />
-              </CardContent>
-            </Card>
+            <div key={i} className="rounded-2xl bg-base-100 p-6">
+              <Skeleton className="mb-4 h-4 w-24" />
+              <Skeleton className="h-9 w-20" />
+            </div>
           ))
         ) : (
           <>
-            {/* Revenue */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-                <DollarSign className="size-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-end gap-3">
-                  <div>
-                    <p className="text-2xl font-bold">
-                      {`$${revenueAmount.toLocaleString()}`}
+            {/* Revenue - Cream */}
+            <div className="gaspar-card-cream rounded-2xl p-6 transition-shadow hover:shadow-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-wider opacity-60">Revenue</span>
+                <DollarSign className="size-5 opacity-40" />
+              </div>
+              <div className="mt-4 flex items-end gap-3">
+                <div>
+                  <p className="text-3xl font-bold tracking-tight">
+                    {`$${revenueAmount.toLocaleString()}`}
+                  </p>
+                  {revenueTrendPct !== 0 && (
+                    <p className={cn(
+                      "mt-1.5 flex items-center gap-1 text-xs font-medium",
+                      revenueTrendPositive ? "text-emerald-700" : "text-red-700",
+                    )}>
+                      {revenueTrendPositive
+                        ? <TrendingUp className="size-3" />
+                        : <TrendingDown className="size-3" />}
+                      {`${revenueTrendPositive ? "+" : ""}${String(revenueTrendPct)}%`}
                     </p>
-                    {revenueTrendPct !== 0 && (
-                      <p className={`mt-1 flex items-center gap-1 text-xs ${revenueTrendPositive ? "text-emerald-600" : "text-red-500"}`}>
-                        {revenueTrendPositive
-                          ? <TrendingUp className="size-3" />
-                          : <TrendingDown className="size-3" />}
-                        {`${revenueTrendPositive ? "+" : ""}${String(revenueTrendPct)}% from last period`}
-                      </p>
-                    )}
-                  </div>
-                  {sparklineData.length > 1 && (
-                    <div className="ml-auto h-10 w-20">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={sparklineData}>
-                          <defs>
-                            <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.3} />
-                              <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0} />
-                            </linearGradient>
-                          </defs>
-                          <YAxis domain={["dataMin - 200", "dataMax + 200"]} hide />
-                          <Area
-                            type="monotone"
-                            dataKey="value"
-                            stroke="var(--color-primary)"
-                            strokeWidth={1.5}
-                            fill="url(#sparkFill)"
-                            dot={false}
-                            isAnimationActive={false}
-                          />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </div>
                   )}
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Enrollments */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Enrollments</CardTitle>
-                <BookOpen className="size-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-end gap-3">
-                  <div>
-                    <p className="text-2xl font-bold">{overview?.totalEnrollments ?? 0}</p>
-                    {(overview?.monthlyEnrollments ?? 0) > 0 && (
-                      <p className="mt-1 flex items-center gap-1 text-xs text-emerald-600">
-                        <ArrowUpRight className="size-3" />
-                        {`+${String(overview?.monthlyEnrollments ?? 0)} this month`}
-                      </p>
-                    )}
+                {sparklineData.length > 1 && (
+                  <div className="ml-auto h-10 w-20">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={sparklineData}>
+                        <defs>
+                          <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="oklch(0.35 0.03 75)" stopOpacity={0.3} />
+                            <stop offset="100%" stopColor="oklch(0.35 0.03 75)" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <YAxis domain={["dataMin - 200", "dataMax + 200"]} hide />
+                        <Area
+                          type="monotone"
+                          dataKey="value"
+                          stroke="oklch(0.35 0.03 75)"
+                          strokeWidth={1.5}
+                          fill="url(#sparkFill)"
+                          dot={false}
+                          isAnimationActive={false}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
                   </div>
-                  {enrollmentSparkline.length > 1 && (
-                    <div className="ml-auto h-10 w-20">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={enrollmentSparkline}>
-                          <defs>
-                            <linearGradient id="enrollSparkFill" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.3} />
-                              <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0} />
-                            </linearGradient>
-                          </defs>
-                          <YAxis domain={["dataMin", "dataMax + 1"]} hide />
-                          <Area
-                            type="monotone"
-                            dataKey="value"
-                            stroke="var(--color-primary)"
-                            strokeWidth={1.5}
-                            fill="url(#enrollSparkFill)"
-                            dot={false}
-                            isAnimationActive={false}
-                          />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </div>
+                )}
+              </div>
+            </div>
+
+            {/* Enrollments - Blue */}
+            <div className="gaspar-card-blue rounded-2xl p-6 transition-shadow hover:shadow-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-wider opacity-60">Enrollments</span>
+                <BookOpen className="size-5 opacity-40" />
+              </div>
+              <div className="mt-4 flex items-end gap-3">
+                <div>
+                  <p className="text-3xl font-bold tracking-tight">{overview?.totalEnrollments ?? 0}</p>
+                  {(overview?.monthlyEnrollments ?? 0) > 0 && (
+                    <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-emerald-700">
+                      <ArrowUpRight className="size-3" />
+                      {`+${String(overview?.monthlyEnrollments ?? 0)} this month`}
+                    </p>
                   )}
                 </div>
-              </CardContent>
-            </Card>
+                {enrollmentSparkline.length > 1 && (
+                  <div className="ml-auto h-10 w-20">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={enrollmentSparkline}>
+                        <defs>
+                          <linearGradient id="enrollSparkFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="oklch(0.25 0.04 260)" stopOpacity={0.3} />
+                            <stop offset="100%" stopColor="oklch(0.25 0.04 260)" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <YAxis domain={["dataMin", "dataMax + 1"]} hide />
+                        <Area
+                          type="monotone"
+                          dataKey="value"
+                          stroke="oklch(0.25 0.04 260)"
+                          strokeWidth={1.5}
+                          fill="url(#enrollSparkFill)"
+                          dot={false}
+                          isAnimationActive={false}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+              </div>
+            </div>
 
-            {/* Active Students */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Active Students</CardTitle>
-                <Users className="size-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{activeStudentsData?.activeStudents ?? 0}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
+            {/* Active Students - Pink */}
+            <div className="gaspar-card-pink rounded-2xl p-6 transition-shadow hover:shadow-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-wider opacity-60">Active Students</span>
+                <Users className="size-5 opacity-40" />
+              </div>
+              <div className="mt-4">
+                <p className="text-3xl font-bold tracking-tight">{activeStudentsData?.activeStudents ?? 0}</p>
+                <p className="mt-1.5 text-xs font-medium opacity-50">
                   Active within 30 days
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            {/* Courses */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Courses</CardTitle>
-                <BookPlus className="size-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{overview?.totalCourses ?? 0}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
+            {/* Courses - Navy */}
+            <div className="gaspar-card-navy rounded-2xl p-6 transition-shadow hover:shadow-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-wider opacity-50">Courses</span>
+                <BookPlus className="size-5 opacity-40" />
+              </div>
+              <div className="mt-4">
+                <p className="text-3xl font-bold tracking-tight">{overview?.totalCourses ?? 0}</p>
+                <p className="mt-1.5 text-xs font-medium opacity-50">
                   Published
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </>
         )}
       </div>
 
       {/* ── Usage Meters & Quick Actions ─────────────────────────── */}
-      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-3">
         {/* Usage Meters */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
+        <Card className="rounded-2xl border-border/50 lg:col-span-2">
+          <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle>Usage</CardTitle>
+              <CardTitle className="text-base">Usage</CardTitle>
               {showUpgrade && (
                 <Button
                   size="sm"
-                  variant="outline"
+                  className="rounded-full bg-primary px-4 text-xs font-medium text-primary-foreground hover:bg-primary/90"
                   asChild
                 >
                   <Link to="/account" aria-label="Upgrade your plan">
-                    Upgrade
+                    Upgrade Plan
                   </Link>
                 </Button>
               )}
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-5 pt-2">
             {usageLoading ? (
               <>
                 <Skeleton className="h-12 w-full" />
@@ -304,57 +298,60 @@ function CreatorDashboard() {
         </Card>
 
         {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+        <Card className="rounded-2xl border-border/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Quick Actions</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3">
-            <Button
-              variant="outline"
-              className="w-full justify-start gap-2"
-              asChild
+          <CardContent className="flex flex-col gap-2 pt-2">
+            <Link
+              to="/dashboard/courses/ai-wizard"
+              aria-label="Create a new course"
+              className="group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-base-100"
             >
-              <Link to="/dashboard/courses/ai-wizard" aria-label="Create a new course">
-                <BookPlus className="size-4" />
-                Create Course
-              </Link>
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full justify-start gap-2"
-              asChild
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gaspar-cream">
+                <BookPlus className="size-4 text-foreground/70" />
+              </span>
+              <span className="flex-1">Create Course</span>
+              <ChevronRight className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+            </Link>
+            <Link
+              to="/dashboard/emails"
+              aria-label="Send an email to students"
+              className="group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-base-100"
             >
-              <Link to="/dashboard/emails" aria-label="Send an email to students">
-                <Send className="size-4" />
-                Send Email
-              </Link>
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full justify-start gap-2"
-              asChild
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gaspar-blue">
+                <Send className="size-4 text-foreground/70" />
+              </span>
+              <span className="flex-1">Send Email</span>
+              <ChevronRight className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+            </Link>
+            <Link
+              to="/dashboard/usage"
+              aria-label="View usage details"
+              className="group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-base-100"
             >
-              <Link to="/dashboard/usage" aria-label="View usage details">
-                <BarChart3 className="size-4" />
-                View Usage
-              </Link>
-            </Button>
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gaspar-pink">
+                <BarChart3 className="size-4 text-foreground/70" />
+              </span>
+              <span className="flex-1">View Usage</span>
+              <ChevronRight className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+            </Link>
           </CardContent>
         </Card>
       </div>
 
       {/* ── Recent Activity ──────────────────────────────────────── */}
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+      <Card className="rounded-2xl border-border/50">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Recent Activity</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-2">
           {activityLoading ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="flex items-start gap-3">
-                  <Skeleton className="size-8 rounded-full" />
-                  <div className="flex-1 space-y-1">
+                  <Skeleton className="size-9 rounded-full" />
+                  <div className="flex-1 space-y-1.5">
                     <Skeleton className="h-4 w-3/4" />
                     <Skeleton className="h-3 w-24" />
                   </div>
@@ -362,33 +359,31 @@ function CreatorDashboard() {
               ))}
             </div>
           ) : !recentActivity || recentActivity.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
+            <p className="py-4 text-center text-sm text-muted-foreground">
               No recent activity to show.
             </p>
           ) : (
             <ul className="space-y-0" aria-label="Recent activity feed">
               {recentActivity.map((item, idx) => (
                 <li key={`${item.type}-${String(idx)}`}>
-                  {idx > 0 && <Separator className="my-3" />}
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-3">
-                      <ActivityIcon kind={item.type} />
-                      <div className="space-y-1">
-                        <p className="text-sm leading-snug">{item.message}</p>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="default">
-                            Enrollment
-                          </Badge>
-                        </div>
+                  {idx > 0 && <div className="ml-[18px] h-3 w-px bg-border/60" />}
+                  <div className="flex items-start gap-3 py-1">
+                    <ActivityIcon kind={item.type} />
+                    <div className="flex-1 space-y-0.5">
+                      <p className="text-sm leading-snug">{item.message}</p>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="rounded-full px-2 py-0 text-[10px] font-medium">
+                          {item.type}
+                        </Badge>
+                        <time
+                          dateTime={new Date(item.createdAt).toISOString()}
+                          className="flex items-center gap-1 text-[11px] text-muted-foreground"
+                        >
+                          <Clock className="size-2.5" />
+                          {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
+                        </time>
                       </div>
                     </div>
-                    <time
-                      dateTime={new Date(item.createdAt).toISOString()}
-                      className="flex shrink-0 items-center gap-1 text-xs text-muted-foreground"
-                    >
-                      <Clock className="size-3" />
-                      {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
-                    </time>
                   </div>
                 </li>
               ))}
@@ -422,18 +417,16 @@ function UsageMeter({ label, used, limit, unit }: UsageMeterProps) {
     <div>
       <div className="flex items-center justify-between text-sm">
         <span className="font-medium">{label}</span>
-        <span className="text-muted-foreground">
+        <span className="text-xs text-muted-foreground">
           {`${formattedUsed}${suffix} / ${formattedLimit}${suffix}`}
         </span>
       </div>
-      <div className="relative mt-2">
-        <Progress
-          value={clampedPercent}
-          className="h-3"
-          aria-label={`${label}: ${formattedUsed} of ${formattedLimit}${suffix} used`}
-        />
+      <div
+        className="relative mt-2 h-2 overflow-hidden rounded-full bg-base-100"
+        aria-label={`${label}: ${formattedUsed} of ${formattedLimit}${suffix} used`}
+      >
         <div
-          className={`absolute inset-y-0 left-0 rounded-full ${colorClass} transition-all`}
+          className={cn("h-full rounded-full transition-all duration-500", colorClass)}
           style={{ width: `${String(clampedPercent)}%` }}
         />
       </div>
@@ -449,31 +442,31 @@ function UsageMeter({ label, used, limit, unit }: UsageMeterProps) {
 }
 
 function ActivityIcon({ kind }: { kind: string }) {
-  const baseClasses = "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full";
+  const baseClasses = "flex size-9 shrink-0 items-center justify-center rounded-full";
 
   switch (kind) {
     case "enrollment":
       return (
-        <span className={`${baseClasses} bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400`}>
-          <BookOpen className="size-4" />
+        <span className={`${baseClasses} bg-gaspar-blue`}>
+          <BookOpen className="size-4 opacity-70" />
         </span>
       );
     case "payment":
       return (
-        <span className={`${baseClasses} bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400`}>
-          <DollarSign className="size-4" />
+        <span className={`${baseClasses} bg-gaspar-cream`}>
+          <DollarSign className="size-4 opacity-70" />
         </span>
       );
     case "published":
       return (
-        <span className={`${baseClasses} bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-400`}>
-          <BookPlus className="size-4" />
+        <span className={`${baseClasses} bg-gaspar-lavender text-white`}>
+          <BookPlus className="size-4 opacity-80" />
         </span>
       );
     default:
       return (
-        <span className={`${baseClasses} bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400`}>
-          <Mail className="size-4" />
+        <span className={`${baseClasses} bg-gaspar-pink`}>
+          <Mail className="size-4 opacity-70" />
         </span>
       );
   }

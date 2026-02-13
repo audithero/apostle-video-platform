@@ -16,7 +16,6 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
 import { useTRPC } from "@/lib/trpc/react";
 import { toast } from "sonner";
 
@@ -206,54 +205,56 @@ function CreatorSettings() {
 
   if (isLoading) {
     return (
-      <div>
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="mt-2 h-4 w-80" />
-        <Skeleton className="mt-8 h-10 w-96" />
-        <Skeleton className="mt-6 h-64 w-full" />
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-48 rounded-xl" />
+        <Skeleton className="h-4 w-80 rounded-lg" />
+        <Skeleton className="mt-6 h-10 w-96 rounded-full" />
+        <Skeleton className="mt-6 h-64 w-full rounded-2xl" />
       </div>
     );
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold">Settings</h1>
-      <p className="mt-1 text-muted-foreground">Configure your creator profile, branding, and integrations.</p>
+    <div className="space-y-8">
+      <div>
+        <h1 className="font-heading text-3xl font-bold tracking-tight">Settings</h1>
+        <p className="mt-1 text-base text-muted-foreground">Configure your creator profile, branding, and integrations.</p>
+      </div>
 
-      <Tabs defaultValue="profile" className="mt-8">
-        <TabsList>
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="branding">Branding</TabsTrigger>
-          <TabsTrigger value="domain">Domain & SEO</TabsTrigger>
-          <TabsTrigger value="integrations">Integrations</TabsTrigger>
-          <TabsTrigger value="advanced">Advanced</TabsTrigger>
+      <Tabs defaultValue="profile">
+        <TabsList className="h-auto gap-1 rounded-full bg-muted/60 p-1">
+          <TabsTrigger value="profile" className="rounded-full px-5 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">Profile</TabsTrigger>
+          <TabsTrigger value="branding" className="rounded-full px-5 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">Branding</TabsTrigger>
+          <TabsTrigger value="domain" className="rounded-full px-5 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">Domain & SEO</TabsTrigger>
+          <TabsTrigger value="integrations" className="rounded-full px-5 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">Integrations</TabsTrigger>
+          <TabsTrigger value="advanced" className="rounded-full px-5 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">Advanced</TabsTrigger>
         </TabsList>
 
         {/* Profile Tab */}
-        <TabsContent value="profile" className="mt-6">
-          <Card>
+        <TabsContent value="profile" className="mt-8">
+          <Card className="rounded-2xl border-border/50 shadow-sm">
             <CardHeader>
-              <CardTitle>Creator Profile</CardTitle>
+              <CardTitle className="font-heading text-lg font-bold tracking-tight">Creator Profile</CardTitle>
               <CardDescription>Your public-facing business information.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-5 md:grid-cols-2">
                 <div>
-                  <Label htmlFor="business-name">Business Name</Label>
+                  <Label htmlFor="business-name" className="text-sm font-medium">Business Name</Label>
                   <Input
                     id="business-name"
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
-                    className="mt-1"
+                    className="mt-1.5 rounded-xl"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="slug">URL Slug</Label>
+                  <Label htmlFor="slug" className="text-sm font-medium">URL Slug</Label>
                   <Input
                     id="slug"
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
-                    className="mt-1"
+                    className="mt-1.5 rounded-xl"
                     disabled
                   />
                   <p className="mt-1 text-xs text-muted-foreground">
@@ -262,35 +263,37 @@ function CreatorSettings() {
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
+              <Separator className="bg-border/50" />
+
+              <div className="grid gap-5 md:grid-cols-2">
                 <div>
-                  <Label htmlFor="email-from">Email From Name</Label>
+                  <Label htmlFor="email-from" className="text-sm font-medium">Email From Name</Label>
                   <Input
                     id="email-from"
                     value={emailFromName}
                     onChange={(e) => setEmailFromName(e.target.value)}
-                    className="mt-1"
+                    className="mt-1.5 rounded-xl"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="email-reply">Reply-To Email</Label>
+                  <Label htmlFor="email-reply" className="text-sm font-medium">Reply-To Email</Label>
                   <Input
                     id="email-reply"
                     type="email"
                     value={emailReplyTo}
                     onChange={(e) => setEmailReplyTo(e.target.value)}
-                    className="mt-1"
+                    className="mt-1.5 rounded-xl"
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="timezone">Timezone</Label>
+                <Label htmlFor="timezone" className="text-sm font-medium">Timezone</Label>
                 <select
                   id="timezone"
                   value={timezone}
                   onChange={(e) => setTimezone(e.target.value)}
-                  className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                  className="mt-1.5 w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="America/New_York">Eastern Time (US & Canada)</option>
                   <option value="America/Chicago">Central Time (US & Canada)</option>
@@ -308,52 +311,52 @@ function CreatorSettings() {
         </TabsContent>
 
         {/* Branding Tab */}
-        <TabsContent value="branding" className="mt-6">
-          <Card>
+        <TabsContent value="branding" className="mt-8">
+          <Card className="rounded-2xl border-border/50 shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Palette className="size-5" />
+              <CardTitle className="flex items-center gap-2 font-heading text-lg font-bold tracking-tight">
+                <Palette className="size-5 text-gaspar-purple" />
                 Brand Identity
               </CardTitle>
               <CardDescription>Customize colors, fonts, and visual identity.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-5 md:grid-cols-2">
                 <div>
-                  <Label htmlFor="brand-color">Primary Color</Label>
-                  <div className="mt-1 flex items-center gap-2">
+                  <Label htmlFor="brand-color" className="text-sm font-medium">Primary Color</Label>
+                  <div className="mt-1.5 flex items-center gap-2">
                     <input
                       type="color"
                       id="brand-color"
                       value={brandColor}
                       onChange={(e) => setBrandColor(e.target.value)}
-                      className="size-10 cursor-pointer rounded border"
+                      className="size-10 cursor-pointer rounded-xl border border-input"
                     />
-                    <Input value={brandColor} onChange={(e) => setBrandColor(e.target.value)} className="w-32" />
+                    <Input value={brandColor} onChange={(e) => setBrandColor(e.target.value)} className="w-32 rounded-xl" />
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="secondary-color">Secondary Color</Label>
-                  <div className="mt-1 flex items-center gap-2">
+                  <Label htmlFor="secondary-color" className="text-sm font-medium">Secondary Color</Label>
+                  <div className="mt-1.5 flex items-center gap-2">
                     <input
                       type="color"
                       id="secondary-color"
                       value={brandSecondaryColor}
                       onChange={(e) => setBrandSecondaryColor(e.target.value)}
-                      className="size-10 cursor-pointer rounded border"
+                      className="size-10 cursor-pointer rounded-xl border border-input"
                     />
-                    <Input value={brandSecondaryColor} onChange={(e) => setBrandSecondaryColor(e.target.value)} className="w-32" />
+                    <Input value={brandSecondaryColor} onChange={(e) => setBrandSecondaryColor(e.target.value)} className="w-32 rounded-xl" />
                   </div>
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="font-family">Font Family</Label>
+                <Label htmlFor="font-family" className="text-sm font-medium">Font Family</Label>
                 <select
                   id="font-family"
                   value={fontFamily}
                   onChange={(e) => setFontFamily(e.target.value)}
-                  className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                  className="mt-1.5 w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="Inter">Inter</option>
                   <option value="Roboto">Roboto</option>
@@ -364,19 +367,19 @@ function CreatorSettings() {
                 </select>
               </div>
 
-              <Separator />
+              <Separator className="bg-border/50" />
 
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-5 md:grid-cols-2">
                 <div>
-                  <Label htmlFor="logo-url" className="flex items-center gap-2">
-                    <Image className="size-4" />
+                  <Label htmlFor="logo-url" className="flex items-center gap-2 text-sm font-medium">
+                    <Image className="size-4 text-muted-foreground" />
                     Logo URL
                   </Label>
-                  <Input id="logo-url" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} placeholder="https://..." className="mt-1" />
+                  <Input id="logo-url" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} placeholder="https://..." className="mt-1.5 rounded-xl" />
                 </div>
                 <div>
-                  <Label htmlFor="favicon-url">Favicon URL</Label>
-                  <Input id="favicon-url" value={faviconUrl} onChange={(e) => setFaviconUrl(e.target.value)} placeholder="https://..." className="mt-1" />
+                  <Label htmlFor="favicon-url" className="text-sm font-medium">Favicon URL</Label>
+                  <Input id="favicon-url" value={faviconUrl} onChange={(e) => setFaviconUrl(e.target.value)} placeholder="https://..." className="mt-1.5 rounded-xl" />
                 </div>
               </div>
 
@@ -386,19 +389,19 @@ function CreatorSettings() {
         </TabsContent>
 
         {/* Domain & SEO Tab */}
-        <TabsContent value="domain" className="mt-6">
+        <TabsContent value="domain" className="mt-8">
           <div className="space-y-6">
             {/* Free Subdomain */}
-            <Card>
+            <Card className="rounded-2xl border-border/50 shadow-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Globe className="size-5" />
+                <CardTitle className="flex items-center gap-2 font-heading text-lg font-bold tracking-tight">
+                  <Globe className="size-5 text-gaspar-blue" />
                   Your Subdomain
                 </CardTitle>
                 <CardDescription>Your free subdomain is always available.</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-2 rounded-md border bg-muted/50 px-3 py-2">
+                <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-muted/40 px-4 py-3">
                   <ExternalLink className="size-4 text-muted-foreground" />
                   <code className="flex-1 text-sm font-medium">
                     {domainStatus?.subdomain ?? `${slug}.apostle.tv`}
@@ -407,7 +410,7 @@ function CreatorSettings() {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="h-7 gap-1 px-2"
+                    className="h-7 gap-1 rounded-full px-3"
                     onClick={() => handleCopyToClipboard(domainStatus?.subdomain ?? `${slug}.apostle.tv`)}
                   >
                     <Copy className="size-3" />
@@ -421,66 +424,66 @@ function CreatorSettings() {
             </Card>
 
             {/* Custom Domain */}
-            <Card>
+            <Card className="rounded-2xl border-border/50 shadow-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="size-5" />
+                <CardTitle className="flex items-center gap-2 font-heading text-lg font-bold tracking-tight">
+                  <Shield className="size-5 text-gaspar-purple" />
                   Custom Domain
                 </CardTitle>
                 <CardDescription>Connect your own domain for a professional branded experience.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="custom-domain">Domain</Label>
+                  <Label htmlFor="custom-domain" className="text-sm font-medium">Domain</Label>
                   <Input
                     id="custom-domain"
                     value={customDomain}
                     onChange={(e) => setCustomDomain(e.target.value)}
                     placeholder="courses.yourdomain.com"
-                    className="mt-1"
+                    className="mt-1.5 rounded-xl"
                   />
                 </div>
 
                 {/* DNS Setup Instructions */}
                 {customDomain && (
-                  <div className="rounded-md border bg-muted/30 p-4 space-y-3">
-                    <h4 className="text-sm font-semibold">DNS Configuration</h4>
+                  <div className="rounded-xl border border-border/50 bg-muted/30 p-5 space-y-3">
+                    <h4 className="font-heading text-sm font-semibold">DNS Configuration</h4>
                     <p className="text-xs text-muted-foreground">
                       Add the following CNAME record in your DNS provider:
                     </p>
-                    <div className="overflow-x-auto rounded border bg-background">
+                    <div className="overflow-x-auto rounded-xl border border-border/50 bg-background">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="border-b">
-                            <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground" scope="col">Type</th>
-                            <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground" scope="col">Name/Host</th>
-                            <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground" scope="col">Value/Target</th>
-                            <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground" scope="col">TTL</th>
+                          <tr className="border-b border-border/50">
+                            <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground" scope="col">Type</th>
+                            <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground" scope="col">Name/Host</th>
+                            <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground" scope="col">Value/Target</th>
+                            <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground" scope="col">TTL</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <td className="px-3 py-2 font-mono text-xs">CNAME</td>
-                            <td className="px-3 py-2 font-mono text-xs">
+                            <td className="px-4 py-2.5 font-mono text-xs">CNAME</td>
+                            <td className="px-4 py-2.5 font-mono text-xs">
                               {customDomain.startsWith("www.")
                                 ? "www"
                                 : customDomain.split(".").at(0) ?? customDomain}
                             </td>
-                            <td className="px-3 py-2">
+                            <td className="px-4 py-2.5">
                               <div className="flex items-center gap-2">
                                 <code className="font-mono text-xs">cname.apostle.tv</code>
                                 <Button
                                   type="button"
                                   variant="ghost"
                                   size="sm"
-                                  className="h-6 gap-1 px-1.5"
+                                  className="h-6 gap-1 rounded-full px-2"
                                   onClick={() => handleCopyToClipboard("cname.apostle.tv")}
                                 >
                                   <Copy className="size-3" />
                                 </Button>
                               </div>
                             </td>
-                            <td className="px-3 py-2 font-mono text-xs">Auto/3600</td>
+                            <td className="px-4 py-2.5 font-mono text-xs">Auto/3600</td>
                           </tr>
                         </tbody>
                       </table>
@@ -495,7 +498,7 @@ function CreatorSettings() {
                 {domainStatus?.customDomain && (
                   <div className="flex items-center gap-3">
                     {domainStatus.domainVerified ? (
-                      <div className="flex items-center gap-2 rounded-md border border-green-200 bg-green-50 px-3 py-2 dark:border-green-900 dark:bg-green-950">
+                      <div className="flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-2 dark:border-green-900 dark:bg-green-950">
                         <Check className="size-4 text-green-600" />
                         <div>
                           <p className="text-sm font-medium text-green-800 dark:text-green-200">Domain Verified</p>
@@ -507,15 +510,16 @@ function CreatorSettings() {
                         </div>
                       </div>
                     ) : (
-                      <Badge variant="secondary" className="gap-1">
-                        <AlertCircle className="size-3" />
+                      <span className="pill border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                        <AlertCircle className="mr-1 inline size-3" />
                         Not verified
-                      </Badge>
+                      </span>
                     )}
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
+                      className="rounded-full"
                       onClick={() => {
                         setDomainError("");
                         verifyDomain.mutate();
@@ -536,7 +540,7 @@ function CreatorSettings() {
 
                 {/* Verification Error */}
                 {domainError && (
-                  <div className="rounded-md border border-red-200 bg-red-50 p-3 dark:border-red-900 dark:bg-red-950">
+                  <div className="rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950">
                     <div className="flex items-center gap-2">
                       <AlertCircle className="size-4 text-red-500" />
                       <p className="text-sm text-red-700 dark:text-red-300">{domainError}</p>
@@ -549,23 +553,23 @@ function CreatorSettings() {
             </Card>
 
             {/* SEO Defaults */}
-            <Card>
+            <Card className="rounded-2xl border-border/50 shadow-sm">
               <CardHeader>
-                <CardTitle>SEO Defaults</CardTitle>
+                <CardTitle className="font-heading text-lg font-bold tracking-tight">SEO Defaults</CardTitle>
                 <CardDescription>Default meta tags for your pages.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="seo-title">Default Meta Title</Label>
-                  <Input id="seo-title" value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} className="mt-1" />
+                  <Label htmlFor="seo-title" className="text-sm font-medium">Default Meta Title</Label>
+                  <Input id="seo-title" value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} className="mt-1.5 rounded-xl" />
                 </div>
                 <div>
-                  <Label htmlFor="seo-desc">Default Meta Description</Label>
-                  <Textarea id="seo-desc" value={seoDescription} onChange={(e) => setSeoDescription(e.target.value)} className="mt-1" rows={3} />
+                  <Label htmlFor="seo-desc" className="text-sm font-medium">Default Meta Description</Label>
+                  <Textarea id="seo-desc" value={seoDescription} onChange={(e) => setSeoDescription(e.target.value)} className="mt-1.5 rounded-xl" rows={3} />
                 </div>
                 <div>
-                  <Label htmlFor="og-image">Default OG Image URL</Label>
-                  <Input id="og-image" value={ogImageUrl} onChange={(e) => setOgImageUrl(e.target.value)} placeholder="https://..." className="mt-1" />
+                  <Label htmlFor="og-image" className="text-sm font-medium">Default OG Image URL</Label>
+                  <Input id="og-image" value={ogImageUrl} onChange={(e) => setOgImageUrl(e.target.value)} placeholder="https://..." className="mt-1.5 rounded-xl" />
                 </div>
                 <SaveButton onClick={handleSaveSeo} isPending={isSaving} />
               </CardContent>
@@ -574,64 +578,64 @@ function CreatorSettings() {
         </TabsContent>
 
         {/* Integrations Tab */}
-        <TabsContent value="integrations" className="mt-6">
-          <Card>
+        <TabsContent value="integrations" className="mt-8">
+          <Card className="rounded-2xl border-border/50 shadow-sm">
             <CardHeader>
-              <CardTitle>Analytics & Tracking Pixels</CardTitle>
+              <CardTitle className="font-heading text-lg font-bold tracking-tight">Analytics & Tracking Pixels</CardTitle>
               <CardDescription>
                 Connect your analytics and advertising pixels. These scripts will be automatically
                 injected into your student-facing pages.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-5 md:grid-cols-2">
                 <div>
-                  <Label htmlFor="meta-pixel">Meta (Facebook) Pixel ID</Label>
+                  <Label htmlFor="meta-pixel" className="text-sm font-medium">Meta (Facebook) Pixel ID</Label>
                   <Input
                     id="meta-pixel"
                     value={metaPixelId}
                     onChange={(e) => setMetaPixelId(e.target.value)}
                     placeholder="123456789012345"
-                    className="mt-1"
+                    className="mt-1.5 rounded-xl"
                   />
                   <p className="mt-1 text-xs text-muted-foreground">
                     Tracks PageView, Purchase, and Lead events. Server-side CAPI enabled for purchases.
                   </p>
                 </div>
                 <div>
-                  <Label htmlFor="ga4">Google Analytics 4 Measurement ID</Label>
+                  <Label htmlFor="ga4" className="text-sm font-medium">Google Analytics 4 Measurement ID</Label>
                   <Input
                     id="ga4"
                     value={ga4Id}
                     onChange={(e) => setGa4Id(e.target.value)}
                     placeholder="G-XXXXXXXXXX"
-                    className="mt-1"
+                    className="mt-1.5 rounded-xl"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="gtm">Google Tag Manager Container ID</Label>
+                  <Label htmlFor="gtm" className="text-sm font-medium">Google Tag Manager Container ID</Label>
                   <Input
                     id="gtm"
                     value={gtmId}
                     onChange={(e) => setGtmId(e.target.value)}
                     placeholder="GTM-XXXXXXX"
-                    className="mt-1"
+                    className="mt-1.5 rounded-xl"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="tiktok-pixel">TikTok Pixel ID</Label>
+                  <Label htmlFor="tiktok-pixel" className="text-sm font-medium">TikTok Pixel ID</Label>
                   <Input
                     id="tiktok-pixel"
                     value={tiktokPixelId}
                     onChange={(e) => setTiktokPixelId(e.target.value)}
                     placeholder="XXXXXXXXXXXXXXXXX"
-                    className="mt-1"
+                    className="mt-1.5 rounded-xl"
                   />
                 </div>
               </div>
 
               {(metaPixelId || ga4Id || gtmId || tiktokPixelId) ? (
-                <div className="rounded-md border border-green-200 bg-green-50 p-3 dark:border-green-900 dark:bg-green-950">
+                <div className="rounded-xl border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-950">
                   <div className="flex items-center gap-2 text-sm font-medium text-green-800 dark:text-green-200">
                     <Check className="size-4" />
                     Pixels configured
@@ -654,35 +658,35 @@ function CreatorSettings() {
         </TabsContent>
 
         {/* Advanced Tab */}
-        <TabsContent value="advanced" className="mt-6">
-          <Card>
+        <TabsContent value="advanced" className="mt-8">
+          <Card className="rounded-2xl border-border/50 shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Code className="size-5" />
+              <CardTitle className="flex items-center gap-2 font-heading text-lg font-bold tracking-tight">
+                <Code className="size-5 text-gaspar-purple" />
                 Custom Code
               </CardTitle>
               <CardDescription>Add custom HTML/JS to the head and custom CSS to all pages.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5">
               <div>
-                <Label htmlFor="custom-head">Custom Head Code</Label>
+                <Label htmlFor="custom-head" className="text-sm font-medium">Custom Head Code</Label>
                 <Textarea
                   id="custom-head"
                   value={customHeadCode}
                   onChange={(e) => setCustomHeadCode(e.target.value)}
                   placeholder="<!-- Custom scripts, meta tags, etc. -->"
-                  className="mt-1 font-mono text-sm"
+                  className="mt-1.5 rounded-xl font-mono text-sm"
                   rows={6}
                 />
               </div>
               <div>
-                <Label htmlFor="custom-css">Custom CSS</Label>
+                <Label htmlFor="custom-css" className="text-sm font-medium">Custom CSS</Label>
                 <Textarea
                   id="custom-css"
                   value={customCss}
                   onChange={(e) => setCustomCss(e.target.value)}
                   placeholder="/* Custom styles */"
-                  className="mt-1 font-mono text-sm"
+                  className="mt-1.5 rounded-xl font-mono text-sm"
                   rows={6}
                 />
               </div>
@@ -697,7 +701,7 @@ function CreatorSettings() {
 
 function SaveButton({ onClick, isPending }: { readonly onClick: () => void; readonly isPending: boolean }) {
   return (
-    <Button type="button" onClick={onClick} disabled={isPending}>
+    <Button type="button" onClick={onClick} disabled={isPending} className="rounded-full px-6 font-medium">
       {isPending ? (
         <>
           <Loader2 className="mr-2 size-4 animate-spin" />

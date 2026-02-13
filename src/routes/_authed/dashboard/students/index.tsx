@@ -120,10 +120,10 @@ function StudentManagement() {
   };
 
   return (
-    <div>
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Students</h1>
+          <h1 className="font-heading text-3xl font-bold tracking-tight">Students</h1>
           <p className="mt-1 text-muted-foreground">
             {studentsLoading
               ? "Loading..."
@@ -131,7 +131,7 @@ function StudentManagement() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button type="button" variant="outline" onClick={handleExportCsv} disabled={students.length === 0}>
+          <Button type="button" variant="outline" className="rounded-lg" onClick={handleExportCsv} disabled={students.length === 0}>
             <Download className="mr-2 size-4" />
             Export CSV
           </Button>
@@ -139,62 +139,54 @@ function StudentManagement() {
       </div>
 
       {/* Stats */}
-      <div className="mt-6 grid gap-4 sm:grid-cols-4">
-        <Card>
-          <CardContent className="pt-6">
-            {studentsLoading ? (
-              <Skeleton className="h-8 w-16" />
-            ) : (
-              <p className="text-2xl font-bold">{totalStudents}</p>
-            )}
-            <p className="text-sm text-muted-foreground">Total Students</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            {studentsLoading ? (
-              <Skeleton className="h-8 w-16" />
-            ) : (
-              <p className="text-2xl font-bold">{activeCount}</p>
-            )}
-            <p className="text-sm text-muted-foreground">Active (30d)</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            {studentsLoading ? (
-              <Skeleton className="h-8 w-16" />
-            ) : (
-              <p className="text-2xl font-bold">{completedCount}</p>
-            )}
-            <p className="text-sm text-muted-foreground">Completed a Course</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            {studentsLoading ? (
-              <Skeleton className="h-8 w-16" />
-            ) : (
-              <p className="text-2xl font-bold">
-                {students.length > 0
-                  ? `${String(Math.round(students.reduce((sum, s) => sum + (s.totalLessons > 0 ? (s.completedLessons / s.totalLessons) * 100 : 0), 0) / students.length))}%`
-                  : "0%"}
-              </p>
-            )}
-            <p className="text-sm text-muted-foreground">Avg Progress</p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-5 sm:grid-cols-4">
+        <div className="gaspar-card-cream rounded-2xl p-6">
+          {studentsLoading ? (
+            <Skeleton className="h-8 w-16" />
+          ) : (
+            <p className="text-3xl font-bold tracking-tight">{totalStudents}</p>
+          )}
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wider opacity-60">Total Students</p>
+        </div>
+        <div className="gaspar-card-blue rounded-2xl p-6">
+          {studentsLoading ? (
+            <Skeleton className="h-8 w-16" />
+          ) : (
+            <p className="text-3xl font-bold tracking-tight">{activeCount}</p>
+          )}
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wider opacity-60">Active (30d)</p>
+        </div>
+        <div className="gaspar-card-pink rounded-2xl p-6">
+          {studentsLoading ? (
+            <Skeleton className="h-8 w-16" />
+          ) : (
+            <p className="text-3xl font-bold tracking-tight">{completedCount}</p>
+          )}
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wider opacity-60">Completed a Course</p>
+        </div>
+        <div className="rounded-2xl border border-border/50 bg-base-100 p-6">
+          {studentsLoading ? (
+            <Skeleton className="h-8 w-16" />
+          ) : (
+            <p className="text-3xl font-bold tracking-tight">
+              {students.length > 0
+                ? `${String(Math.round(students.reduce((sum, s) => sum + (s.totalLessons > 0 ? (s.completedLessons / s.totalLessons) * 100 : 0), 0) / students.length))}%`
+                : "0%"}
+            </p>
+          )}
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wider opacity-60">Avg Progress</p>
+        </div>
       </div>
 
       {/* Filters */}
-      <div className="mt-6 flex items-center gap-4">
+      <div className="flex items-center gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search by name or email..."
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-10"
+            className="rounded-lg pl-10"
           />
         </div>
         <Select
@@ -236,7 +228,7 @@ function StudentManagement() {
       </div>
 
       {/* Table */}
-      <Card className="mt-4">
+      <Card className="rounded-2xl border-border/50">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
@@ -271,9 +263,10 @@ function StudentManagement() {
                 ))
               ) : students.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="py-12 text-center">
-                    <Users className="mx-auto mb-3 size-10 text-muted-foreground" />
-                    <p className="text-muted-foreground">No students found</p>
+                  <TableCell colSpan={6} className="py-16 text-center">
+                    <Users className="mx-auto mb-4 size-12 text-muted-foreground/40" />
+                    <p className="text-lg font-medium">No students found</p>
+                    <p className="mt-1 text-sm text-muted-foreground">Try adjusting your search or filters.</p>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -340,6 +333,7 @@ function StudentManagement() {
                       </TableCell>
                       <TableCell>
                         <Badge
+                          className="rounded-full px-3"
                           variant={
                             student.status === "active"
                               ? "default"
@@ -385,7 +379,7 @@ function StudentManagement() {
 
       {/* Pagination */}
       {totalPages > 1 ? (
-        <div className="mt-4 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             Showing {String(page * PAGE_SIZE + 1)}-
             {String(Math.min((page + 1) * PAGE_SIZE, totalStudents))} of{" "}
@@ -396,6 +390,7 @@ function StudentManagement() {
               type="button"
               variant="outline"
               size="sm"
+              className="rounded-lg"
               disabled={page === 0}
               onClick={() => setPage((p) => p - 1)}
             >
@@ -406,6 +401,7 @@ function StudentManagement() {
               type="button"
               variant="outline"
               size="sm"
+              className="rounded-lg"
               disabled={page >= totalPages - 1}
               onClick={() => setPage((p) => p + 1)}
             >

@@ -89,11 +89,20 @@ type DateRange = {
   readonly to: Date;
 };
 
-const BAR_CORNER_RADIUS = 4;
+const BAR_CORNER_RADIUS = 6;
 const BAR_MAX_SIZE = 40;
-const PIE_COLORS = ["hsl(215 70% 55%)", "hsl(150 60% 45%)", "hsl(40 90% 55%)", "hsl(350 65% 55%)"];
+const PIE_COLORS = ["oklch(0.55 0.15 290)", "oklch(0.75 0.08 260)", "oklch(0.88 0.045 340)", "oklch(0.92 0.035 75)"];
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const HEATMAP_HOURS = Array.from({ length: 24 }, (_, i) => i);
+
+// -- Gaspar KPI card backgrounds (rotate through) --------------------------
+
+const GASPAR_KPI_STYLES = [
+  "gaspar-card-cream",
+  "gaspar-card-blue",
+  "gaspar-card-pink",
+  "gaspar-card-navy",
+] as const;
 
 // -- Date range helpers -----------------------------------------------------
 
@@ -159,9 +168,9 @@ function CustomTooltip({ active, payload, label, prefix = "", suffix = "" }: Cus
   }
 
   return (
-    <div className="rounded-lg border bg-background px-3 py-2 shadow-md">
-      <p className="text-muted-foreground text-xs">{label}</p>
-      <p className="font-semibold text-sm">
+    <div className="rounded-2xl border border-border/50 bg-card px-4 py-2.5 shadow-xl">
+      <p className="text-muted-foreground text-xs font-medium">{label}</p>
+      <p className="font-heading font-semibold text-sm">
         {`${prefix}${payload.at(0)?.value.toLocaleString()}${suffix}`}
       </p>
     </div>
@@ -177,25 +186,33 @@ type KpiCardProps = {
   readonly icon: typeof DollarSign;
   readonly trendLabel?: string;
   readonly isLoading?: boolean;
+  readonly gasparStyle?: string;
 };
 
-function KpiCard({ title, value, trend, icon: Icon, trendLabel, isLoading }: KpiCardProps) {
+function KpiCard({ title, value, trend, icon: Icon, trendLabel, isLoading, gasparStyle }: KpiCardProps) {
   const isPositive = (trend ?? 0) >= 0;
+  const isNavy = gasparStyle === "gaspar-card-navy";
 
   return (
-    <Card>
+    <Card className={`rounded-2xl border-0 shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-lg ${gasparStyle ?? ""}`}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="font-medium text-sm">{title}</CardTitle>
-        <Icon className="size-4 text-muted-foreground" />
+        <CardTitle className={`text-xs font-semibold uppercase tracking-wider ${isNavy ? "opacity-70" : "opacity-60"}`}>{title}</CardTitle>
+        <div className={`flex size-8 items-center justify-center rounded-full ${isNavy ? "bg-white/10" : "bg-black/5"}`}>
+          <Icon className={`size-4 ${isNavy ? "text-white/70" : "text-black/40"}`} />
+        </div>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="h-8 w-24 animate-pulse rounded bg-muted" />
+          <div className={`h-8 w-24 animate-pulse rounded-xl ${isNavy ? "bg-white/10" : "bg-black/5"}`} />
         ) : (
           <>
-            <p className="font-bold text-2xl">{value}</p>
+            <p className="font-heading font-bold text-2xl tracking-tight">{value}</p>
             {trend !== undefined && trendLabel && (
-              <p className={`mt-1 flex items-center gap-1 text-xs ${isPositive ? "text-emerald-600" : "text-red-500"}`}>
+              <p className={`mt-1 flex items-center gap-1 text-xs font-medium ${
+                isNavy
+                  ? isPositive ? "text-emerald-300" : "text-red-300"
+                  : isPositive ? "text-emerald-700" : "text-red-600"
+              }`}>
                 {isPositive ? (
                   <ArrowUpRight className="size-3" />
                 ) : (
@@ -236,15 +253,15 @@ function DateRangePicker({ preset, customRange, onPresetChange, onCustomRangeCha
   }, [tempFrom, tempTo, onCustomRangeChange, onPresetChange]);
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex items-center gap-1 rounded-lg border p-1">
+    <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1 rounded-full border border-border/50 bg-card p-1 shadow-sm">
         {(["7d", "30d", "90d", "year"] as const).map((p) => (
           <Button
             key={p}
             type="button"
             variant={preset === p ? "default" : "ghost"}
             size="sm"
-            className="h-7 px-2.5 text-xs"
+            className={`h-7 rounded-full px-3 text-xs font-medium ${preset === p ? "shadow-md" : ""}`}
             onClick={() => onPresetChange(p)}
           >
             {p === "7d" ? "7 days" : p === "30d" ? "30 days" : p === "90d" ? "90 days" : "This year"}
@@ -258,7 +275,7 @@ function DateRangePicker({ preset, customRange, onPresetChange, onCustomRangeCha
             type="button"
             variant={preset === "custom" ? "default" : "outline"}
             size="sm"
-            className="gap-1.5"
+            className="gap-1.5 rounded-full"
           >
             <CalendarIcon className="size-3.5" />
             {preset === "custom" && customRange
@@ -266,7 +283,7 @@ function DateRangePicker({ preset, customRange, onPresetChange, onCustomRangeCha
               : "Custom"}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-4" align="end">
+        <PopoverContent className="w-auto rounded-2xl p-4" align="end">
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-1.5">
@@ -289,10 +306,10 @@ function DateRangePicker({ preset, customRange, onPresetChange, onCustomRangeCha
               </div>
             </div>
             <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsOpen(false)}>
+              <Button type="button" variant="outline" size="sm" className="rounded-full" onClick={() => setIsOpen(false)}>
                 Cancel
               </Button>
-              <Button type="button" size="sm" onClick={handleApplyCustom} disabled={!tempFrom || !tempTo}>
+              <Button type="button" size="sm" className="rounded-full" onClick={handleApplyCustom} disabled={!tempFrom || !tempTo}>
                 Apply
               </Button>
             </div>
@@ -314,16 +331,16 @@ function HeatmapCell({ value, max }: { readonly value: number; readonly max: num
   const bg = intensity === 0
     ? "bg-muted"
     : intensity < 0.25
-      ? "bg-emerald-100 dark:bg-emerald-950"
+      ? "bg-gaspar-lavender/20"
       : intensity < 0.5
-        ? "bg-emerald-300 dark:bg-emerald-800"
+        ? "bg-gaspar-lavender/40"
         : intensity < 0.75
-          ? "bg-emerald-500 dark:bg-emerald-600"
-          : "bg-emerald-700 dark:bg-emerald-400";
+          ? "bg-gaspar-purple/50"
+          : "bg-gaspar-purple/80";
 
   return (
     <div
-      className={`size-6 rounded-sm ${bg}`}
+      className={`size-6 rounded-md ${bg}`}
       title={`${value} activities`}
       role="presentation"
     />
@@ -507,7 +524,7 @@ function AnalyticsDashboard() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-bold text-3xl tracking-tight">Analytics</h1>
+          <h1 className="font-heading text-3xl font-bold tracking-tight">Analytics</h1>
           <p className="mt-1 text-muted-foreground">
             Track your revenue, enrollments, and student engagement.
           </p>
@@ -516,7 +533,7 @@ function AnalyticsDashboard() {
           type="button"
           variant="outline"
           size="sm"
-          className="gap-1.5 self-start"
+          className="gap-1.5 self-start rounded-full"
           onClick={handleExportCsv}
         >
           <Download className="size-3.5" />
@@ -537,20 +554,20 @@ function AnalyticsDashboard() {
         value={activeTab}
         onValueChange={(val) => setActiveTab(val as "overview" | "revenue" | "engagement" | "content")}
       >
-        <TabsList>
-          <TabsTrigger value="overview" className="gap-1.5">
+        <TabsList className="rounded-full bg-muted/60 p-1">
+          <TabsTrigger value="overview" className="gap-1.5 rounded-full">
             <Activity className="size-3.5" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="revenue" className="gap-1.5">
+          <TabsTrigger value="revenue" className="gap-1.5 rounded-full">
             <DollarSign className="size-3.5" />
             Revenue
           </TabsTrigger>
-          <TabsTrigger value="engagement" className="gap-1.5">
+          <TabsTrigger value="engagement" className="gap-1.5 rounded-full">
             <Brain className="size-3.5" />
             Engagement
           </TabsTrigger>
-          <TabsTrigger value="content" className="gap-1.5">
+          <TabsTrigger value="content" className="gap-1.5 rounded-full">
             <Video className="size-3.5" />
             Content
           </TabsTrigger>
@@ -566,31 +583,35 @@ function AnalyticsDashboard() {
                 value={String(overview?.totalCourses ?? 0)}
                 icon={GraduationCap}
                 isLoading={overviewLoading}
+                gasparStyle={GASPAR_KPI_STYLES[0]}
               />
               <KpiCard
                 title="Total Enrollments"
                 value={(overview?.totalEnrollments ?? 0).toLocaleString()}
                 icon={Users}
                 isLoading={overviewLoading}
+                gasparStyle={GASPAR_KPI_STYLES[1]}
               />
               <KpiCard
                 title="Monthly Enrollments"
                 value={(overview?.monthlyEnrollments ?? 0).toLocaleString()}
                 icon={TrendingUp}
                 isLoading={overviewLoading}
+                gasparStyle={GASPAR_KPI_STYLES[2]}
               />
               <KpiCard
                 title="Active Students"
                 value={(activeStudentsData?.activeStudents ?? 0).toLocaleString()}
                 icon={Activity}
                 isLoading={overviewLoading}
+                gasparStyle={GASPAR_KPI_STYLES[3]}
               />
             </div>
 
             {/* Revenue chart */}
-            <Card>
+            <Card className="rounded-2xl border-border/30 shadow-sm">
               <CardHeader>
-                <CardTitle>Revenue</CardTitle>
+                <CardTitle className="font-heading">Revenue</CardTitle>
                 <CardDescription>
                   Daily revenue over the selected period
                 </CardDescription>
@@ -606,11 +627,11 @@ function AnalyticsDashboard() {
                             <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0} />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                         <XAxis dataKey="date" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
                         <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(val: number) => `$${val}`} />
                         <Tooltip content={<CustomTooltip prefix="$" />} />
-                        <Area type="monotone" dataKey="revenue" stroke="var(--color-primary)" strokeWidth={2} fill="url(#revenueGradient)" dot={false} />
+                        <Area type="monotone" dataKey="revenue" stroke="var(--color-primary)" strokeWidth={2.5} fill="url(#revenueGradient)" dot={false} />
                       </AreaChart>
                     </ResponsiveContainer>
                   ) : (
@@ -624,9 +645,9 @@ function AnalyticsDashboard() {
 
             {/* Enrollment trend & Active students row */}
             <div className="grid gap-6 lg:grid-cols-2">
-              <Card>
+              <Card className="rounded-2xl border-border/30 shadow-sm">
                 <CardHeader>
-                  <CardTitle>Enrollment Trend</CardTitle>
+                  <CardTitle className="font-heading">Enrollment Trend</CardTitle>
                   <CardDescription>Daily new enrollments</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -634,7 +655,7 @@ function AnalyticsDashboard() {
                     {enrollmentChartData.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={enrollmentChartData}>
-                          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                          <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                           <XAxis dataKey="date" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
                           <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
                           <Tooltip content={<CustomTooltip suffix=" students" />} />
@@ -650,9 +671,9 @@ function AnalyticsDashboard() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="rounded-2xl border-border/30 shadow-sm">
                 <CardHeader>
-                  <CardTitle>Course Completion Rates</CardTitle>
+                  <CardTitle className="font-heading">Course Completion Rates</CardTitle>
                   <CardDescription>Completion percentage by course</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -666,11 +687,11 @@ function AnalyticsDashboard() {
                           }))}
                           layout="vertical"
                         >
-                          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                          <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                           <XAxis type="number" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(val: number) => `${val}%`} />
                           <YAxis dataKey="name" type="category" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} width={110} />
                           <Tooltip content={<CustomTooltip suffix="%" />} />
-                          <Bar dataKey="rate" fill="hsl(150 60% 45%)" radius={[0, BAR_CORNER_RADIUS, BAR_CORNER_RADIUS, 0]} maxBarSize={28} />
+                          <Bar dataKey="rate" fill="var(--color-gaspar-lavender)" radius={[0, BAR_CORNER_RADIUS, BAR_CORNER_RADIUS, 0]} maxBarSize={28} />
                         </BarChart>
                       </ResponsiveContainer>
                     ) : (
@@ -684,16 +705,16 @@ function AnalyticsDashboard() {
             </div>
 
             {/* Course performance table */}
-            <Card>
+            <Card className="rounded-2xl border-border/30 shadow-sm">
               <CardHeader>
-                <CardTitle>Course Performance</CardTitle>
+                <CardTitle className="font-heading">Course Performance</CardTitle>
                 <CardDescription>Breakdown of metrics by individual course</CardDescription>
               </CardHeader>
               <CardContent>
                 {completionRates && completionRates.length > 0 ? (
                   <Table>
                     <TableHeader>
-                      <TableRow>
+                      <TableRow className="border-border/30">
                         <TableHead scope="col">Course</TableHead>
                         <TableHead scope="col" className="text-right">Enrollments</TableHead>
                         <TableHead scope="col" className="text-right">Completions</TableHead>
@@ -702,7 +723,7 @@ function AnalyticsDashboard() {
                     </TableHeader>
                     <TableBody>
                       {completionRates.map((c) => (
-                        <TableRow key={c.courseId}>
+                        <TableRow key={c.courseId} className="border-border/20">
                           <TableCell className="font-medium">{c.courseTitle}</TableCell>
                           <TableCell className="text-right tabular-nums">{c.totalEnrollments}</TableCell>
                           <TableCell className="text-right tabular-nums">{c.completedEnrollments}</TableCell>
@@ -740,49 +761,53 @@ function AnalyticsDashboard() {
                 icon={DollarSign}
                 trendLabel="vs last period"
                 isLoading={revenueLoading}
+                gasparStyle={GASPAR_KPI_STYLES[0]}
               />
               <KpiCard
                 title="Transactions"
                 value={(revenueOverview?.totalTransactions ?? 0).toLocaleString()}
                 icon={GraduationCap}
                 isLoading={revenueLoading}
+                gasparStyle={GASPAR_KPI_STYLES[1]}
               />
               <KpiCard
                 title="ARPU"
                 value={`$${((revenueOverview?.arpu ?? 0) / 100).toFixed(2)}`}
                 icon={Users}
                 isLoading={revenueLoading}
+                gasparStyle={GASPAR_KPI_STYLES[2]}
               />
               <KpiCard
                 title="Active Students"
                 value={(revenueOverview?.activeStudents ?? 0).toLocaleString()}
                 icon={Activity}
                 isLoading={revenueLoading}
+                gasparStyle={GASPAR_KPI_STYLES[3]}
               />
             </div>
 
             {/* Period comparison callout */}
             {revenueOverview && (
-              <Card>
-                <CardContent className="py-4">
+              <Card className="rounded-2xl border-border/30 shadow-sm">
+                <CardContent className="py-5">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-muted-foreground text-sm">This period</p>
-                      <p className="font-bold text-2xl tabular-nums">
+                      <p className="font-heading font-bold text-2xl tabular-nums">
                         {`$${(revenueOverview.totalRevenueCents / 100).toLocaleString()}`}
                       </p>
                     </div>
                     <Separator orientation="vertical" className="h-12" />
                     <div>
                       <p className="text-muted-foreground text-sm">Last period</p>
-                      <p className="font-bold text-2xl tabular-nums">
+                      <p className="font-heading font-bold text-2xl tabular-nums">
                         {`$${(revenueOverview.previousRevenueCents / 100).toLocaleString()}`}
                       </p>
                     </div>
                     <Separator orientation="vertical" className="h-12" />
                     <div>
                       <p className="text-muted-foreground text-sm">Change</p>
-                      <p className={`flex items-center gap-1 font-bold text-2xl ${revenueOverview.revenueChangePct >= 0 ? "text-emerald-600" : "text-red-500"}`}>
+                      <p className={`flex items-center gap-1 font-heading font-bold text-2xl ${revenueOverview.revenueChangePct >= 0 ? "text-emerald-600" : "text-red-500"}`}>
                         {revenueOverview.revenueChangePct >= 0 ? (
                           <ArrowUpRight className="size-5" />
                         ) : (
@@ -797,9 +822,9 @@ function AnalyticsDashboard() {
             )}
 
             {/* Revenue trend chart */}
-            <Card>
+            <Card className="rounded-2xl border-border/30 shadow-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 font-heading">
                   <TrendingUp className="size-5 text-primary" />
                   Revenue Trend
                 </CardTitle>
@@ -810,7 +835,7 @@ function AnalyticsDashboard() {
                   {revenueChartData.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={revenueChartData}>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                         <XAxis dataKey="date" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
                         <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(val: number) => `$${val.toLocaleString()}`} />
                         <Tooltip content={<CustomTooltip prefix="$" />} />
@@ -828,9 +853,9 @@ function AnalyticsDashboard() {
 
             {/* Revenue by Course (bar chart) + Revenue by Type (pie chart) */}
             <div className="grid gap-6 lg:grid-cols-2">
-              <Card>
+              <Card className="rounded-2xl border-border/30 shadow-sm">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 font-heading">
                     <BarChart3 className="size-5 text-primary" />
                     Revenue by Course
                   </CardTitle>
@@ -841,7 +866,7 @@ function AnalyticsDashboard() {
                     {revenueByCourseChart.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={revenueByCourseChart} layout="vertical">
-                          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                          <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                           <XAxis type="number" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(val: number) => `$${val.toLocaleString()}`} />
                           <YAxis dataKey="name" type="category" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} width={120} />
                           <Tooltip content={<CustomTooltip prefix="$" />} />
@@ -857,9 +882,9 @@ function AnalyticsDashboard() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="rounded-2xl border-border/30 shadow-sm">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 font-heading">
                     <PieChartIcon className="size-5 text-primary" />
                     Revenue by Type
                   </CardTitle>
@@ -900,16 +925,16 @@ function AnalyticsDashboard() {
             </div>
 
             {/* Revenue per course table */}
-            <Card>
+            <Card className="rounded-2xl border-border/30 shadow-sm">
               <CardHeader>
-                <CardTitle>Revenue Breakdown by Course</CardTitle>
+                <CardTitle className="font-heading">Revenue Breakdown by Course</CardTitle>
                 <CardDescription>Detailed revenue metrics per course</CardDescription>
               </CardHeader>
               <CardContent>
                 {revenueByCourse && revenueByCourse.length > 0 ? (
                   <Table>
                     <TableHeader>
-                      <TableRow>
+                      <TableRow className="border-border/30">
                         <TableHead scope="col">Course</TableHead>
                         <TableHead scope="col" className="text-right">Enrollments</TableHead>
                         <TableHead scope="col" className="text-right">Revenue</TableHead>
@@ -923,7 +948,7 @@ function AnalyticsDashboard() {
                         const share = totalRev > 0 ? Math.round((c.revenueCents / totalRev) * 100) : 0;
                         const avgPerStudent = c.enrollments > 0 ? Math.round(c.revenueCents / c.enrollments / 100) : 0;
                         return (
-                          <TableRow key={c.courseId}>
+                          <TableRow key={c.courseId} className="border-border/20">
                             <TableCell className="font-medium">{c.courseTitle}</TableCell>
                             <TableCell className="text-right tabular-nums">{c.enrollments}</TableCell>
                             <TableCell className="text-right tabular-nums">{`$${(c.revenueCents / 100).toLocaleString()}`}</TableCell>
@@ -957,31 +982,35 @@ function AnalyticsDashboard() {
                 value={`${engagementSummary?.overallCompletionRate ?? 0}%`}
                 icon={Target}
                 isLoading={engagementLoading}
+                gasparStyle={GASPAR_KPI_STYLES[0]}
               />
               <KpiCard
                 title="Avg Quiz Score"
                 value={`${engagementSummary?.avgQuizScore ?? 0}%`}
                 icon={Brain}
                 isLoading={engagementLoading}
+                gasparStyle={GASPAR_KPI_STYLES[1]}
               />
               <KpiCard
                 title="Avg Time to Complete"
                 value={`${engagementSummary?.avgTimeToCompleteDays ?? 0}d`}
                 icon={Clock}
                 isLoading={engagementLoading}
+                gasparStyle={GASPAR_KPI_STYLES[2]}
               />
               <KpiCard
                 title="Lessons (30d)"
                 value={(engagementSummary?.lessonsCompletedLast30Days ?? 0).toLocaleString()}
                 icon={Flame}
                 isLoading={engagementLoading}
+                gasparStyle={GASPAR_KPI_STYLES[3]}
               />
             </div>
 
             {/* Completion rates bar chart */}
-            <Card>
+            <Card className="rounded-2xl border-border/30 shadow-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 font-heading">
                   <Target className="size-5 text-primary" />
                   Completion Rates by Course
                 </CardTitle>
@@ -998,11 +1027,11 @@ function AnalyticsDashboard() {
                         rate: c.completionRate,
                         enrolled: c.totalEnrollments,
                       }))}>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                         <XAxis dataKey="name" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} angle={-20} textAnchor="end" height={60} />
                         <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(val: number) => `${val}%`} />
                         <Tooltip content={<CustomTooltip suffix="%" />} />
-                        <Bar dataKey="rate" fill="hsl(215 70% 55%)" radius={[BAR_CORNER_RADIUS, BAR_CORNER_RADIUS, 0, 0]} maxBarSize={BAR_MAX_SIZE} />
+                        <Bar dataKey="rate" fill="var(--color-gaspar-lavender)" radius={[BAR_CORNER_RADIUS, BAR_CORNER_RADIUS, 0, 0]} maxBarSize={BAR_MAX_SIZE} />
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
@@ -1017,9 +1046,9 @@ function AnalyticsDashboard() {
             {/* Quiz scores + Time to complete row */}
             <div className="grid gap-6 lg:grid-cols-2">
               {/* Average Quiz Scores */}
-              <Card>
+              <Card className="rounded-2xl border-border/30 shadow-sm">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 font-heading">
                     <Brain className="size-5 text-primary" />
                     Average Quiz Scores
                   </CardTitle>
@@ -1029,7 +1058,7 @@ function AnalyticsDashboard() {
                   {quizScores && quizScores.length > 0 ? (
                     <Table>
                       <TableHeader>
-                        <TableRow>
+                        <TableRow className="border-border/30">
                           <TableHead scope="col">Course</TableHead>
                           <TableHead scope="col" className="text-right">Avg Score</TableHead>
                           <TableHead scope="col" className="text-right">Pass Rate</TableHead>
@@ -1038,10 +1067,10 @@ function AnalyticsDashboard() {
                       </TableHeader>
                       <TableBody>
                         {quizScores.map((q) => (
-                          <TableRow key={q.courseId}>
+                          <TableRow key={q.courseId} className="border-border/20">
                             <TableCell className="max-w-[160px] truncate font-medium">{q.courseTitle}</TableCell>
                             <TableCell className="text-right">
-                              <Badge variant={q.avgScore >= 70 ? "default" : "secondary"}>
+                              <Badge variant={q.avgScore >= 70 ? "default" : "secondary"} className="rounded-full">
                                 {`${q.avgScore}%`}
                               </Badge>
                             </TableCell>
@@ -1058,9 +1087,9 @@ function AnalyticsDashboard() {
               </Card>
 
               {/* Time to Complete */}
-              <Card>
+              <Card className="rounded-2xl border-border/30 shadow-sm">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 font-heading">
                     <Clock className="size-5 text-primary" />
                     Time to Complete
                   </CardTitle>
@@ -1070,7 +1099,7 @@ function AnalyticsDashboard() {
                   {timeToComplete && timeToComplete.length > 0 ? (
                     <Table>
                       <TableHeader>
-                        <TableRow>
+                        <TableRow className="border-border/30">
                           <TableHead scope="col">Course</TableHead>
                           <TableHead scope="col" className="text-right">Avg (days)</TableHead>
                           <TableHead scope="col" className="text-right">Min</TableHead>
@@ -1080,7 +1109,7 @@ function AnalyticsDashboard() {
                       </TableHeader>
                       <TableBody>
                         {timeToComplete.map((t) => (
-                          <TableRow key={t.courseId}>
+                          <TableRow key={t.courseId} className="border-border/20">
                             <TableCell className="max-w-[140px] truncate font-medium">{t.courseTitle}</TableCell>
                             <TableCell className="text-right tabular-nums font-semibold">{t.avgDays}</TableCell>
                             <TableCell className="text-right tabular-nums text-muted-foreground">{t.minDays}</TableCell>
@@ -1098,11 +1127,11 @@ function AnalyticsDashboard() {
             </div>
 
             {/* Lesson Drop-off Analysis */}
-            <Card>
+            <Card className="rounded-2xl border-border/30 shadow-sm">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="flex items-center gap-2">
+                    <CardTitle className="flex items-center gap-2 font-heading">
                       <TrendingUp className="size-5 text-primary" />
                       Lesson Drop-off Analysis
                     </CardTitle>
@@ -1115,7 +1144,7 @@ function AnalyticsDashboard() {
                       value={selectedDropoffCourse}
                       onValueChange={setSelectedDropoffCourse}
                     >
-                      <SelectTrigger className="w-[240px]">
+                      <SelectTrigger className="w-[240px] rounded-xl">
                         <SelectValue placeholder="Select a course" />
                       </SelectTrigger>
                       <SelectContent>
@@ -1141,15 +1170,15 @@ function AnalyticsDashboard() {
                       }))}>
                         <defs>
                           <linearGradient id="dropoffGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="hsl(350 65% 55%)" stopOpacity={0.3} />
-                            <stop offset="100%" stopColor="hsl(350 65% 55%)" stopOpacity={0} />
+                            <stop offset="0%" stopColor="var(--color-gaspar-pink)" stopOpacity={0.4} />
+                            <stop offset="100%" stopColor="var(--color-gaspar-pink)" stopOpacity={0} />
                           </linearGradient>
                           <linearGradient id="startedGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="hsl(215 70% 55%)" stopOpacity={0.2} />
-                            <stop offset="100%" stopColor="hsl(215 70% 55%)" stopOpacity={0} />
+                            <stop offset="0%" stopColor="var(--color-gaspar-blue)" stopOpacity={0.3} />
+                            <stop offset="100%" stopColor="var(--color-gaspar-blue)" stopOpacity={0} />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                         <XAxis dataKey="name" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
                         <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(val: number) => `${val}%`} />
                         <Tooltip
@@ -1157,8 +1186,8 @@ function AnalyticsDashboard() {
                             if (!(active && payload) || payload.length === 0) { return null; }
                             const item = lessonDropoff.lessons.at(Number(String(label ?? "").replace("L", "") || 1) - 1);
                             return (
-                              <div className="rounded-lg border bg-background px-3 py-2 shadow-md">
-                                <p className="font-medium text-xs">{item?.lessonTitle ?? label}</p>
+                              <div className="rounded-2xl border border-border/50 bg-card px-4 py-2.5 shadow-xl">
+                                <p className="font-heading font-medium text-xs">{item?.lessonTitle ?? label}</p>
                                 <p className="text-muted-foreground text-xs">{item?.moduleTitle}</p>
                                 <p className="mt-1 text-sm">{`Started: ${payload.at(1)?.value}%`}</p>
                                 <p className="font-semibold text-sm">{`Completed: ${payload.at(0)?.value}%`}</p>
@@ -1166,8 +1195,8 @@ function AnalyticsDashboard() {
                             );
                           }}
                         />
-                        <Area type="monotone" dataKey="started" stroke="hsl(215 70% 55%)" strokeWidth={1.5} fill="url(#startedGradient)" dot={false} name="Started" />
-                        <Area type="monotone" dataKey="completion" stroke="hsl(350 65% 55%)" strokeWidth={2} fill="url(#dropoffGradient)" dot={false} name="Completed" />
+                        <Area type="monotone" dataKey="started" stroke="var(--color-gaspar-blue)" strokeWidth={1.5} fill="url(#startedGradient)" dot={false} name="Started" />
+                        <Area type="monotone" dataKey="completion" stroke="var(--color-gaspar-purple)" strokeWidth={2} fill="url(#dropoffGradient)" dot={false} name="Completed" />
                         <Legend />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -1181,9 +1210,9 @@ function AnalyticsDashboard() {
             </Card>
 
             {/* Student Activity Heatmap */}
-            <Card>
+            <Card className="rounded-2xl border-border/30 shadow-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 font-heading">
                   <Flame className="size-5 text-primary" />
                   Student Activity Heatmap
                 </CardTitle>
@@ -1220,11 +1249,11 @@ function AnalyticsDashboard() {
                       <div className="mt-3 flex items-center justify-end gap-2">
                         <span className="text-muted-foreground text-xs">Less</span>
                         <div className="flex gap-0.5">
-                          <div className="size-4 rounded-sm bg-muted" />
-                          <div className="size-4 rounded-sm bg-emerald-100 dark:bg-emerald-950" />
-                          <div className="size-4 rounded-sm bg-emerald-300 dark:bg-emerald-800" />
-                          <div className="size-4 rounded-sm bg-emerald-500 dark:bg-emerald-600" />
-                          <div className="size-4 rounded-sm bg-emerald-700 dark:bg-emerald-400" />
+                          <div className="size-4 rounded-md bg-muted" />
+                          <div className="size-4 rounded-md bg-gaspar-lavender/20" />
+                          <div className="size-4 rounded-md bg-gaspar-lavender/40" />
+                          <div className="size-4 rounded-md bg-gaspar-purple/50" />
+                          <div className="size-4 rounded-md bg-gaspar-purple/80" />
                         </div>
                         <span className="text-muted-foreground text-xs">More</span>
                       </div>
@@ -1247,11 +1276,13 @@ function AnalyticsDashboard() {
                 title="Total Lessons"
                 value={String(contentRanking?.length ?? 0)}
                 icon={BookOpen}
+                gasparStyle={GASPAR_KPI_STYLES[0]}
               />
               <KpiCard
                 title="Total Views"
                 value={(contentRanking?.reduce((a, l) => a + l.totalViews, 0) ?? 0).toLocaleString()}
                 icon={Eye}
+                gasparStyle={GASPAR_KPI_STYLES[1]}
               />
               <KpiCard
                 title="Avg Engagement"
@@ -1262,19 +1293,21 @@ function AnalyticsDashboard() {
                   return `${avg}%`;
                 })()}
                 icon={Target}
+                gasparStyle={GASPAR_KPI_STYLES[2]}
               />
               <KpiCard
                 title="Problem Lessons"
                 value={String(problemContent?.length ?? 0)}
                 icon={AlertTriangle}
+                gasparStyle={GASPAR_KPI_STYLES[3]}
               />
             </div>
 
             {/* Problem content alerts */}
             {problemContent && problemContent.length > 0 && (
-              <Card>
+              <Card className="rounded-2xl border-border/30 shadow-sm">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 font-heading">
                     <AlertTriangle className="size-5 text-amber-500" />
                     Problem Content
                   </CardTitle>
@@ -1287,7 +1320,7 @@ function AnalyticsDashboard() {
                     {problemContent.slice(0, 10).map((p) => (
                       <div
                         key={p.lessonId}
-                        className={`flex items-start justify-between rounded-lg border p-3 ${
+                        className={`flex items-start justify-between rounded-2xl border p-4 ${
                           p.severity === "critical"
                             ? "border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950"
                             : "border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950"
@@ -1295,7 +1328,7 @@ function AnalyticsDashboard() {
                       >
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <Badge variant={p.severity === "critical" ? "destructive" : "secondary"}>
+                            <Badge variant={p.severity === "critical" ? "destructive" : "secondary"} className="rounded-full">
                               {p.severity}
                             </Badge>
                             <span className="truncate font-medium text-sm">{p.lessonTitle}</span>
@@ -1303,11 +1336,11 @@ function AnalyticsDashboard() {
                           <p className="mt-1 text-muted-foreground text-xs">
                             {`${p.courseTitle} > ${p.moduleTitle}`}
                           </p>
-                          <div className="mt-1 flex flex-wrap gap-1">
+                          <div className="mt-1.5 flex flex-wrap gap-1">
                             {p.issues.map((issue) => (
                               <span
                                 key={issue}
-                                className="rounded bg-background px-1.5 py-0.5 text-xs"
+                                className="rounded-full bg-background px-2 py-0.5 text-xs"
                               >
                                 {issue}
                               </span>
@@ -1338,11 +1371,11 @@ function AnalyticsDashboard() {
             )}
 
             {/* Content ranking table with filters */}
-            <Card>
+            <Card className="rounded-2xl border-border/30 shadow-sm">
               <CardHeader>
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <CardTitle className="flex items-center gap-2">
+                    <CardTitle className="flex items-center gap-2 font-heading">
                       <BarChart3 className="size-5 text-primary" />
                       Lesson Performance Ranking
                     </CardTitle>
@@ -1352,7 +1385,7 @@ function AnalyticsDashboard() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Select value={contentCourseFilter} onValueChange={setContentCourseFilter}>
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-[180px] rounded-xl">
                         <SelectValue placeholder="All courses" />
                       </SelectTrigger>
                       <SelectContent>
@@ -1365,7 +1398,7 @@ function AnalyticsDashboard() {
                       </SelectContent>
                     </Select>
                     <Select value={contentSortBy} onValueChange={(v) => setContentSortBy(v as typeof contentSortBy)}>
-                      <SelectTrigger className="w-[150px]">
+                      <SelectTrigger className="w-[150px] rounded-xl">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -1382,7 +1415,7 @@ function AnalyticsDashboard() {
                 {contentRanking && contentRanking.length > 0 ? (
                   <Table>
                     <TableHeader>
-                      <TableRow>
+                      <TableRow className="border-border/30">
                         <TableHead scope="col" className="w-8">#</TableHead>
                         <TableHead scope="col">Lesson</TableHead>
                         <TableHead scope="col">Course</TableHead>
@@ -1396,14 +1429,14 @@ function AnalyticsDashboard() {
                     </TableHeader>
                     <TableBody>
                       {contentRanking.map((l, idx) => (
-                        <TableRow key={l.lessonId}>
+                        <TableRow key={l.lessonId} className="border-border/20">
                           <TableCell className="text-muted-foreground tabular-nums">{idx + 1}</TableCell>
                           <TableCell className="max-w-[200px] truncate font-medium">{l.lessonTitle}</TableCell>
                           <TableCell className="max-w-[140px] truncate text-muted-foreground text-sm">
                             {l.courseTitle}
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="rounded-full text-xs">
                               {l.lessonType}
                             </Badge>
                           </TableCell>
@@ -1437,6 +1470,7 @@ function AnalyticsDashboard() {
                           <TableCell className="text-right">
                             <Badge
                               variant={l.compositeScore >= 60 ? "default" : l.compositeScore >= 30 ? "secondary" : "destructive"}
+                              className="rounded-full"
                             >
                               {l.compositeScore}
                             </Badge>
@@ -1452,9 +1486,9 @@ function AnalyticsDashboard() {
             </Card>
 
             {/* Engagement ratio distribution chart */}
-            <Card>
+            <Card className="rounded-2xl border-border/30 shadow-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 font-heading">
                   <Video className="size-5 text-primary" />
                   Video Engagement Distribution
                 </CardTitle>
@@ -1476,23 +1510,23 @@ function AnalyticsDashboard() {
                             completion: l.completionRate,
                           }))}
                       >
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
                         <XAxis dataKey="name" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} angle={-30} textAnchor="end" height={80} />
                         <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(val: number) => `${val}%`} />
                         <Tooltip
                           content={({ active, payload, label }) => {
                             if (!(active && payload) || payload.length === 0) return null;
                             return (
-                              <div className="rounded-lg border bg-background px-3 py-2 shadow-md">
-                                <p className="font-medium text-xs">{label}</p>
+                              <div className="rounded-2xl border border-border/50 bg-card px-4 py-2.5 shadow-xl">
+                                <p className="font-heading font-medium text-xs">{label}</p>
                                 <p className="text-sm">{`Engagement: ${payload.at(0)?.value}%`}</p>
                                 <p className="text-sm">{`Completion: ${payload.at(1)?.value}%`}</p>
                               </div>
                             );
                           }}
                         />
-                        <Bar dataKey="engagement" fill="hsl(215 70% 55%)" radius={[BAR_CORNER_RADIUS, BAR_CORNER_RADIUS, 0, 0]} maxBarSize={28} name="Engagement" />
-                        <Bar dataKey="completion" fill="hsl(150 60% 45%)" radius={[BAR_CORNER_RADIUS, BAR_CORNER_RADIUS, 0, 0]} maxBarSize={28} name="Completion" />
+                        <Bar dataKey="engagement" fill="var(--color-primary)" radius={[BAR_CORNER_RADIUS, BAR_CORNER_RADIUS, 0, 0]} maxBarSize={28} name="Engagement" />
+                        <Bar dataKey="completion" fill="var(--color-gaspar-lavender)" radius={[BAR_CORNER_RADIUS, BAR_CORNER_RADIUS, 0, 0]} maxBarSize={28} name="Completion" />
                         <Legend />
                       </BarChart>
                     </ResponsiveContainer>

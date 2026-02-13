@@ -26,7 +26,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useTRPC } from "@/lib/trpc/react";
 import { RouteErrorBoundary } from "@/components/error-boundary";
@@ -155,7 +154,7 @@ function GamificationSettings() {
       <div className="space-y-4">
         <Skeleton className="h-8 w-64" />
         <Skeleton className="mt-2 h-4 w-96" />
-        <Skeleton className="mt-8 h-64 w-full" />
+        <Skeleton className="mt-8 h-64 w-full rounded-2xl" />
       </div>
     );
   }
@@ -165,9 +164,11 @@ function GamificationSettings() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Trophy className="size-7 text-amber-500" />
+          <div className="flex size-12 items-center justify-center rounded-2xl bg-amber-100 dark:bg-amber-900/30">
+            <Trophy className="size-6 text-amber-500" />
+          </div>
           <div>
-            <h1 className="text-3xl font-bold">Gamification</h1>
+            <h1 className="font-heading text-3xl font-bold tracking-tight">Gamification</h1>
             <p className="text-muted-foreground">
               Reward your students with points, levels, and leaderboards.
             </p>
@@ -191,40 +192,44 @@ function GamificationSettings() {
           <StatCard
             label="Total Members"
             value={String(overview.totalMembers)}
-            icon={<Users className="size-5 text-blue-500" />}
+            icon={<Users className="size-5 text-gaspar-blue" />}
+            bgClass="bg-gaspar-blue/10"
           />
           <StatCard
             label="Total Points Awarded"
             value={overview.totalPointsAwarded.toLocaleString()}
             icon={<Zap className="size-5 text-amber-500" />}
+            bgClass="bg-amber-100 dark:bg-amber-900/20"
           />
           <StatCard
             label="Avg Points / Member"
             value={String(overview.avgPoints)}
             icon={<BarChart3 className="size-5 text-emerald-500" />}
+            bgClass="bg-emerald-100 dark:bg-emerald-900/20"
           />
           <StatCard
             label="Active Levels"
             value={String(
               overview.levelDistribution.filter((l) => l.count > 0).length,
             )}
-            icon={<Star className="size-5 text-violet-500" />}
+            icon={<Star className="size-5 text-gaspar-purple" />}
+            bgClass="bg-gaspar-lavender/20"
           />
         </div>
       ) : overviewLoading ? (
         <div className="grid gap-4 sm:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 rounded-lg" />
+            <Skeleton key={i} className="h-24 rounded-2xl" />
           ))}
         </div>
       ) : null}
 
       {/* Point Values */}
-      <Card className={cn(!enabled && "opacity-50 pointer-events-none")}>
+      <Card className={cn("rounded-2xl border-border/50 shadow-sm", !enabled && "pointer-events-none opacity-50")}>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Point Values</CardTitle>
+              <CardTitle className="font-heading">Point Values</CardTitle>
               <CardDescription>
                 Configure how many points each action awards.
               </CardDescription>
@@ -234,6 +239,7 @@ function GamificationSettings() {
               variant="outline"
               size="sm"
               onClick={handleResetDefaults}
+              className="rounded-full"
             >
               Reset to Defaults
             </Button>
@@ -243,7 +249,7 @@ function GamificationSettings() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <PointValueField
               label="Create Post"
-              icon={<Pencil className="size-4 text-blue-500" />}
+              icon={<Pencil className="size-4 text-gaspar-blue" />}
               value={pointValues.post}
               onChange={(v) => updatePointValue("post", v)}
               defaultValue={DEFAULT_POINT_VALUES.post}
@@ -257,7 +263,7 @@ function GamificationSettings() {
             />
             <PointValueField
               label="Receive Reaction"
-              icon={<ThumbsUp className="size-4 text-pink-500" />}
+              icon={<ThumbsUp className="size-4 text-gaspar-pink" />}
               value={pointValues.reaction_received}
               onChange={(v) => updatePointValue("reaction_received", v)}
               defaultValue={DEFAULT_POINT_VALUES.reaction_received}
@@ -271,7 +277,7 @@ function GamificationSettings() {
             />
             <PointValueField
               label="Complete Course"
-              icon={<GraduationCap className="size-4 text-violet-500" />}
+              icon={<GraduationCap className="size-4 text-gaspar-purple" />}
               value={pointValues.course_completed}
               onChange={(v) => updatePointValue("course_completed", v)}
               defaultValue={DEFAULT_POINT_VALUES.course_completed}
@@ -281,9 +287,9 @@ function GamificationSettings() {
       </Card>
 
       {/* Level Thresholds (read-only) */}
-      <Card className={cn(!enabled && "opacity-50 pointer-events-none")}>
+      <Card className={cn("rounded-2xl border-border/50 shadow-sm", !enabled && "pointer-events-none opacity-50")}>
         <CardHeader>
-          <CardTitle>Level Progression</CardTitle>
+          <CardTitle className="font-heading">Level Progression</CardTitle>
           <CardDescription>
             Students advance through 10 levels as they earn points. Thresholds
             are preset for balanced progression.
@@ -301,11 +307,11 @@ function GamificationSettings() {
               return (
                 <div
                   key={name}
-                  className="flex items-center gap-4 rounded-lg border p-3"
+                  className="flex items-center gap-4 rounded-2xl border border-border/50 bg-muted/10 p-4 transition-colors hover:bg-muted/20"
                 >
                   <div
                     className={cn(
-                      "flex size-8 items-center justify-center rounded-full text-xs font-bold text-white",
+                      "flex size-9 items-center justify-center rounded-full text-xs font-bold text-white shadow-sm",
                       LEVEL_COLORS[idx],
                     )}
                   >
@@ -313,10 +319,10 @@ function GamificationSettings() {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">{name}</span>
-                      <Badge variant="outline" className="text-[10px]">
+                      <span className="font-heading text-sm font-medium">{name}</span>
+                      <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-medium text-primary">
                         {`${String(threshold)} pts`}
-                      </Badge>
+                      </span>
                     </div>
                     <Progress
                       value={
@@ -324,15 +330,15 @@ function GamificationSettings() {
                           ? (threshold / nextThreshold) * 100
                           : 100
                       }
-                      className="mt-1 h-1.5"
+                      className="mt-1.5 h-1.5"
                       aria-label={`Level ${String(idx + 1)} threshold`}
                     />
                   </div>
                   <div className="text-right">
                     {memberCount > 0 ? (
-                      <Badge variant="secondary" className="text-xs">
+                      <span className="rounded-full bg-gaspar-lavender/20 px-3 py-1 text-xs font-medium text-gaspar-purple">
                         {`${String(memberCount)} ${memberCount === 1 ? "member" : "members"}`}
-                      </Badge>
+                      </span>
                     ) : (
                       <span className="text-xs text-muted-foreground">
                         No members
@@ -352,6 +358,7 @@ function GamificationSettings() {
           type="button"
           onClick={handleSave}
           disabled={updateSettings.isPending}
+          className="pill"
         >
           {updateSettings.isPending ? (
             <>
@@ -373,17 +380,21 @@ function StatCard({
   label,
   value,
   icon,
+  bgClass,
 }: {
   readonly label: string;
   readonly value: string;
   readonly icon: React.ReactNode;
+  readonly bgClass?: string;
 }) {
   return (
-    <Card>
+    <Card className="rounded-2xl border-border/50 shadow-sm">
       <CardContent className="flex items-center gap-3 pt-6">
-        {icon}
+        <div className={cn("flex size-10 items-center justify-center rounded-xl", bgClass)}>
+          {icon}
+        </div>
         <div>
-          <p className="text-2xl font-bold">{value}</p>
+          <p className="font-heading text-2xl font-bold">{value}</p>
           <p className="text-xs text-muted-foreground">{label}</p>
         </div>
       </CardContent>
@@ -407,8 +418,8 @@ function PointValueField({
   readonly defaultValue: number;
 }) {
   return (
-    <div className="space-y-2">
-      <Label className="flex items-center gap-2">
+    <div className="space-y-2 rounded-2xl border border-border/50 bg-muted/10 p-4">
+      <Label className="flex items-center gap-2 font-heading text-sm">
         {icon}
         {label}
       </Label>
@@ -419,13 +430,13 @@ function PointValueField({
           max={1000}
           value={String(value)}
           onChange={(e) => onChange(e.target.value)}
-          className="w-24"
+          className="w-24 rounded-xl"
         />
         <span className="text-xs text-muted-foreground">pts</span>
         {value !== defaultValue ? (
-          <Badge variant="outline" className="text-[10px] text-amber-600">
+          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
             Custom
-          </Badge>
+          </span>
         ) : null}
       </div>
     </div>

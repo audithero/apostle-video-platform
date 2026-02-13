@@ -125,55 +125,47 @@ const EMAIL_STATS = {
 
 function EmailManagement() {
   return (
-    <div>
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Email Marketing</h1>
+          <h1 className="font-heading text-3xl font-bold tracking-tight">Email Marketing</h1>
           <p className="mt-1 text-muted-foreground">
             Manage broadcasts and automated email sequences.
           </p>
         </div>
-        <Button type="button">
+        <Button type="button" className="rounded-full">
           <Plus className="mr-2 size-4" />
           New Broadcast
         </Button>
       </div>
 
       {/* Stats */}
-      <div className="mt-6 grid gap-4 sm:grid-cols-4">
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-2xl font-bold">{EMAIL_STATS.sent.toLocaleString()}</p>
-            <p className="text-sm text-muted-foreground">
-              {`Emails Sent (of ${EMAIL_STATS.limit.toLocaleString()})`}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-2xl font-bold">
-              {`${String(Math.round((EMAIL_STATS.opened / EMAIL_STATS.sent) * 100))}%`}
-            </p>
-            <p className="text-sm text-muted-foreground">Open Rate</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-2xl font-bold">
-              {`${String(Math.round((EMAIL_STATS.clicked / EMAIL_STATS.sent) * 100))}%`}
-            </p>
-            <p className="text-sm text-muted-foreground">Click Rate</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-2xl font-bold">{MOCK_SEQUENCES.filter((s) => s.status === "active").length}</p>
-            <p className="text-sm text-muted-foreground">Active Sequences</p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-5 sm:grid-cols-4">
+        <div className="gaspar-card-cream rounded-2xl p-6">
+          <p className="text-3xl font-bold tracking-tight">{EMAIL_STATS.sent.toLocaleString()}</p>
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wider opacity-60">
+            {`Emails Sent (of ${EMAIL_STATS.limit.toLocaleString()})`}
+          </p>
+        </div>
+        <div className="gaspar-card-blue rounded-2xl p-6">
+          <p className="text-3xl font-bold tracking-tight">
+            {`${String(Math.round((EMAIL_STATS.opened / EMAIL_STATS.sent) * 100))}%`}
+          </p>
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wider opacity-60">Open Rate</p>
+        </div>
+        <div className="gaspar-card-pink rounded-2xl p-6">
+          <p className="text-3xl font-bold tracking-tight">
+            {`${String(Math.round((EMAIL_STATS.clicked / EMAIL_STATS.sent) * 100))}%`}
+          </p>
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wider opacity-60">Click Rate</p>
+        </div>
+        <div className="rounded-2xl border border-border/50 bg-base-100 p-6">
+          <p className="text-3xl font-bold tracking-tight">{MOCK_SEQUENCES.filter((s) => s.status === "active").length}</p>
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wider opacity-60">Active Sequences</p>
+        </div>
       </div>
 
-      <Tabs defaultValue="broadcasts" className="mt-8">
+      <Tabs defaultValue="broadcasts">
         <TabsList>
           <TabsTrigger value="broadcasts">
             <Send className="mr-2 size-4" />
@@ -212,16 +204,16 @@ function BroadcastCard({ broadcast }: { broadcast: Broadcast }) {
   } as const;
 
   return (
-    <Card>
+    <Card className="rounded-2xl border-border/50 transition-shadow hover:shadow-md">
       <CardContent className="flex items-center justify-between py-4">
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-gaspar-blue/60">
             <Mail className="size-5" />
           </div>
           <div>
             <p className="font-medium">{broadcast.subject}</p>
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
-              <Badge variant={statusColors[broadcast.status]}>{broadcast.status}</Badge>
+              <Badge className="rounded-full px-3" variant={statusColors[broadcast.status]}>{broadcast.status}</Badge>
               {broadcast.sentAt ? (
                 <span>{`Sent ${formatDistanceToNow(broadcast.sentAt, { addSuffix: true })}`}</span>
               ) : broadcast.scheduledAt ? (
@@ -273,16 +265,16 @@ function SequenceCard({ sequence }: { sequence: Sequence }) {
   } as const;
 
   return (
-    <Card>
+    <Card className="rounded-2xl border-border/50 transition-shadow hover:shadow-md">
       <CardContent className="flex items-center justify-between py-4">
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-gaspar-pink/60">
             <Zap className="size-5" />
           </div>
           <div>
             <p className="font-medium">{sequence.name}</p>
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
-              <Badge variant={statusColors[sequence.status]}>{sequence.status}</Badge>
+              <Badge className="rounded-full px-3" variant={statusColors[sequence.status]}>{sequence.status}</Badge>
               <span>{`Trigger: ${sequence.trigger}`}</span>
               <span>{`${String(sequence.stepCount)} steps`}</span>
               <span>{`${String(sequence.enrolledCount)} enrolled`}</span>

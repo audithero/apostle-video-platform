@@ -9,6 +9,7 @@ import {
   quiz,
   quizQuestion,
 } from "@/lib/db/schema/course";
+import { creator } from "@/lib/db/schema/creator";
 import { enrollment } from "@/lib/db/schema/enrollment";
 
 function slugify(text: string): string {
@@ -21,6 +22,97 @@ function slugify(text: string): string {
 }
 
 export const coursesRouter = createTRPCRouter({
+  // List published courses (public homepage / browse)
+  listPublished: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(50).default(20),
+      }).optional(),
+    )
+    .query(async ({ input }) => {
+      const limit = input?.limit ?? 20;
+
+      const results = await db
+        .select({
+          id: course.id,
+          title: course.title,
+          slug: course.slug,
+          description: course.description,
+          thumbnailUrl: course.thumbnailUrl,
+          priceType: course.priceType,
+          priceCents: course.priceCents,
+          enrollmentCount: course.enrollmentCount,
+          createdAt: course.createdAt,
+          creatorBusinessName: creator.businessName,
+          creatorSlug: creator.slug,
+        })
+        .from(course)
+        .innerJoin(creator, eq(course.creatorId, creator.id))
+        .where(eq(course.status, "published"))
+        .orderBy(desc(course.createdAt))
+        .limit(limit);
+
+      return results;
+    }),
+
+  // Get a single published course by slug (public detail page)
+  getPublishedBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input }) => {
+      const [result] = await db
+        .select({
+          id: course.id,
+          title: course.title,
+          slug: course.slug,
+          description: course.description,
+          thumbnailUrl: course.thumbnailUrl,
+          priceType: course.priceType,
+          priceCents: course.priceCents,
+          courseType: course.courseType,
+          enrollmentCount: course.enrollmentCount,
+          createdAt: course.createdAt,
+          creatorId: course.creatorId,
+          creatorBusinessName: creator.businessName,
+          creatorSlug: creator.slug,
+        })
+        .from(course)
+        .innerJoin(creator, eq(course.creatorId, creator.id))
+        .where(and(eq(course.slug, input.slug), eq(course.status, "published")))
+        .limit(1);
+
+      if (!result) return null;
+
+      // Get modules with lessons
+      const modules = await db
+        .select()
+        .from(courseModule)
+        .where(eq(courseModule.courseId, result.id))
+        .orderBy(asc(courseModule.sortOrder));
+
+      const modulesWithLessons = await Promise.all(
+        modules.map(async (mod) => {
+          const lessons_ = await db
+            .select({
+              id: lesson.id,
+              title: lesson.title,
+              lessonType: lesson.lessonType,
+              isFreePreview: lesson.isFreePreview,
+              videoDurationSeconds: lesson.videoDurationSeconds,
+              sortOrder: lesson.sortOrder,
+            })
+            .from(lesson)
+            .where(eq(lesson.moduleId, mod.id))
+            .orderBy(asc(lesson.sortOrder));
+          return { ...mod, lessons: lessons_ };
+        }),
+      );
+
+      return {
+        ...result,
+        modules: modulesWithLessons,
+      };
+    }),
+
   // List courses for creator dashboard
   list: creatorProcedure
     .input(
@@ -150,6 +242,87 @@ export const coursesRouter = createTRPCRouter({
           priceCents: input.priceCents,
         })
         .returning();
+
+      return newCourse;
+    }),
+
+  // Create course from AI wizard (bulk creates course + modules + lessons)
+  createFromAI: creatorProcedure
+    .input(
+      z.object({
+        title: z.string().min(1).max(200),
+        slug: z.string().min(1),
+        description: z.string().optional(),
+        modules: z.array(
+          z.object({
+            title: z.string(),
+            description: z.string().optional(),
+            lessons: z.array(
+              z.object({
+                title: z.string(),
+                lessonType: z.enum(["video", "text", "quiz", "assignment", "live"]).default("text"),
+                contentHtml: z.string().optional(),
+                contentJson: z.any().optional(),
+                estimatedMinutes: z.number().optional(),
+                isFreePreview: z.boolean().default(false),
+              }),
+            ),
+          }),
+        ),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Handle slug collision
+      let finalSlug = input.slug;
+      const existing = await db
+        .select({ id: course.id })
+        .from(course)
+        .where(and(eq(course.creatorId, ctx.creator.id), eq(course.slug, finalSlug)))
+        .limit(1);
+
+      if (existing.length > 0) {
+        finalSlug = `${finalSlug}-${Date.now().toString(36)}`;
+      }
+
+      // Create course
+      const [newCourse] = await db
+        .insert(course)
+        .values({
+          creatorId: ctx.creator.id,
+          title: input.title,
+          slug: finalSlug,
+          description: input.description,
+          status: "draft",
+          aiGenerated: true,
+        })
+        .returning();
+
+      // Create modules and lessons
+      for (const [modIdx, mod] of input.modules.entries()) {
+        const [newModule] = await db
+          .insert(courseModule)
+          .values({
+            courseId: newCourse.id,
+            title: mod.title,
+            description: mod.description,
+            sortOrder: modIdx,
+          })
+          .returning();
+
+        for (const [lessonIdx, les] of mod.lessons.entries()) {
+          await db.insert(lesson).values({
+            moduleId: newModule.id,
+            courseId: newCourse.id,
+            title: les.title,
+            lessonType: les.lessonType,
+            contentHtml: les.contentHtml ?? null,
+            contentJson: les.contentJson ?? null,
+            sortOrder: lessonIdx,
+            isFreePreview: les.isFreePreview,
+            aiGenerated: true,
+          });
+        }
+      }
 
       return newCourse;
     }),

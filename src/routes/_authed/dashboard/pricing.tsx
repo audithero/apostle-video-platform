@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authed/dashboard/pricing")({
   component: PricingPage,
 });
 
-// ── Tier Data ────────────────────────────────────────────────────────────
+// -- Tier Data --
 
 interface TierFeature {
   name: string;
@@ -31,6 +31,13 @@ const TIERS = [
   { id: "scale", name: "Scale", monthlyPrice: 149, annualPrice: 1490, badge: null },
   { id: "pro", name: "Pro", monthlyPrice: 199, annualPrice: 1990, badge: null },
 ] as const;
+
+const TIER_GASPAR_STYLES: Record<string, string> = {
+  launch: "gaspar-card-cream",
+  grow: "gaspar-card-blue",
+  scale: "gaspar-card-pink",
+  pro: "gaspar-card-navy",
+};
 
 const FEATURES: ReadonlyArray<TierFeature> = [
   { name: "Courses", launch: "3", grow: "10", scale: "25", pro: "Unlimited" },
@@ -51,7 +58,7 @@ const FEATURES: ReadonlyArray<TierFeature> = [
   { name: "Priority Support", launch: false, grow: false, scale: true, pro: true },
 ];
 
-// ── Helpers ──────────────────────────────────────────────────────────────
+// -- Helpers --
 
 function FeatureValue({ value }: { value: string | boolean }) {
   if (value === true) {
@@ -63,24 +70,26 @@ function FeatureValue({ value }: { value: string | boolean }) {
   return <span className="text-sm">{value}</span>;
 }
 
-// ── Component ────────────────────────────────────────────────────────────
+// -- Component --
 
 function PricingPage() {
   // TODO: Replace with actual subscription status from tRPC
   const currentTier = "grow";
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold">Plans & Pricing</h1>
-      <p className="mt-2 text-muted-foreground">
-        Choose the plan that fits your business. All plans include a 14-day free trial.
-      </p>
+    <div className="space-y-8">
+      <div>
+        <h1 className="font-heading text-3xl font-bold tracking-tight">Plans & Pricing</h1>
+        <p className="mt-2 text-muted-foreground">
+          Choose the plan that fits your business. All plans include a 14-day free trial.
+        </p>
+      </div>
 
-      <Tabs defaultValue="monthly" className="mt-8">
-        <TabsList>
-          <TabsTrigger value="monthly">Monthly</TabsTrigger>
-          <TabsTrigger value="annual">
-            Annual <Badge variant="secondary" className="ml-2">Save 17%</Badge>
+      <Tabs defaultValue="monthly">
+        <TabsList className="rounded-full bg-muted/60 p-1">
+          <TabsTrigger value="monthly" className="rounded-full">Monthly</TabsTrigger>
+          <TabsTrigger value="annual" className="rounded-full">
+            Annual <Badge variant="secondary" className="ml-2 rounded-full">Save 17%</Badge>
           </TabsTrigger>
         </TabsList>
 
@@ -89,6 +98,7 @@ function PricingPage() {
             {TIERS.map((tier) => (
               <PricingCard
                 key={tier.id}
+                tierId={tier.id}
                 name={tier.name}
                 price={tier.monthlyPrice}
                 period="month"
@@ -104,6 +114,7 @@ function PricingPage() {
             {TIERS.map((tier) => (
               <PricingCard
                 key={tier.id}
+                tierId={tier.id}
                 name={tier.name}
                 price={tier.annualPrice}
                 period="year"
@@ -116,18 +127,18 @@ function PricingPage() {
       </Tabs>
 
       {/* Feature Comparison Table */}
-      <Card className="mt-12">
+      <Card className="rounded-2xl border-border/30 shadow-sm">
         <CardHeader>
-          <CardTitle>Feature Comparison</CardTitle>
+          <CardTitle className="font-heading">Feature Comparison</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full text-center">
               <thead>
-                <tr className="border-b">
-                  <th className="pb-3 text-left text-sm font-medium">Feature</th>
+                <tr className="border-b border-border/30">
+                  <th className="pb-3 text-left font-heading text-sm font-medium">Feature</th>
                   {TIERS.map((tier) => (
-                    <th key={tier.id} className="pb-3 text-sm font-medium">
+                    <th key={tier.id} className="pb-3 font-heading text-sm font-medium">
                       {tier.name}
                     </th>
                   ))}
@@ -137,7 +148,7 @@ function PricingPage() {
                 {FEATURES.map((feature, idx) => (
                   <tr
                     key={feature.name}
-                    className={idx < FEATURES.length - 1 ? "border-b" : ""}
+                    className={idx < FEATURES.length - 1 ? "border-b border-border/20" : ""}
                   >
                     <td className="py-3 text-left text-sm">{feature.name}</td>
                     <td className="py-3"><FeatureValue value={feature.launch} /></td>
@@ -155,9 +166,10 @@ function PricingPage() {
   );
 }
 
-// ── Sub-components ───────────────────────────────────────────────────────
+// -- Sub-components --
 
 interface PricingCardProps {
+  tierId: string;
   name: string;
   price: number;
   period: "month" | "year";
@@ -165,29 +177,32 @@ interface PricingCardProps {
   isCurrent: boolean;
 }
 
-function PricingCard({ name, price, period, badge, isCurrent }: PricingCardProps) {
+function PricingCard({ tierId, name, price, period, badge, isCurrent }: PricingCardProps) {
+  const gasparStyle = TIER_GASPAR_STYLES[tierId] ?? "";
+  const isNavy = tierId === "pro";
+
   return (
-    <Card className={isCurrent ? "border-primary ring-2 ring-primary/20" : ""}>
+    <Card className={`rounded-2xl border-0 shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg ${gasparStyle} ${isCurrent ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">{name}</CardTitle>
+          <CardTitle className="font-heading text-lg">{name}</CardTitle>
           {badge ? (
-            <Badge>{badge}</Badge>
+            <Badge className="rounded-full bg-black/10 px-3 py-0.5 text-xs font-semibold text-current backdrop-blur">{badge}</Badge>
           ) : null}
         </div>
         <div className="mt-4">
-          <span className="text-4xl font-bold">{`$${String(price)}`}</span>
-          <span className="text-muted-foreground">{`/${period}`}</span>
+          <span className="font-heading text-4xl font-bold">{`$${String(price)}`}</span>
+          <span className={isNavy ? "text-white/60" : "text-black/50"}>{`/${period}`}</span>
         </div>
       </CardHeader>
       <CardContent>
-        <Separator className="mb-4" />
+        <Separator className={`mb-4 ${isNavy ? "bg-white/10" : "bg-black/10"}`} />
         {isCurrent ? (
-          <Button type="button" className="w-full" disabled>
+          <Button type="button" className={`w-full rounded-full ${isNavy ? "bg-white/20 text-white hover:bg-white/30" : "bg-black/10 text-current hover:bg-black/15"}`} disabled>
             Current Plan
           </Button>
         ) : (
-          <Button type="button" className="w-full" variant="outline">
+          <Button type="button" className={`w-full rounded-full ${isNavy ? "bg-white text-gaspar-navy hover:bg-white/90" : "bg-black/80 text-white hover:bg-black/70"}`}>
             {price > 0 ? "Upgrade" : "Downgrade"}
           </Button>
         )}

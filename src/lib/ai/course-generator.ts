@@ -1,17 +1,12 @@
 /**
- * AI Course Generation service powered by Anthropic Claude.
- *
- * - `generateOutline` and `expandLesson` use Claude Sonnet for complex reasoning.
- * - `generateQuiz` and `generateSummary` use Claude Haiku for speed/cost efficiency.
+ * AI Course Generation service powered by OpenRouter.
  *
  * Every method supports:
- *   - Streaming callbacks for real-time UI updates
  *   - Retry with exponential backoff on transient failures
  *   - Structured JSON output parsing
  *   - AbortSignal cancellation
  */
 
-import Anthropic from "@anthropic-ai/sdk";
 import { env } from "@/lib/env.server";
 import type {
   AIGenerationOptions,
@@ -43,8 +38,8 @@ import {
 // Constants
 // ---------------------------------------------------------------------------
 
-const SONNET_MODEL = "claude-sonnet-4-20250514";
-const HAIKU_MODEL = "claude-haiku-4-20250414";
+const OPENROUTER_MODEL = "anthropic/claude-3.7-sonnet";
+const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 const DEFAULT_MAX_RETRIES = 3;
 const DEFAULT_BASE_DELAY_MS = 1_000;
@@ -58,18 +53,12 @@ const MAX_TOKENS_SUMMARY = 2_048;
 // Client singleton
 // ---------------------------------------------------------------------------
 
-let anthropicClient: Anthropic | null = null;
-
-const getClient = (): Anthropic => {
-  if (anthropicClient) {
-    return anthropicClient;
-  }
-  const apiKey = env.ANTHROPIC_API_KEY;
+const getApiKey = (): string => {
+  const apiKey = env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    throw new Error("ANTHROPIC_API_KEY is not configured");
+    throw new Error("OPENROUTER_API_KEY is not configured");
   }
-  anthropicClient = new Anthropic({ apiKey });
-  return anthropicClient;
+  return apiKey;
 };
 
 // ---------------------------------------------------------------------------
@@ -83,7 +72,7 @@ interface RetryConfig {
 }
 
 const isTransientError = (error: unknown): boolean => {
-  // Check for Anthropic API errors with retryable status codes
+  // Check for API errors with retryable status codes
   if (
     error instanceof Error
     && "status" in error
@@ -165,35 +154,49 @@ interface StreamingGenerationParams {
   readonly signal?: AbortSignal;
 }
 
-const streamAndCollect = async (params: StreamingGenerationParams): Promise<string> => {
-  const client = getClient();
-  const collected: string[] = [];
+const callOpenRouter = async (params: StreamingGenerationParams): Promise<string> => {
+  const apiKey = getApiKey();
 
-  const stream = client.messages.stream({
-    model: params.model,
-    max_tokens: params.maxTokens,
-    system: params.systemPrompt,
-    messages: [{ role: "user", content: params.userMessage }],
+  const response = await fetch(OPENROUTER_URL, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": "https://apostle-video-platform.vercel.app",
+      "X-Title": "Apostle Course Creator",
+    },
+    body: JSON.stringify({
+      model: params.model,
+      messages: [
+        { role: "system", content: params.systemPrompt },
+        { role: "user", content: params.userMessage },
+      ],
+      max_tokens: params.maxTokens,
+      temperature: 0.7,
+    }),
+    signal: params.signal,
   });
 
-  // Wire up abort signal
-  if (params.signal) {
-    params.signal.addEventListener("abort", () => {
-      stream.abort();
-    }, { once: true });
+  if (!response.ok) {
+    const errorBody = await response.text().catch(() => "Unknown error");
+    const error = new Error(`OpenRouter API error (${response.status}): ${errorBody}`);
+    (error as Error & { status: number }).status = response.status;
+    throw error;
   }
 
-  for await (const event of stream) {
-    if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-      const text = event.delta.text;
-      collected.push(text);
-      if (params.onStream) {
-        await params.onStream(text);
-      }
-    }
+  const data = await response.json() as { choices: Array<{ message: { content: string } }> };
+  const content = data.choices?.at(0)?.message?.content;
+
+  if (!content) {
+    throw new Error("No content in OpenRouter response");
   }
 
-  return collected.join("");
+  // Call stream callback with full content for compatibility
+  if (params.onStream) {
+    await params.onStream(content);
+  }
+
+  return content;
 };
 
 /**
@@ -270,8 +273,8 @@ export const generateOutline = async (
   });
 
   const raw = await withRetry(
-    () => streamAndCollect({
-      model: SONNET_MODEL,
+    () => callOpenRouter({
+      model: OPENROUTER_MODEL,
       systemPrompt: OUTLINE_SYSTEM_PROMPT,
       userMessage,
       maxTokens: MAX_TOKENS_OUTLINE,
@@ -319,8 +322,8 @@ export const expandLesson = async (
   });
 
   const raw = await withRetry(
-    () => streamAndCollect({
-      model: SONNET_MODEL,
+    () => callOpenRouter({
+      model: OPENROUTER_MODEL,
       systemPrompt: LESSON_SYSTEM_PROMPT,
       userMessage,
       maxTokens: MAX_TOKENS_LESSON,
@@ -362,8 +365,8 @@ export const generateQuiz = async (
   });
 
   const raw = await withRetry(
-    () => streamAndCollect({
-      model: HAIKU_MODEL,
+    () => callOpenRouter({
+      model: OPENROUTER_MODEL,
       systemPrompt: QUIZ_SYSTEM_PROMPT,
       userMessage,
       maxTokens: MAX_TOKENS_QUIZ,
@@ -412,8 +415,8 @@ export const generateSummary = async (
   });
 
   const raw = await withRetry(
-    () => streamAndCollect({
-      model: HAIKU_MODEL,
+    () => callOpenRouter({
+      model: OPENROUTER_MODEL,
       systemPrompt: SUMMARY_SYSTEM_PROMPT,
       userMessage,
       maxTokens: MAX_TOKENS_SUMMARY,
@@ -457,8 +460,8 @@ export const rewriteContent = async (
   });
 
   const raw = await withRetry(
-    () => streamAndCollect({
-      model: SONNET_MODEL,
+    () => callOpenRouter({
+      model: OPENROUTER_MODEL,
       systemPrompt: REWRITE_SYSTEM_PROMPT,
       userMessage,
       maxTokens: MAX_TOKENS_REWRITE,
