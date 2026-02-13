@@ -1,0 +1,526 @@
+$ vite build && bun scripts/generate-sw.ts
+[dotenv@17.3.1] injecting env (21) from ../../.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from ../../.env -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from ../../.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+rolldown-vite v7.3.1 building client environment for production...
+[2Ktransforming...
+[@tanstack/devtools-vite] Removed devtools code from: /src/routes/__root.tsx
+
+Found 1 warning while optimizing generated CSS:
+
+[2m│   }[22m
+[2m│ }[22m
+[2m│[22m @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+[2m┆[22m        [33m[2m^--[22m @import rules must precede all rules aside from @charset and @layer statements[39m
+[2m┆[22m
+[2m│ body {[22m
+[2m│   margin: calc(var(--spacing) * 0);[22m
+
+✓ 4739 modules transformed.
+rendering chunks...
+[plugin builtin:vite-reporter] 
+(!) /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/locales/en.ts is dynamically imported by /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/i18n.tsx but also statically imported by /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/resources.ts, dynamic import will not move module into another chunk.
+
+[plugin builtin:vite-reporter] 
+(!) /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/locales/de.ts is dynamically imported by /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/i18n.tsx but also statically imported by /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/resources.ts, dynamic import will not move module into another chunk.
+
+[plugin builtin:vite-reporter] 
+(!) /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/locales/es.ts is dynamically imported by /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/i18n.tsx but also statically imported by /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/resources.ts, dynamic import will not move module into another chunk.
+
+[plugin builtin:vite-reporter] 
+(!) /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/locales/pt.ts is dynamically imported by /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/i18n.tsx but also statically imported by /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/src/lib/intl/resources.ts, dynamic import will not move module into another chunk.
+
+computing gzip size...
+dist/client/assets/styles-w_o2AuwA.css                   215.05 kB │ gzip:  33.14 kB
+dist/client/assets/de-DxgnqBmL.js                          0.06 kB │ gzip:   0.07 kB
+dist/client/assets/en-BevjgXBE.js                          0.06 kB │ gzip:   0.07 kB
+dist/client/assets/es-Bmf0fuJv.js                          0.06 kB │ gzip:   0.07 kB
+dist/client/assets/pt-BxyjGVI9.js                          0.06 kB │ gzip:   0.07 kB
+dist/client/assets/dist-CkmGRd5r.js                        0.06 kB │ gzip:   0.08 kB
+dist/client/assets/_authed-BXA9pD9v.js                     0.08 kB │ gzip:   0.09 kB
+dist/client/assets/_courseId.quiz._lessonId-bSpDtLpi.js    0.08 kB │ gzip:   0.09 kB
+dist/client/assets/_id.edit-Bk2Wz5bu.js                    0.08 kB │ gzip:   0.09 kB
+dist/client/assets/_public-Bjp4bJmT.js                     0.08 kB │ gzip:   0.09 kB
+dist/client/assets/admin-pZ5LmyiR.js                       0.08 kB │ gzip:   0.09 kB
+dist/client/assets/ai-wizard-BzC0UzL1.js                   0.08 kB │ gzip:   0.09 kB
+dist/client/assets/avatar-packs-Dg482sFL.js                0.08 kB │ gzip:   0.09 kB
+dist/client/assets/branding-D3fOpeHy.js                    0.08 kB │ gzip:   0.09 kB
+dist/client/assets/checkout-BfSZ2HWi.js                    0.08 kB │ gzip:   0.09 kB
+dist/client/assets/community-Dc3ecfBo.js                   0.08 kB │ gzip:   0.09 kB
+dist/client/assets/community-Xxqp2okL.js                   0.08 kB │ gzip:   0.09 kB
+dist/client/assets/courses-C8DDiiNY.js                     0.08 kB │ gzip:   0.09 kB
+dist/client/assets/dashboard-CRmYKqM7.js                   0.08 kB │ gzip:   0.09 kB
+dist/client/assets/domain-BHgbIvR5.js                      0.08 kB │ gzip:   0.09 kB
+dist/client/assets/gamification-E-XYlHV0.js                0.08 kB │ gzip:   0.09 kB
+dist/client/assets/integrations-QScRm6ug.js                0.08 kB │ gzip:   0.09 kB
+dist/client/assets/leaderboard-DdvTYJOx.js                 0.08 kB │ gzip:   0.09 kB
+dist/client/assets/my-dashboard-FwgWUGe_.js                0.08 kB │ gzip:   0.09 kB
+dist/client/assets/webhooks-BAP9w7g-.js                    0.08 kB │ gzip:   0.09 kB
+dist/client/assets/check-DmPG_jgZ.js                       0.11 kB │ gzip:   0.12 kB
+dist/client/assets/chevron-down-CVxB1TtG.js                0.11 kB │ gzip:   0.13 kB
+dist/client/assets/chevron-up-Bv_aW1Sd.js                  0.11 kB │ gzip:   0.13 kB
+dist/client/assets/chevron-left-BbeYHwOK.js                0.11 kB │ gzip:   0.13 kB
+dist/client/assets/chevron-right-CTAruZhz.js               0.11 kB │ gzip:   0.13 kB
+dist/client/assets/useLocation-D2GERT_p.js                 0.12 kB │ gzip:   0.12 kB
+dist/client/assets/plus-C1tHiltI.js                        0.14 kB │ gzip:   0.14 kB
+dist/client/assets/code-DrG-216l.js                        0.15 kB │ gzip:   0.14 kB
+dist/client/assets/arrow-left-wMfeUnIl.js                  0.15 kB │ gzip:   0.15 kB
+dist/client/assets/arrow-right-C32dX5zh.js                 0.15 kB │ gzip:   0.15 kB
+dist/client/assets/clock-D_6M3KXG.js                       0.15 kB │ gzip:   0.15 kB
+dist/client/assets/search-3_GHVm2B.js                      0.16 kB │ gzip:   0.16 kB
+dist/client/assets/trending-up-C05ygjgu.js                 0.16 kB │ gzip:   0.16 kB
+dist/client/assets/circle-check-K8ZZwcMB.js                0.16 kB │ gzip:   0.16 kB
+dist/client/assets/dist-Bg3MYQIz.js                        0.17 kB │ gzip:   0.15 kB
+dist/client/assets/menu-dKAXKlp1.js                        0.17 kB │ gzip:   0.14 kB
+dist/client/assets/play-DgxhSXhg.js                        0.17 kB │ gzip:   0.17 kB
+dist/client/assets/user-zPPuwKiR.js                        0.18 kB │ gzip:   0.17 kB
+dist/client/assets/flame-ZZofulir.js                       0.18 kB │ gzip:   0.17 kB
+dist/client/assets/dist-U56ruGk_.js                        0.19 kB │ gzip:   0.16 kB
+dist/client/assets/lock-STu7tpNu.js                        0.19 kB │ gzip:   0.18 kB
+dist/client/assets/circle-x-BQzLrfsS.js                    0.19 kB │ gzip:   0.17 kB
+dist/client/assets/credit-card-iiz2GuLN.js                 0.19 kB │ gzip:   0.17 kB
+dist/client/assets/redo-2-DPJ2zGgM.js                      0.19 kB │ gzip:   0.17 kB
+dist/client/assets/mail-CahDP4hV.js                        0.20 kB │ gzip:   0.19 kB
+dist/client/assets/dollar-sign-BJsopf9y.js                 0.20 kB │ gzip:   0.18 kB
+dist/client/assets/type-BabwEjA6.js                        0.20 kB │ gzip:   0.17 kB
+dist/client/assets/ellipsis-DqmHyeGf.js                    0.21 kB │ gzip:   0.15 kB
+dist/client/assets/target-DXEvxxeO.js                      0.21 kB │ gzip:   0.15 kB
+dist/client/assets/upload-CKo0-W_h.js                      0.21 kB │ gzip:   0.18 kB
+dist/client/assets/skeleton-Ce64l5n2.js                    0.21 kB │ gzip:   0.19 kB
+dist/client/assets/download-DW3Dn3A-.js                    0.22 kB │ gzip:   0.18 kB
+dist/client/assets/message-square-C_0SbpfV.js              0.22 kB │ gzip:   0.19 kB
+dist/client/assets/spinner-D-ylsLaQ.js                     0.22 kB │ gzip:   0.19 kB
+dist/client/assets/QueryErrorResetBoundary-CQi4sleN.js     0.22 kB │ gzip:   0.18 kB
+dist/client/assets/copy-sFyp0Lw4.js                        0.22 kB │ gzip:   0.20 kB
+dist/client/assets/message-circle-D-AUo9w_.js              0.22 kB │ gzip:   0.20 kB
+dist/client/assets/globe-BDrOq4jV.js                       0.23 kB │ gzip:   0.18 kB
+dist/client/assets/circle-question-mark-Dtqa-Tyl.js        0.23 kB │ gzip:   0.19 kB
+dist/client/assets/video-veO0SG3a.js                       0.23 kB │ gzip:   0.21 kB
+dist/client/assets/circle-alert-CO3h9Tse.js                0.23 kB │ gzip:   0.18 kB
+dist/client/assets/chart-column-Doa_8-q7.js                0.23 kB │ gzip:   0.18 kB
+dist/client/assets/external-link-DzFYWp8p.js               0.23 kB │ gzip:   0.19 kB
+dist/client/assets/eye-Rp7Q75u3.js                         0.24 kB │ gzip:   0.19 kB
+dist/client/assets/heart-D0iUCfu-.js                       0.24 kB │ gzip:   0.20 kB
+dist/client/assets/zap-lgUAfkY_.js                         0.25 kB │ gzip:   0.19 kB
+dist/client/assets/dist-e93nf7ue.js                        0.25 kB │ gzip:   0.21 kB
+dist/client/assets/dist-PbdxQQlB.js                        0.25 kB │ gzip:   0.18 kB
+dist/client/assets/triangle-alert-BohtSvm9.js              0.25 kB │ gzip:   0.20 kB
+dist/client/assets/image-DJuwIeQ7.js                       0.25 kB │ gzip:   0.21 kB
+dist/client/assets/shield-E98_ffRC.js                      0.26 kB │ gzip:   0.21 kB
+dist/client/assets/award-DHzpzIht.js                       0.26 kB │ gzip:   0.21 kB
+dist/client/assets/pencil-C-ObZiyc.js                      0.26 kB │ gzip:   0.21 kB
+dist/client/assets/pen-line-DBg6dOzJ.js                    0.26 kB │ gzip:   0.21 kB
+dist/client/assets/book-open-Ci8pGtn3.js                   0.26 kB │ gzip:   0.19 kB
+dist/client/assets/list-checks-CcWPyBUj.js                 0.26 kB │ gzip:   0.17 kB
+dist/client/assets/house-SvWAXIdM.js                       0.26 kB │ gzip:   0.20 kB
+dist/client/assets/layout-template-WY6LtP4I.js             0.27 kB │ gzip:   0.18 kB
+dist/client/assets/send-Crfc0cTQ.js                        0.27 kB │ gzip:   0.22 kB
+dist/client/assets/hash-CW4mDxRX.js                        0.28 kB │ gzip:   0.18 kB
+dist/client/assets/users-CZ5cvQgL.js                       0.29 kB │ gzip:   0.21 kB
+dist/client/assets/endOfMonth-cfrp5YZR.js                  0.29 kB │ gzip:   0.21 kB
+dist/client/assets/refresh-cw-B5uCPLPv.js                  0.30 kB │ gzip:   0.22 kB
+dist/client/assets/save-CspO1mmn.js                        0.31 kB │ gzip:   0.22 kB
+dist/client/assets/trash-2-BSwz1Fj4.js                     0.31 kB │ gzip:   0.20 kB
+dist/client/assets/graduation-cap-CthC74i7.js              0.32 kB │ gzip:   0.23 kB
+dist/client/assets/file-text-BJ5MuWSV.js                   0.32 kB │ gzip:   0.20 kB
+dist/client/assets/message-square-quote-szERFDcq.js        0.33 kB │ gzip:   0.23 kB
+dist/client/assets/layout-dashboard-CkzwOzEE.js            0.33 kB │ gzip:   0.19 kB
+dist/client/assets/webhook-DK5Nnc9d.js                     0.34 kB │ gzip:   0.25 kB
+dist/client/assets/grip-vertical-Bg_J7X6Z.js               0.35 kB │ gzip:   0.18 kB
+dist/client/assets/radio-DwGCY7TV.js                       0.36 kB │ gzip:   0.24 kB
+dist/client/assets/film-Dgo4Oo5w.js                        0.39 kB │ gzip:   0.23 kB
+dist/client/assets/eye-off-BWZj8bY5.js                     0.41 kB │ gzip:   0.26 kB
+dist/client/assets/rocket-BmCO0mK1.js                      0.44 kB │ gzip:   0.30 kB
+dist/client/assets/star-C47QIWsf.js                        0.46 kB │ gzip:   0.28 kB
+dist/client/assets/trophy-gKh0gdOv.js                      0.46 kB │ gzip:   0.26 kB
+dist/client/assets/sparkles-FOUMfqEz.js                    0.48 kB │ gzip:   0.27 kB
+dist/client/assets/_public-Cv7se8a9.js                     0.49 kB │ gzip:   0.31 kB
+dist/client/assets/palette-BF2fR4Dq.js                     0.49 kB │ gzip:   0.27 kB
+dist/client/assets/share-2-CNVpPN_5.js                     0.54 kB │ gzip:   0.32 kB
+dist/client/assets/_authed-MfhwLN_D.js                     0.55 kB │ gzip:   0.35 kB
+dist/client/assets/dist-D9CAUHSI.js                        0.55 kB │ gzip:   0.35 kB
+dist/client/assets/textarea-BS7EHPqD.js                    0.65 kB │ gzip:   0.40 kB
+dist/client/assets/medal-0MlHns_k.js                       0.73 kB │ gzip:   0.40 kB
+dist/client/assets/tablet-DuzHqWDH.js                      0.90 kB │ gzip:   0.48 kB
+dist/client/assets/dist-CSOaWGos.js                        0.98 kB │ gzip:   0.54 kB
+dist/client/assets/label-Dz_9Jpuf.js                       1.01 kB │ gzip:   0.60 kB
+dist/client/assets/separator-CGnSO6-l.js                   1.14 kB │ gzip:   0.60 kB
+dist/client/assets/badge-Dg3MWHwu.js                       1.16 kB │ gzip:   0.57 kB
+dist/client/assets/offline-Z4ggmaVi.js                     1.23 kB │ gzip:   0.64 kB
+dist/client/assets/table-DNvnsrP2.js                       1.24 kB │ gzip:   0.49 kB
+dist/client/assets/auth-hooks-Cn18gxxN.js                  1.29 kB │ gzip:   0.57 kB
+dist/client/assets/error-boundary-CPEr8Ujq.js              1.33 kB │ gzip:   0.66 kB
+dist/client/assets/verify-email-DnDvQ679.js                1.53 kB │ gzip:   0.71 kB
+dist/client/assets/admin-BNEMjt3W.js                       1.56 kB │ gzip:   0.72 kB
+dist/client/assets/forgot-password-iawj8MpQ.js             1.58 kB │ gzip:   0.79 kB
+dist/client/assets/_auth-CQnSDd-Y.js                       1.75 kB │ gzip:   0.73 kB
+dist/client/assets/dist-ClTPdvHw.js                        2.05 kB │ gzip:   0.91 kB
+dist/client/assets/formatDistanceToNow-rOt-2OQu.js         2.08 kB │ gzip:   0.88 kB
+dist/client/assets/sheet-B7JgYB3U.js                       2.21 kB │ gzip:   0.80 kB
+dist/client/assets/useMutation-C-JIN7Q2.js                 2.22 kB │ gzip:   0.91 kB
+dist/client/assets/Footer-3DGg6qOR.js                      2.28 kB │ gzip:   0.72 kB
+dist/client/assets/favorites-CFuwQhN7.js                   2.30 kB │ gzip:   0.92 kB
+dist/client/assets/dialog-DyHBMmdt.js                      2.43 kB │ gzip:   0.89 kB
+dist/client/assets/dist-Nmf09mwk.js                        2.56 kB │ gzip:   1.12 kB
+dist/client/assets/collapsible-CSJmC5hP.js                 2.56 kB │ gzip:   1.06 kB
+dist/client/assets/admin-CQJMslD4.js                       2.56 kB │ gzip:   0.95 kB
+dist/client/assets/switch-Bni0HJ60.js                      2.69 kB │ gzip:   1.30 kB
+dist/client/assets/users-DhCIS6NF.js                       2.76 kB │ gzip:   1.10 kB
+dist/client/assets/series-DpFM7DKH.js                      3.25 kB │ gzip:   1.20 kB
+dist/client/assets/progress-DYTdaJCZ.js                    3.26 kB │ gzip:   1.52 kB
+dist/client/assets/useTranslation-CCN9sX9p.js              3.33 kB │ gzip:   1.65 kB
+dist/client/assets/_slug-COCf_F5R.js                       3.39 kB │ gzip:   1.24 kB
+dist/client/assets/dist-LjgCfj5I.js                        3.39 kB │ gzip:   1.47 kB
+dist/client/assets/comments-5aN8wswL.js                    3.40 kB │ gzip:   1.24 kB
+dist/client/assets/onboarding-DEq6t5LH.js                  3.41 kB │ gzip:   1.39 kB
+dist/client/assets/shows-Hx_Zi-ZC.js                       3.45 kB │ gzip:   1.28 kB
+dist/client/assets/avatar-Pdt6SXpP.js                      3.53 kB │ gzip:   1.58 kB
+dist/client/assets/videos-C9J3aHX3.js                      3.58 kB │ gzip:   1.31 kB
+dist/client/assets/dist-MeyKJKZx.js                        3.65 kB │ gzip:   1.59 kB
+dist/client/assets/tabs-D9mklD1_.js                        3.68 kB │ gzip:   1.52 kB
+dist/client/assets/account-D1WhPK3G.js                     3.68 kB │ gzip:   1.24 kB
+dist/client/assets/search-DdEB0HJn.js                      3.95 kB │ gzip:   1.43 kB
+dist/client/assets/new-WMzs84DY.js                         4.00 kB │ gzip:   1.53 kB
+dist/client/assets/checkbox-CrdE-P8b.js                    4.27 kB │ gzip:   1.81 kB
+dist/client/assets/_id.edit-Bsq8rNE3.js                    4.61 kB │ gzip:   1.57 kB
+dist/client/assets/new-CVf8_Xsf.js                         4.74 kB │ gzip:   1.72 kB
+dist/client/assets/alert-dialog-DNkmi6UJ.js                4.93 kB │ gzip:   1.77 kB
+dist/client/assets/input-group-DmWeh8Cz.js                 4.95 kB │ gzip:   1.55 kB
+dist/client/assets/dashboard-DZS_MmGs.js                   4.97 kB │ gzip:   1.92 kB
+dist/client/assets/login-9_5H2J-U.js                       5.53 kB │ gzip:   2.37 kB
+dist/client/assets/_id.edit-B_lc7yCA.js                    5.55 kB │ gzip:   1.94 kB
+dist/client/assets/pricing-Ck4LMaTw.js                     5.64 kB │ gzip:   1.86 kB
+dist/client/assets/_slug-YDe91Vh5.js                       5.76 kB │ gzip:   2.05 kB
+dist/client/assets/pages-BY0X9q5E.js                       5.76 kB │ gzip:   1.64 kB
+dist/client/assets/new-D-iGv8Nf.js                         6.13 kB │ gzip:   2.14 kB
+dist/client/assets/register-BrDUGmxb.js                    6.23 kB │ gzip:   2.51 kB
+dist/client/assets/leaderboard-D87ckWrd.js                 6.55 kB │ gzip:   2.11 kB
+dist/client/assets/dist-XpSMr930.js                        6.66 kB │ gzip:   2.52 kB
+dist/client/assets/popover-BDifUjlI.js                     6.96 kB │ gzip:   2.49 kB
+dist/client/assets/emails-BBvL3IrF.js                      7.13 kB │ gzip:   1.96 kB
+dist/client/assets/my-dashboard-iBcChYUN.js                7.34 kB │ gzip:   2.03 kB
+dist/client/assets/en-US-B5DCAh4H.js                       7.53 kB │ gzip:   2.62 kB
+dist/client/assets/Header-Bypj-1k5.js                      7.63 kB │ gzip:   1.73 kB
+dist/client/assets/integrations-C6YU5aud.js                7.82 kB │ gzip:   2.68 kB
+dist/client/assets/_public-DneO-EZT.js                     7.82 kB │ gzip:   2.35 kB
+dist/client/assets/_studentId-BDdqlUlN.js                  7.87 kB │ gzip:   2.26 kB
+dist/client/assets/deployments-ewc4oR-r.js                 8.12 kB │ gzip:   2.51 kB
+dist/client/assets/_slug-CnVR2Arw.js                       8.18 kB │ gzip:   2.88 kB
+dist/client/assets/courses-D0jmBq79.js                     8.32 kB │ gzip:   2.77 kB
+dist/client/assets/useQuery-B-KngM-4.js                    8.62 kB │ gzip:   3.15 kB
+dist/client/assets/gamification-j1Fk2yhl.js                8.84 kB │ gzip:   2.95 kB
+dist/client/assets/slider-BC0dG9p9.js                      8.88 kB │ gzip:   3.44 kB
+dist/client/assets/templates-DYbZ_fXC.js                   8.89 kB │ gzip:   2.75 kB
+dist/client/assets/students-Bp8_isMx.js                    9.19 kB │ gzip:   2.77 kB
+dist/client/assets/pricing-BXaLFcIu.js                     9.64 kB │ gzip:   3.13 kB
+dist/client/assets/domain-C8zIlJFN.js                      9.67 kB │ gzip:   2.78 kB
+dist/client/assets/avatar-packs-DCYmTRZu.js                9.83 kB │ gzip:   2.99 kB
+dist/client/assets/format-BIy8GQzT.js                     12.23 kB │ gzip:   3.36 kB
+dist/client/assets/dashboard-D-p2QLFh.js                  12.54 kB │ gzip:   3.29 kB
+dist/client/assets/scroll-area-D5BnxqCA.js                12.63 kB │ gzip:   3.92 kB
+dist/client/assets/community-B6d3BH1l.js                  13.33 kB │ gzip:   3.86 kB
+dist/client/assets/webhooks-HHYPIkst.js                   14.53 kB │ gzip:   3.88 kB
+dist/client/assets/affiliates-C_vqf58b.js                 14.71 kB │ gzip:   3.90 kB
+dist/client/assets/my-courses-frE10JFK.js                 15.36 kB │ gzip:   4.42 kB
+dist/client/assets/usage-CfaMpk3w.js                      16.62 kB │ gzip:   4.43 kB
+dist/client/assets/branding-DqH0O-Ho.js                   16.68 kB │ gzip:   4.45 kB
+dist/client/assets/checkout-CBHTjZch.js                   18.34 kB │ gzip:   4.74 kB
+dist/client/assets/_courseId-CGanu9mv.js                  19.81 kB │ gzip:   6.25 kB
+dist/client/assets/Combination-DMPyzO1T.js                19.99 kB │ gzip:   7.23 kB
+dist/client/assets/dropdown-menu-C2mM6deq.js              20.99 kB │ gzip:   6.34 kB
+dist/client/assets/settings-ChzHvSY7.js                   21.03 kB │ gzip:   4.68 kB
+dist/client/assets/community-D2OYRoX2.js                  22.80 kB │ gzip:   5.31 kB
+dist/client/assets/select-Dl8FeLge.js                     23.24 kB │ gzip:   7.92 kB
+dist/client/assets/auth-client-Cpb-wfD1.js                25.66 kB │ gzip:   9.58 kB
+dist/client/assets/zod-DqQOVRWT.js                        25.68 kB │ gzip:   9.39 kB
+dist/client/assets/dist-CcUKYsMP.js                       26.28 kB │ gzip:  10.12 kB
+dist/client/assets/ai-wizard-CqraHh_D.js                  33.38 kB │ gzip:   8.76 kB
+dist/client/assets/sortable.esm-DPjE71rH.js               44.45 kB │ gzip:  14.60 kB
+dist/client/assets/_courseId.quiz._lessonId-BfEl9DJ5.js   44.65 kB │ gzip:  12.00 kB
+dist/client/assets/reset-password-BbYn17Bm.js             45.16 kB │ gzip:  12.58 kB
+dist/client/assets/_id.edit-CeRs1X2X.js                   50.55 kB │ gzip:  12.79 kB
+dist/client/assets/starter-templates-BFjxUC3Y.js          63.80 kB │ gzip:  15.33 kB
+dist/client/assets/BarChart-DAHR4VkI.js                   68.01 kB │ gzip:  17.59 kB
+dist/client/assets/_id.edit-CTxDgOPv.js                   79.71 kB │ gzip:  21.49 kB
+dist/client/assets/proxy-hAapk6Ss.js                     117.24 kB │ gzip:  38.24 kB
+dist/client/assets/analytics-BeVaB2uM.js                 123.50 kB │ gzip:  32.64 kB
+dist/client/assets/_id.edit-DvnzTiaA.js                  168.38 kB │ gzip:  51.12 kB
+dist/client/assets/AreaChart-BZ56r3Wy.js                 261.79 kB │ gzip:  82.29 kB
+dist/client/assets/TipTapEditor-2S8smx_c.js              429.80 kB │ gzip: 134.03 kB
+dist/client/assets/main-DLZBn3bz.js                      641.56 kB │ gzip: 196.18 kB
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.52s
+rolldown-vite v7.3.1 building ssr environment for production...
+[2Ktransforming...
+[@tanstack/devtools-vite] Removed devtools code from: /src/routes/__root.tsx
+
+Found 1 warning while optimizing generated CSS:
+
+[2m│   }[22m
+[2m│ }[22m
+[2m│[22m @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+[2m┆[22m        [33m[2m^--[22m @import rules must precede all rules aside from @charset and @layer statements[39m
+[2m┆[22m
+[2m│ body {[22m
+[2m│   margin: calc(var(--spacing) * 0);[22m
+
+✓ 355 modules transformed.
+rendering chunks...
+✓ built in 3.09s
+[nitro] ✔ Generated public .vercel/output/static
+[nitro] ℹ Building Nitro Server (preset: vercel, compatibility date: 2025-04-01)
+[nitro] ✔ Nitro Server built
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_auth-Ch125TwU.mjs (4.45 kB) (1.37 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_auth-Ch125TwU.mjs.map (1.45 kB) (481 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_authed-Cbcp4-rM.mjs (2 kB) (672 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_authed-Cbcp4-rM.mjs.map (219 B) (136 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_authed-D8hEk_yc.mjs (1.74 kB) (674 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_authed-D8hEk_yc.mjs.map (511 B) (280 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_authed-Dw8I0u-C.mjs (2.66 kB) (944 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_authed-Dw8I0u-C.mjs.map (585 B) (276 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_courseId-YW-J3j8s.mjs (35.5 kB) (8.23 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_courseId-YW-J3j8s.mjs.map (26 kB) (5.08 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_courseId.quiz._lessonId-B7dgjuVP.mjs (2.01 kB) (688 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_courseId.quiz._lessonId-B7dgjuVP.mjs.map (253 B) (150 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_courseId.quiz._lessonId-Df7B7FMr.mjs (75 kB) (14.5 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_courseId.quiz._lessonId-Df7B7FMr.mjs.map (58.4 kB) (10 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-BjIaUhDr.mjs (12.9 kB) (3.04 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-BjIaUhDr.mjs.map (9.32 kB) (1.96 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-BkvU65jx.mjs (2 kB) (675 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-BkvU65jx.mjs.map (221 B) (137 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-Bmpw7lWv.mjs (88.3 kB) (17.1 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-Bmpw7lWv.mjs.map (69.6 kB) (10.5 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-CVv6QACI.mjs (10.6 kB) (2.51 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-CVv6QACI.mjs.map (7.25 kB) (1.42 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-DoQR6OQr.mjs (94 kB) (16.6 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-DoQR6OQr.mjs.map (71.9 kB) (10.5 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-WtbF6drp.mjs (88 kB) (16.2 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_id.edit-WtbF6drp.mjs.map (66.2 kB) (9.4 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_public-B19TJr4K.mjs (2 kB) (676 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_public-B19TJr4K.mjs.map (219 B) (136 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_public-BgTEzPmz.mjs (15.7 kB) (3.4 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_public-BgTEzPmz.mjs.map (8.89 kB) (1.69 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_public-CjUetsSA.mjs (2.57 kB) (898 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_public-CjUetsSA.mjs.map (512 B) (245 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_slug-CiRJsuqj.mjs (11.3 kB) (3.01 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_slug-CiRJsuqj.mjs.map (7.87 kB) (1.77 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_slug-CVQhG2Co.mjs (17.1 kB) (4.13 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_slug-CVQhG2Co.mjs.map (10.6 kB) (2.49 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_slug-SY7PoTWI.mjs (7.23 kB) (2.02 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_slug-SY7PoTWI.mjs.map (4.2 kB) (1.11 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_studentId-DG030CrS.mjs (15.2 kB) (3.26 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_studentId-DG030CrS.mjs.map (10.4 kB) (2.05 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_tanstack-start-manifest_v-Dy4cJWEe.mjs (45.6 kB) (4.71 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/_tanstack-start-manifest_v-Dy4cJWEe.mjs.map (18.6 kB) (1.64 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/account-DnmIanrt.mjs (8.75 kB) (2.18 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/account-DnmIanrt.mjs.map (5.76 kB) (1.21 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/admin-C627hWot.mjs (1.99 kB) (673 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/admin-C627hWot.mjs.map (215 B) (135 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/admin-DbryluDH.mjs (3.91 kB) (1.33 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/admin-DbryluDH.mjs.map (1.91 kB) (568 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/admin-DjMMfUEt.mjs (5.83 kB) (1.69 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/admin-DjMMfUEt.mjs.map (3.25 kB) (834 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/affiliates-Ciuwoks3.mjs (28.5 kB) (5.21 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/affiliates-Ciuwoks3.mjs.map (20.2 kB) (3.22 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/ai-wizard-DknBCA_R.mjs (2 kB) (674 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/ai-wizard-DknBCA_R.mjs.map (223 B) (138 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/ai-wizard-Dlh_rS8X.mjs (54.6 kB) (9.88 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/ai-wizard-Dlh_rS8X.mjs.map (43.2 kB) (7.29 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/alert-dialog-DiuPxE9H.mjs (3.32 kB) (841 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/alert-dialog-DiuPxE9H.mjs.map (2.34 kB) (498 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/analytics-4druqecb.mjs (101 kB) (13.5 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/analytics-4druqecb.mjs.map (64.3 kB) (8.61 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/auth-client-CvK4SuqC.mjs (1.2 kB) (601 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/auth-client-CvK4SuqC.mjs.map (941 B) (411 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/auth-hooks-vQL8FLKZ.mjs (2.17 kB) (756 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/auth-hooks-vQL8FLKZ.mjs.map (2.02 kB) (638 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/avatar-CIYsARTw.mjs (967 B) (411 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/avatar-CIYsARTw.mjs.map (760 B) (296 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/avatar-packs-BoLu_eCC.mjs (2 kB) (675 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/avatar-packs-BoLu_eCC.mjs.map (229 B) (138 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/avatar-packs-Dh4uyE2Y.mjs (16.5 kB) (3.83 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/avatar-packs-Dh4uyE2Y.mjs.map (11.2 kB) (2.18 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/badge-CFIL17hZ.mjs (1.46 kB) (700 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/badge-CFIL17hZ.mjs.map (636 B) (314 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/branding--lMK1wpL.mjs (30.5 kB) (6.08 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/branding--lMK1wpL.mjs.map (20.3 kB) (3.72 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/branding-CBax-BGs.mjs (2 kB) (673 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/branding-CBax-BGs.mjs.map (221 B) (135 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/card-DRgE-JXM.mjs (1.6 kB) (537 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/card-DRgE-JXM.mjs.map (1.28 kB) (329 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/checkbox-DYsO09aD.mjs (1.21 kB) (577 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/checkbox-DYsO09aD.mjs.map (527 B) (278 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/checkout-B-UwnAHd.mjs (2 kB) (674 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/checkout-B-UwnAHd.mjs.map (221 B) (135 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/checkout-ClDujoP-.mjs (33.9 kB) (5.99 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/checkout-ClDujoP-.mjs.map (23.5 kB) (3.91 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/collapsible-BbGael54.mjs (743 B) (288 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/collapsible-BbGael54.mjs.map (604 B) (238 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/comments-BQqQwQWW.mjs (7.66 kB) (2.03 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/comments-BQqQwQWW.mjs.map (4.48 kB) (1.07 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/community-BED9OaFO.mjs (2 kB) (677 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/community-BED9OaFO.mjs.map (223 B) (139 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/community-Bv-RuewU.mjs (24.7 kB) (5.17 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/community-Bv-RuewU.mjs.map (18.7 kB) (3.67 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/community-df7RpPMF.mjs (44.5 kB) (7.23 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/community-df7RpPMF.mjs.map (32.5 kB) (5.19 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/community-HwcW71Tj.mjs (2 kB) (677 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/community-HwcW71Tj.mjs.map (223 B) (139 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/courses-BD8vdP_b.mjs (2 kB) (673 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/courses-BD8vdP_b.mjs.map (219 B) (135 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/courses-wVw1a7Ek.mjs (16.8 kB) (3.98 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/courses-wVw1a7Ek.mjs.map (11.5 kB) (2.36 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/createServerRpc-BVFemRS5.mjs (366 B) (255 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/createServerRpc-BVFemRS5.mjs.map (363 B) (232 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/dashboard-CXObzmQr.mjs (24 kB) (4.41 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/dashboard-CXObzmQr.mjs.map (15.6 kB) (2.71 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/dashboard-Cy7V9j6M.mjs (2 kB) (675 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/dashboard-Cy7V9j6M.mjs.map (223 B) (139 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/dashboard-dNT5t7Hy.mjs (7.53 kB) (2.2 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/dashboard-dNT5t7Hy.mjs.map (4.7 kB) (992 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/deployments-CQN8LECw.mjs (15.4 kB) (3.38 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/deployments-CQN8LECw.mjs.map (9.75 kB) (2.04 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/dialog-CF8cE7UB.mjs (3.63 kB) (1.04 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/dialog-CF8cE7UB.mjs.map (2.38 kB) (565 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/domain-D7IvsYdG.mjs (1.99 kB) (674 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/domain-D7IvsYdG.mjs.map (217 B) (134 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/domain-DA5qseI_.mjs (18 kB) (3.95 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/domain-DA5qseI_.mjs.map (10.3 kB) (2.19 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/dropdown-menu-CiCD80Wk.mjs (3.01 kB) (948 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/dropdown-menu-CiCD80Wk.mjs.map (1.48 kB) (449 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/emails-DtY2yOMZ.mjs (13.4 kB) (2.87 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/emails-DtY2yOMZ.mjs.map (9.18 kB) (1.65 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/error-boundary-DrTtzfGw.mjs (2.45 kB) (869 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/error-boundary-DrTtzfGw.mjs.map (1.59 kB) (568 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/favorites-CG0P5fSS.mjs (5.51 kB) (1.65 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/favorites-CG0P5fSS.mjs.map (2.68 kB) (784 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/Footer-BE2voPrU.mjs (3.58 kB) (880 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/Footer-BE2voPrU.mjs.map (2.07 kB) (516 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/forgot-password-DEuKllX7.mjs (4.68 kB) (1.59 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/forgot-password-DEuKllX7.mjs.map (2.08 kB) (682 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/gamification-C1TofGvk.mjs (2 kB) (676 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/gamification-C1TofGvk.mjs.map (229 B) (139 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/gamification-Dti0L3H5.mjs (16.2 kB) (3.92 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/gamification-Dti0L3H5.mjs.map (10.7 kB) (2.29 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/Header-CttcqXEu.mjs (11.8 kB) (2.11 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/Header-CttcqXEu.mjs.map (6.95 kB) (1.42 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/input-dfLftpU8.mjs (963 B) (538 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/input-dfLftpU8.mjs.map (361 B) (230 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/input-group-BysXeFe9.mjs (6.25 kB) (1.78 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/input-group-BysXeFe9.mjs.map (3.27 kB) (871 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/integrations-BmED8QPB.mjs (2 kB) (677 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/integrations-BmED8QPB.mjs.map (229 B) (138 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/integrations-DM_GBWKe.mjs (14.4 kB) (3.81 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/integrations-DM_GBWKe.mjs.map (9.37 kB) (2.06 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/label-CFBMOTiE.mjs (598 B) (380 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/label-CFBMOTiE.mjs.map (337 B) (218 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/leaderboard-C0fwAEPC.mjs (13 kB) (3.16 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/leaderboard-C0fwAEPC.mjs.map (9.15 kB) (1.92 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/leaderboard-DapFgBSI.mjs (2 kB) (675 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/leaderboard-DapFgBSI.mjs.map (227 B) (138 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/login--4SVJ4jh.mjs (11.3 kB) (3.37 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/login--4SVJ4jh.mjs.map (6.16 kB) (1.55 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/my-courses-D38kKRbr.mjs (26.9 kB) (5.85 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/my-courses-D38kKRbr.mjs.map (19.3 kB) (3.73 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/my-dashboard-CJn5FNf-.mjs (14.4 kB) (3.12 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/my-dashboard-CJn5FNf-.mjs.map (9.56 kB) (1.98 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/my-dashboard-DLgabntY.mjs (2 kB) (675 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/my-dashboard-DLgabntY.mjs.map (229 B) (141 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/new-D2CukUzn.mjs (11.5 kB) (2.78 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/new-D2CukUzn.mjs.map (7.88 kB) (1.71 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/new-DeuEQwfX.mjs (12.2 kB) (3.08 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/new-DeuEQwfX.mjs.map (7.53 kB) (1.69 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/new-DG-2isPj.mjs (9.67 kB) (2.47 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/new-DG-2isPj.mjs.map (6.29 kB) (1.41 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/offline-XQuVLR2f.mjs (2.92 kB) (1.04 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/offline-XQuVLR2f.mjs.map (848 B) (345 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/onboarding-Bx-qDHtS.mjs (7.86 kB) (2.27 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/onboarding-Bx-qDHtS.mjs.map (4.17 kB) (1.12 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/pages-QDlPtEm-.mjs (11.3 kB) (2.5 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/pages-QDlPtEm-.mjs.map (6.54 kB) (1.34 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/popover-UhNzRKjs.mjs (1.35 kB) (560 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/popover-UhNzRKjs.mjs.map (761 B) (320 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/pricing-8MwPXH04.mjs (11.5 kB) (2.84 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/pricing-8MwPXH04.mjs.map (8.32 kB) (1.51 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/pricing-DhpHtta5.mjs (18.6 kB) (4.33 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/pricing-DhpHtta5.mjs.map (12.7 kB) (2.25 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/progress-DCtfnfhR.mjs (724 B) (419 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/progress-DCtfnfhR.mjs.map (548 B) (285 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/pt-DgaxG2Ly.mjs (312 kB) (61.8 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/pt-DgaxG2Ly.mjs.map (321 kB) (42.4 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/react-COMHsr3i.mjs (261 B) (181 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/react-COMHsr3i.mjs.map (184 B) (153 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/register-Ddi-ElkE.mjs (13.4 kB) (3.63 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/register-Ddi-ElkE.mjs.map (8.51 kB) (1.91 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/reset-password-BSnCGZvb.mjs (7.34 kB) (2.33 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/reset-password-BSnCGZvb.mjs.map (4.75 kB) (1.3 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/root-provider-xBQQlou2.mjs (1.8 kB) (684 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/root-provider-xBQQlou2.mjs.map (581 B) (295 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/scroll-area-Ls7Ls86m.mjs (1.51 kB) (608 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/scroll-area-Ls7Ls86m.mjs.map (1 kB) (403 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/search-CMyMnOyC.mjs (8.18 kB) (2.27 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/search-CMyMnOyC.mjs.map (4.35 kB) (1.08 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/select-CohOnNGi.mjs (4.96 kB) (1.46 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/select-CohOnNGi.mjs.map (2.5 kB) (687 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/separator-iznHFQa1.mjs (653 B) (365 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/separator-iznHFQa1.mjs.map (417 B) (244 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/series-DtVF43ch.mjs (7.23 kB) (1.99 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/series-DtVF43ch.mjs.map (4.39 kB) (1.09 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/settings-DDRdtDXh.mjs (43.9 kB) (6.5 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/settings-DDRdtDXh.mjs.map (26.7 kB) (3.77 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/sheet-CPPzdCL1.mjs (3.1 kB) (951 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/sheet-CPPzdCL1.mjs.map (1.93 kB) (557 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/shows-CVR7OuvR.mjs (7.17 kB) (2.07 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/shows-CVR7OuvR.mjs.map (3.61 kB) (900 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/skeleton-zE0fiaTq.mjs (362 B) (269 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/skeleton-zE0fiaTq.mjs.map (327 B) (215 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/slider-B7AS6WNu.mjs (1.87 kB) (783 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/slider-B7AS6WNu.mjs.map (1.15 kB) (438 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/spinner-Bfc-iQMz.mjs (414 B) (288 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/spinner-Bfc-iQMz.mjs.map (351 B) (224 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/start-CD7Y9jV_.mjs (101 B) (105 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/start-CD7Y9jV_.mjs.map (147 B) (131 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/starter-templates-qOOqHy8v.mjs (106 kB) (16.2 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/starter-templates-qOOqHy8v.mjs.map (56 kB) (3.55 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/students-Nc7Y2bIN.mjs (18.8 kB) (4.03 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/students-Nc7Y2bIN.mjs.map (13.4 kB) (2.54 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/switch-DcLnpK_b.mjs (1.15 kB) (573 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/switch-DcLnpK_b.mjs.map (468 B) (268 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/table-BbIM4w46.mjs (1.79 kB) (605 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/table-BbIM4w46.mjs.map (1.38 kB) (376 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/tabs-t6YCEC19.mjs (1.8 kB) (693 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/tabs-t6YCEC19.mjs.map (959 B) (288 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/templates-ybTskAEj.mjs (16 kB) (3.73 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/templates-ybTskAEj.mjs.map (10.2 kB) (2.14 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/textarea-DPd89-jr.mjs (784 B) (477 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/textarea-DPd89-jr.mjs.map (327 B) (216 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/TipTapEditor-B7AW2q-e.mjs (11.7 kB) (2.66 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/TipTapEditor-B7AW2q-e.mjs.map (9.49 kB) (1.51 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/usage-CNLPQUXc.mjs (30.8 kB) (5.89 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/usage-CNLPQUXc.mjs.map (21.3 kB) (3.78 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/users-Dj7E_QpS.mjs (6.56 kB) (1.86 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/users-Dj7E_QpS.mjs.map (3.74 kB) (976 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/verify-email-CcWXrzEP.mjs (4.42 kB) (1.45 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/verify-email-CcWXrzEP.mjs.map (1.96 kB) (612 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/videos-EGQE0igE.mjs (7.76 kB) (2.11 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/videos-EGQE0igE.mjs.map (4.98 kB) (1.19 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/webhooks-DKOksfIC.mjs (26 kB) (5.37 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/webhooks-DKOksfIC.mjs.map (17.2 kB) (3.34 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/webhooks-I7uKOztb.mjs (2 kB) (676 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/_/webhooks-I7uKOztb.mjs.map (221 B) (137 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/nitro/nitro.mjs (134 kB) (33 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/nitro/nitro.mjs.map (2.8 kB) (628 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/virtual/entry.mjs (128 kB) (26.3 kB gzip)
+  ├─ .vercel/output/functions/__fallback.func/chunks/virtual/entry.mjs.map (229 B) (180 B gzip)
+  ├─ .vercel/output/functions/__fallback.func/index.mjs (334 B) (199 B gzip)
+  └─ .vercel/output/functions/__fallback.func/package.json (13.5 kB) (3.42 kB gzip)
+Σ Total size: 25 MB (6.49 MB gzip)
+[nitro] ✔ You can deploy this build using npx vercel deploy --prebuilt
+[generate-sw] Building service worker...
+[generate-sw] Service worker written to /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/dist/client/sw.js
+[generate-sw] Service worker also written to /Users/apostle_mbp/Dropbox/0xAPOSTLE/00.ANTIGRAVITY/apostle-video-platform/apps/creator-dashboard/.vercel/output/static/sw.js
+[generate-sw] Size: 3.3 KB

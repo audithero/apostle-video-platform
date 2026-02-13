@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ES2022",
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "baseUrl": ".",
+    "paths": {
+      "@platform/sdui-schema": ["../sdui-schema/src"],
+      "@platform/sdui-schema/*": ["../sdui-schema/src/*"],
+      "@platform/component-registry": ["./src"],
+      "@platform/component-registry/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*.ts"]
+}

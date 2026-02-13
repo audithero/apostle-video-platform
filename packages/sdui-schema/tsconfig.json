@@ -9,11 +9,12 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "strict": true,
     "noEmit": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "baseUrl": ".",
+    "paths": {
+      "@platform/sdui-schema": ["./src"],
+      "@platform/sdui-schema/*": ["./src/*"]
+    }
   },
-  "references": [
-    { "path": "./apps/creator-dashboard" },
-    { "path": "./packages/sdui-schema" },
-    { "path": "./packages/component-registry" }
-  ]
+  "include": ["src/**/*.ts"]
 }

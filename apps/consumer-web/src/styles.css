@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+:root {
+  /* SDUI theme CSS custom properties - set dynamically by ThemeProvider */
+  --sdui-color-primary: #6366f1;
+  --sdui-color-secondary: #8b5cf6;
+  --sdui-color-accent: #f59e0b;
+  --sdui-color-background: #ffffff;
+  --sdui-color-surface: #f8fafc;
+  --sdui-color-text: #0f172a;
+  --sdui-color-text-secondary: #64748b;
+  --sdui-color-error: #ef4444;
+  --sdui-color-success: #22c55e;
+  --sdui-color-warning: #f59e0b;
+  --sdui-color-info: #3b82f6;
+  --sdui-color-border: #e2e8f0;
+
+  --sdui-font-heading: "Inter", system-ui, sans-serif;
+  --sdui-font-body: "Inter", system-ui, sans-serif;
+  --sdui-font-mono: "JetBrains Mono", monospace;
+
+  --sdui-radius-sm: 0.25rem;
+  --sdui-radius-md: 0.5rem;
+  --sdui-radius-lg: 0.75rem;
+  --sdui-radius-xl: 1rem;
+  --sdui-radius-full: 9999px;
+}
+
+body {
+  font-family: var(--sdui-font-body);
+  color: var(--sdui-color-text);
+  background-color: var(--sdui-color-background);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

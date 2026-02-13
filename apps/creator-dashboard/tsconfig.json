@@ -1,0 +1,43 @@
+{
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "vite.config.ts",
+    "src/lib/intl/react-i18next.d.ts",
+    "src/lib/intl/i18next.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/sw.ts",
+    "scripts/**"
+  ],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ES2022",
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@platform/sdui-schema": ["../../packages/sdui-schema/src"],
+      "@platform/sdui-schema/*": ["../../packages/sdui-schema/src/*"],
+      "@platform/component-registry": ["../../packages/component-registry/src"],
+      "@platform/component-registry/*": ["../../packages/component-registry/src/*"]
+    }
+  }
+}
