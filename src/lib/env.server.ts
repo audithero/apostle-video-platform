@@ -41,6 +41,10 @@ export const env = createEnv({
     MUX_SIGNING_KEY_ID: z.string().optional(),
     MUX_SIGNING_KEY_PRIVATE: z.string().optional(),
 
+    // Google OAuth
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().optional(),
+
     // Cloudflare R2
     R2_ACCOUNT_ID: z.string(),
     R2_ACCESS_KEY_ID: z.string(),
