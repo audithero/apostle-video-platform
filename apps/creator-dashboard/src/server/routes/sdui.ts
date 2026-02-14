@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, or } from "drizzle-orm";
 import {
   createTRPCRouter,
   creatorProcedure,
@@ -58,7 +58,7 @@ const templatesRouter = createTRPCRouter({
 
       if (input?.includeStarter !== false) {
         conditions.push(
-          sql`(${sduiTemplate.creatorId} = ${ctx.creator.id} OR ${sduiTemplate.isStarterTemplate} = true)`,
+          or(eq(sduiTemplate.creatorId, ctx.creator.id), eq(sduiTemplate.isStarterTemplate, true)),
         );
       } else {
         conditions.push(eq(sduiTemplate.creatorId, ctx.creator.id));
@@ -80,7 +80,7 @@ const templatesRouter = createTRPCRouter({
         .where(
           and(
             eq(sduiTemplate.id, input.id),
-            sql`(${sduiTemplate.creatorId} = ${ctx.creator.id} OR ${sduiTemplate.isStarterTemplate} = true)`,
+            or(eq(sduiTemplate.creatorId, ctx.creator.id), eq(sduiTemplate.isStarterTemplate, true)),
           ),
         )
         .limit(1);
@@ -294,7 +294,7 @@ const instancesRouter = createTRPCRouter({
         .where(
           and(
             eq(sduiTemplate.id, input.templateId),
-            sql`(${sduiTemplate.creatorId} = ${ctx.creator.id} OR ${sduiTemplate.isStarterTemplate} = true)`,
+            or(eq(sduiTemplate.creatorId, ctx.creator.id), eq(sduiTemplate.isStarterTemplate, true)),
           ),
         )
         .limit(1);

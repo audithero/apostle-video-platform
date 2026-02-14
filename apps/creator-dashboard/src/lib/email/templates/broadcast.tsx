@@ -9,6 +9,20 @@ import {
   Text,
 } from "@react-email/components";
 
+/** Server-safe HTML sanitizer for email content (no DOM dependency). */
+function sanitizeEmailHtml(html: string): string {
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\s*>/gi, "")
+    .replace(/<iframe\b[^>]*>.*?<\/iframe\s*>/gi, "")
+    .replace(/<object\b[^>]*>.*?<\/object\s*>/gi, "")
+    .replace(/<embed\b[^>]*\/?>/gi, "")
+    .replace(/<form\b[^>]*>.*?<\/form\s*>/gi, "")
+    .replace(/\bon\w+\s*=/gi, "data-removed=")
+    .replace(/javascript\s*:/gi, "blocked:")
+    .replace(/vbscript\s*:/gi, "blocked:")
+    .replace(/data\s*:\s*text\/html/gi, "blocked:");
+}
+
 interface BroadcastEmailProps {
   subject: string;
   bodyHtml: string;
@@ -24,6 +38,7 @@ export function BroadcastEmail({
   unsubscribeUrl,
   brandColor = "#2563eb",
 }: BroadcastEmailProps) {
+  const sanitizedHtml = sanitizeEmailHtml(bodyHtml);
   return (
     <Html lang="en">
       <Head />
@@ -35,7 +50,7 @@ export function BroadcastEmail({
           </Heading>
 
           {/* eslint-disable-next-line react/no-danger */}
-          <div dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+          <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
 
           <Hr style={hr} />
 

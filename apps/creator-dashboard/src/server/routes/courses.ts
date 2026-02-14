@@ -263,7 +263,7 @@ export const coursesRouter = createTRPCRouter({
                 title: z.string(),
                 lessonType: z.enum(["video", "text", "quiz", "assignment", "live"]).default("text"),
                 contentHtml: z.string().optional(),
-                contentJson: z.any().optional(),
+                contentJson: z.unknown().optional(),
                 estimatedMinutes: z.number().optional(),
                 isFreePreview: z.boolean().default(false),
               }),

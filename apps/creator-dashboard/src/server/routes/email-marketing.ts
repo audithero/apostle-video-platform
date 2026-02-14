@@ -92,7 +92,7 @@ export const emailMarketingRouter = createTRPCRouter({
       z.object({
         sequenceId: z.string(),
         subject: z.string().min(1),
-        bodyHtml: z.string().optional(),
+        bodyHtml: z.string().max(500_000).optional(),
         bodyJson: z.unknown().optional(),
         delayHours: z.number().min(0).default(24),
       }),
@@ -133,7 +133,7 @@ export const emailMarketingRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         subject: z.string().optional(),
-        bodyHtml: z.string().optional(),
+        bodyHtml: z.string().max(500_000).optional(),
         bodyJson: z.unknown().optional(),
         delayHours: z.number().min(0).optional(),
       }),
@@ -236,7 +236,7 @@ export const emailMarketingRouter = createTRPCRouter({
     .input(
       z.object({
         subject: z.string().min(1),
-        bodyHtml: z.string().optional(),
+        bodyHtml: z.string().max(500_000).optional(),
         bodyJson: z.unknown().optional(),
         segmentFilter: z.record(z.string(), z.unknown()).optional(),
         scheduledAt: z.date().optional(),
@@ -263,7 +263,7 @@ export const emailMarketingRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         subject: z.string().optional(),
-        bodyHtml: z.string().optional(),
+        bodyHtml: z.string().max(500_000).optional(),
         bodyJson: z.unknown().optional(),
         segmentFilter: z.record(z.string(), z.unknown()).optional(),
         status: z.enum(["draft", "scheduled"]).optional(),

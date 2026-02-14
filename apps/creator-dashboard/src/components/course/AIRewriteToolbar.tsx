@@ -1,11 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-
-/** Strip script/event-handler injection from AI-generated HTML. */
-const sanitizeHtml = (html: string): string =>
-  html
-    .replace(/<script[\s>][\s\S]*?<\/script>/gi, "")
-    .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, "")
-    .replace(/javascript\s*:/gi, "");
+import DOMPurify from "dompurify";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/react";
 import {
@@ -284,7 +278,7 @@ function DiffViewDialog({
             ) : (
               <div
                 className="prose prose-sm dark:prose-invert max-w-none p-4"
-                dangerouslySetInnerHTML={{ __html: sanitizeHtml(rewritten) }}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(rewritten) }}
               />
             )}
           </ScrollArea>
