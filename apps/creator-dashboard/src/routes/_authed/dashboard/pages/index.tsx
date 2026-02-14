@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import {
   Copy,
   ExternalLink,
+  FileText,
+  Globe,
+  Loader2,
   MoreHorizontal,
-  Pencil,
   Plus,
   Trash2,
 } from "lucide-react";
@@ -17,58 +21,118 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useTRPC } from "@/lib/trpc/react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authed/dashboard/pages/")({
   component: LandingPagesManager,
 });
 
-// ── Mock Data ────────────────────────────────────────────────────────────
-
-interface LandingPage {
-  id: string;
-  title: string;
-  slug: string;
-  status: "published" | "draft";
-  views: number;
-  conversions: number;
-  updatedAt: Date;
-}
-
-const MOCK_PAGES: ReadonlyArray<LandingPage> = [
-  {
-    id: "p1",
-    title: "Cinematic Lighting Masterclass",
-    slug: "lighting-masterclass",
-    status: "published",
-    views: 1_432,
-    conversions: 127,
-    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: "p2",
-    title: "Documentary Storytelling Workshop",
-    slug: "doc-storytelling",
-    status: "published",
-    views: 856,
-    conversions: 84,
-    updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: "p3",
-    title: "Color Grading Course Preview",
-    slug: "color-grading-preview",
-    status: "draft",
-    views: 0,
-    conversions: 0,
-    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-  },
-];
-
 // ── Component ────────────────────────────────────────────────────────────
 
 function LandingPagesManager() {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [newPageTitle, setNewPageTitle] = useState("");
+
+  // ── Queries ──────────────────────────────────────────────────────────
+  const { data: pages, isLoading } = useQuery(
+    trpc.landingPages.list.queryOptions()
+  );
+
+  // ── Mutations ────────────────────────────────────────────────────────
+  const createPage = useMutation(
+    trpc.landingPages.create.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: trpc.landingPages.list.queryKey() });
+        setShowCreateDialog(false);
+        setNewPageTitle("");
+        toast.success("Page created");
+      },
+      onError: (err) => {
+        toast.error(err.message || "Failed to create page");
+      },
+    })
+  );
+
+  const deletePage = useMutation(
+    trpc.landingPages.delete.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: trpc.landingPages.list.queryKey() });
+        toast.success("Page deleted");
+      },
+      onError: (err) => {
+        toast.error(err.message || "Failed to delete page");
+      },
+    })
+  );
+
+  const updatePage = useMutation(
+    trpc.landingPages.update.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: trpc.landingPages.list.queryKey() });
+      },
+      onError: (err) => {
+        toast.error(err.message || "Failed to update page");
+      },
+    })
+  );
+
+  const duplicatePage = useMutation(
+    trpc.landingPages.create.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: trpc.landingPages.list.queryKey() });
+        toast.success("Page duplicated");
+      },
+      onError: (err) => {
+        toast.error(err.message || "Failed to duplicate page");
+      },
+    })
+  );
+
+  // ── Derived stats ────────────────────────────────────────────────────
+  const totalPages = pages?.length ?? 0;
+  const publishedPages = pages?.filter((p) => p.status === "published").length ?? 0;
+  const draftPages = totalPages - publishedPages;
+
+  // ── Handlers ─────────────────────────────────────────────────────────
+  function handleCreatePage() {
+    if (!newPageTitle.trim()) return;
+    createPage.mutate({ title: newPageTitle.trim() });
+  }
+
+  function handleDeletePage(id: string) {
+    deletePage.mutate({ id });
+  }
+
+  function handleToggleStatus(id: string, currentStatus: string) {
+    const newStatus = currentStatus === "published" ? "draft" : "published";
+    updatePage.mutate({ id, status: newStatus as "draft" | "published" });
+    toast.success(newStatus === "published" ? "Page published" : "Page unpublished");
+  }
+
+  function handleDuplicatePage(page: { title: string; pageJson?: unknown }) {
+    duplicatePage.mutate({
+      title: `${page.title} (Copy)`,
+      templateJson: page.pageJson as Record<string, unknown>[] | undefined,
+    });
+  }
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -78,7 +142,11 @@ function LandingPagesManager() {
             Create and manage landing pages for your courses.
           </p>
         </div>
-        <Button type="button" className="rounded-full bg-primary px-6 font-medium text-primary-foreground hover:bg-primary/90">
+        <Button
+          type="button"
+          className="rounded-full bg-primary px-6 font-medium text-primary-foreground hover:bg-primary/90"
+          onClick={() => setShowCreateDialog(true)}
+        >
           <Plus className="mr-2 size-4" />
           Create Page
         </Button>
@@ -88,116 +156,178 @@ function LandingPagesManager() {
       <div className="grid gap-5 sm:grid-cols-3">
         <Card className="rounded-2xl border-border/60 shadow-sm">
           <CardContent className="pt-6">
-            <p className="font-heading text-2xl font-bold tracking-tight">{MOCK_PAGES.length}</p>
+            {isLoading ? (
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
+            ) : (
+              <p className="font-heading text-2xl font-bold tracking-tight">{totalPages}</p>
+            )}
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Total Pages</p>
           </CardContent>
         </Card>
         <Card className="rounded-2xl border-border/60 shadow-sm">
           <CardContent className="pt-6">
-            <p className="font-heading text-2xl font-bold tracking-tight">
-              {MOCK_PAGES.reduce((sum, p) => sum + p.views, 0).toLocaleString()}
-            </p>
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Total Views</p>
+            {isLoading ? (
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
+            ) : (
+              <p className="font-heading text-2xl font-bold tracking-tight">{publishedPages}</p>
+            )}
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Published</p>
           </CardContent>
         </Card>
         <Card className="rounded-2xl border-border/60 shadow-sm">
           <CardContent className="pt-6">
-            <p className="font-heading text-2xl font-bold tracking-tight">
-              {(() => {
-                const totalViews = MOCK_PAGES.reduce((s, p) => s + p.views, 0);
-                const totalConversions = MOCK_PAGES.reduce((s, p) => s + p.conversions, 0);
-                return totalViews > 0
-                  ? `${String(Math.round((totalConversions / totalViews) * 100))}%`
-                  : "0%";
-              })()}
-            </p>
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Conversion Rate</p>
+            {isLoading ? (
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
+            ) : (
+              <p className="font-heading text-2xl font-bold tracking-tight">{draftPages}</p>
+            )}
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Drafts</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Pages List */}
-      <div className="space-y-3">
-        {MOCK_PAGES.map((page) => (
-          <Card key={page.id} className="rounded-2xl border-border/60 shadow-sm transition-all hover:border-border hover:shadow-md">
-            <CardContent className="flex items-center justify-between py-5 px-6">
-              <div>
-                <div className="flex items-center gap-3">
-                  <p className="font-semibold">{page.title}</p>
-                  <span
-                    className={
-                      page.status === "published"
-                        ? "pill border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
-                        : "pill border-border bg-muted text-muted-foreground"
-                    }
-                  >
-                    {page.status}
-                  </span>
-                </div>
-                <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="font-mono">{`/${page.slug}`}</span>
-                  {page.views > 0 && (
-                    <>
-                      <span className="inline-block size-1 rounded-full bg-muted-foreground/40" />
-                      <span>{`${page.views.toLocaleString()} views`}</span>
-                      <span className="inline-block size-1 rounded-full bg-muted-foreground/40" />
-                      <span>{`${String(page.conversions)} conversions`}</span>
-                    </>
-                  )}
-                  <span className="inline-block size-1 rounded-full bg-muted-foreground/40" />
-                  <span>{`Updated ${formatDistanceToNow(page.updatedAt, { addSuffix: true })}`}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button type="button" variant="outline" size="sm" className="rounded-full" asChild>
-                  <a href={`/p/${page.slug}`} target="_blank" rel="noopener">
-                    <ExternalLink className="mr-1 size-3" />
-                    Preview
-                  </a>
-                </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button type="button" variant="ghost" size="sm" className="rounded-full">
-                      <MoreHorizontal className="size-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="rounded-xl">
-                    <DropdownMenuItem>
-                      <Pencil className="mr-2 size-4" />
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Copy className="mr-2 size-4" />
-                      Duplicate
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-600">
-                      <Trash2 className="mr-2 size-4" />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      {/* Loading state */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="size-8 animate-spin text-muted-foreground" />
+        </div>
+      )}
 
-        {/* Empty state */}
-        {MOCK_PAGES.length === 0 && (
-          <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-border/60 py-16 text-center">
-            <div className="flex size-14 items-center justify-center rounded-full bg-gaspar-lavender/15">
-              <Plus className="size-6 text-gaspar-purple" />
-            </div>
-            <div>
-              <p className="font-heading text-lg font-semibold">No pages yet</p>
-              <p className="mt-1 text-sm text-muted-foreground">Create your first landing page to start converting visitors.</p>
-            </div>
-            <Button type="button" className="rounded-full bg-primary px-6 font-medium text-primary-foreground hover:bg-primary/90">
-              <Plus className="mr-2 size-4" />
-              Create Page
-            </Button>
+      {/* Pages List */}
+      {!isLoading && pages && pages.length > 0 && (
+        <div className="space-y-3">
+          {pages.map((page) => (
+            <Card key={page.id} className="rounded-2xl border-border/60 shadow-sm transition-all hover:border-border hover:shadow-md">
+              <CardContent className="flex items-center justify-between py-5 px-6">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-3">
+                    <p className="truncate font-semibold">{page.title}</p>
+                    <span
+                      className={
+                        page.status === "published"
+                          ? "inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs font-medium border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                          : "inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs font-medium border-border bg-muted text-muted-foreground"
+                      }
+                    >
+                      {page.status}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="font-mono">{`/${page.slug}`}</span>
+                    <span className="inline-block size-1 rounded-full bg-muted-foreground/40" />
+                    <span>{`Updated ${formatDistanceToNow(new Date(page.updatedAt), { addSuffix: true })}`}</span>
+                  </div>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  {page.status === "published" && (
+                    <Button type="button" variant="outline" size="sm" className="rounded-full" asChild>
+                      <a href={`/p/${page.slug}`} target="_blank" rel="noopener">
+                        <ExternalLink className="mr-1 size-3" />
+                        Preview
+                      </a>
+                    </Button>
+                  )}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" className="rounded-full">
+                        <MoreHorizontal className="size-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="rounded-xl">
+                      <DropdownMenuItem
+                        onClick={() => handleToggleStatus(page.id, page.status)}
+                      >
+                        <Globe className="mr-2 size-4" />
+                        {page.status === "published" ? "Unpublish" : "Publish"}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleDuplicatePage(page)}
+                      >
+                        <Copy className="mr-2 size-4" />
+                        Duplicate
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-red-600"
+                        onClick={() => handleDeletePage(page.id)}
+                      >
+                        <Trash2 className="mr-2 size-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Empty state */}
+      {!isLoading && pages && pages.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-border/60 py-16 text-center">
+          <div className="flex size-14 items-center justify-center rounded-full bg-primary/10">
+            <FileText className="size-6 text-primary" />
           </div>
-        )}
-      </div>
+          <div>
+            <p className="font-heading text-lg font-semibold">No pages yet</p>
+            <p className="mt-1 text-sm text-muted-foreground">Create your first landing page to start converting visitors.</p>
+          </div>
+          <Button
+            type="button"
+            className="rounded-full bg-primary px-6 font-medium text-primary-foreground hover:bg-primary/90"
+            onClick={() => setShowCreateDialog(true)}
+          >
+            <Plus className="mr-2 size-4" />
+            Create Page
+          </Button>
+        </div>
+      )}
+
+      {/* Create Page Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="rounded-2xl sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Create Landing Page</DialogTitle>
+            <DialogDescription>
+              Give your new page a title. You can customize the content after creation.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="page-title">Page Title</Label>
+              <Input
+                id="page-title"
+                placeholder="e.g. Photography Masterclass"
+                value={newPageTitle}
+                onChange={(e) => setNewPageTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleCreatePage();
+                }}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowCreateDialog(false)}
+              className="rounded-full"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleCreatePage}
+              disabled={!newPageTitle.trim() || createPage.isPending}
+              className="rounded-full bg-primary px-6 font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              {createPage.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+              Create
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

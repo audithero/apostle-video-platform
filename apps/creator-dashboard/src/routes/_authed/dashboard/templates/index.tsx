@@ -33,6 +33,7 @@ import {
   Monitor,
   Tablet,
   Smartphone,
+  Tv2,
   X,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -98,22 +99,63 @@ function getIcon(iconName: string) {
 /*  Breakpoint config                                                  */
 /* ------------------------------------------------------------------ */
 
-type Breakpoint = "desktop" | "tablet" | "mobile";
+type Breakpoint = "tv" | "desktop" | "tablet" | "mobile";
 
 const BREAKPOINTS: ReadonlyArray<{
   id: Breakpoint;
   icon: typeof Monitor;
   label: string;
+  subtitle: string;
   width: number;
+  height: number;
 }> = [
-  { id: "desktop", icon: Monitor, label: "Desktop", width: 1280 },
-  { id: "tablet", icon: Tablet, label: "Tablet", width: 768 },
-  { id: "mobile", icon: Smartphone, label: "Mobile", width: 375 },
+  { id: "tv", icon: Tv2, label: "TV", subtitle: "tvOS / Android TV", width: 1920, height: 1080 },
+  { id: "desktop", icon: Monitor, label: "Desktop", subtitle: "Web Browser", width: 1280, height: 800 },
+  { id: "tablet", icon: Tablet, label: "Tablet", subtitle: "iPad / Android", width: 768, height: 1024 },
+  { id: "mobile", icon: Smartphone, label: "Phone", subtitle: "iPhone / Android", width: 375, height: 812 },
 ];
 
 /* ------------------------------------------------------------------ */
 /*  Template Preview Modal                                             */
 /* ------------------------------------------------------------------ */
+
+/* Device frame styles */
+const DEVICE_FRAMES: Record<Breakpoint, {
+  bezel: string;
+  borderRadius: string;
+  padding: string;
+  showNotch: boolean;
+  showStand: boolean;
+}> = {
+  tv: {
+    bezel: "border-[8px] border-neutral-800 dark:border-neutral-600",
+    borderRadius: "rounded-xl",
+    padding: "",
+    showNotch: false,
+    showStand: true,
+  },
+  desktop: {
+    bezel: "border-[6px] border-neutral-700 dark:border-neutral-500",
+    borderRadius: "rounded-t-xl",
+    padding: "",
+    showNotch: false,
+    showStand: true,
+  },
+  tablet: {
+    bezel: "border-[6px] border-neutral-800 dark:border-neutral-600",
+    borderRadius: "rounded-[20px]",
+    padding: "",
+    showNotch: false,
+    showStand: false,
+  },
+  mobile: {
+    bezel: "border-[4px] border-neutral-900 dark:border-neutral-500",
+    borderRadius: "rounded-[28px]",
+    padding: "pt-6",
+    showNotch: true,
+    showStand: false,
+  },
+};
 
 function TemplatePreviewModal({
   template,
@@ -129,6 +171,12 @@ function TemplatePreviewModal({
 
   const activeBreakpoint = BREAKPOINTS.find((bp) => bp.id === breakpoint);
   const previewWidth = activeBreakpoint?.width ?? 1280;
+  const previewHeight = activeBreakpoint?.height ?? 800;
+  const frame = DEVICE_FRAMES[breakpoint];
+
+  // Scale TV and large screens to fit in the modal viewport
+  const needsScale = breakpoint === "tv";
+  const scaleFactor = needsScale ? 0.55 : 1;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -149,8 +197,8 @@ function TemplatePreviewModal({
             )}
           </div>
 
-          {/* Breakpoint switcher */}
-          <div className="flex items-center gap-1 rounded-lg bg-neutral-100 p-0.5 dark:bg-neutral-800">
+          {/* Breakpoint switcher with labels */}
+          <div className="flex items-center gap-0.5 rounded-lg bg-neutral-100 p-0.5 dark:bg-neutral-800">
             {BREAKPOINTS.map((bp) => {
               const Icon = bp.icon;
               const isActive = breakpoint === bp.id;
@@ -160,14 +208,15 @@ function TemplatePreviewModal({
                   type="button"
                   onClick={() => setBreakpoint(bp.id)}
                   className={cn(
-                    "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
+                    "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
                     isActive
                       ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-700 dark:text-neutral-100"
                       : "text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200",
                   )}
-                  title={`${bp.label} (${String(bp.width)}px)`}
+                  title={`${bp.subtitle} (${String(bp.width)}x${String(bp.height)})`}
                 >
                   <Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{bp.label}</span>
                 </button>
               );
             })}
@@ -175,6 +224,9 @@ function TemplatePreviewModal({
 
           {/* Actions */}
           <div className="flex items-center gap-2">
+            <span className="hidden text-[10px] text-neutral-400 md:inline">
+              {String(previewWidth)}x{String(previewHeight)}
+            </span>
             <Button
               size="sm"
               className="h-8 gap-1.5"
@@ -196,18 +248,62 @@ function TemplatePreviewModal({
           </div>
         </div>
 
-        {/* Inline preview */}
-        <div className="relative flex flex-1 items-start justify-center overflow-auto bg-neutral-100 p-4 dark:bg-neutral-900">
+        {/* Preview with device frame */}
+        <div className="relative flex flex-1 flex-col items-center justify-start overflow-auto bg-neutral-100 p-4 dark:bg-neutral-900">
+          {/* Device info label */}
+          <div className="mb-3 flex items-center gap-2 text-xs text-neutral-400">
+            <span className="font-medium">{activeBreakpoint?.subtitle}</span>
+            <span>-</span>
+            <span>{String(previewWidth)} x {String(previewHeight)}</span>
+          </div>
+
           {template && (
             <div
-              className="rounded-lg border bg-white shadow-lg transition-all duration-300 dark:bg-neutral-950"
+              className="flex flex-col items-center"
               style={{
-                width: `${String(previewWidth)}px`,
-                maxWidth: "100%",
-                overflow: "hidden",
+                transform: needsScale ? `scale(${String(scaleFactor)})` : undefined,
+                transformOrigin: "top center",
               }}
             >
-              <InlineSDUIPreview screen={template.screen} />
+              {/* Device frame */}
+              <div className={cn("relative overflow-hidden bg-white dark:bg-neutral-950", frame.bezel, frame.borderRadius)}>
+                {/* Phone notch */}
+                {frame.showNotch && (
+                  <div className="absolute left-1/2 top-0 z-10 h-5 w-28 -translate-x-1/2 rounded-b-2xl bg-neutral-900 dark:bg-neutral-500" />
+                )}
+                {/* Content */}
+                <div
+                  className={cn("overflow-auto", frame.padding)}
+                  style={{
+                    width: `${String(previewWidth)}px`,
+                    maxHeight: `${String(previewHeight)}px`,
+                  }}
+                >
+                  <InlineSDUIPreview screen={template.screen} />
+                </div>
+              </div>
+
+              {/* Monitor/TV stand */}
+              {frame.showStand && (
+                <div className="flex flex-col items-center">
+                  <div
+                    className={cn(
+                      "bg-neutral-700 dark:bg-neutral-500",
+                      breakpoint === "tv"
+                        ? "h-3 w-40 rounded-b-sm"
+                        : "h-12 w-3 rounded-b-sm",
+                    )}
+                  />
+                  <div
+                    className={cn(
+                      "rounded-sm bg-neutral-600 dark:bg-neutral-400",
+                      breakpoint === "tv"
+                        ? "h-2 w-64"
+                        : "h-2 w-24",
+                    )}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
