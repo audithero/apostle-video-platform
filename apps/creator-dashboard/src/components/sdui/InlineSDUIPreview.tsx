@@ -12,7 +12,7 @@ function sectionStyle(section: SDUISection): CSSProperties {
 }
 
 function sanitize(html: string): string {
-  return DOMPurify.sanitize(html, { ADD_ATTR: ["style", "target"] });
+  return DOMPurify.sanitize(html, { ADD_ATTR: ["target"] });
 }
 
 /** Detect dark/light background for adaptive contrast */
@@ -23,6 +23,7 @@ function isDarkBg(bg?: string): boolean {
   const r = parseInt(hex.slice(0, 2), 16);
   const g = parseInt(hex.slice(2, 4), 16);
   const b = parseInt(hex.slice(4, 6), 16);
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return true;
   return (0.299 * r + 0.587 * g + 0.114 * b) / 255 < 0.5;
 }
 
@@ -99,7 +100,7 @@ function HeroSectionRenderer({ props, style }: { readonly props: Record<string, 
       }}
     >
       {backgroundImage && (
-        <div style={{ position: "absolute", inset: 0, backgroundColor: `rgba(0,0,0,${String(overlayOpacity)})` }} />
+        <div style={{ position: "absolute", inset: 0, backgroundColor: `rgba(0,0,0,${overlayOpacity})` }} />
       )}
       <div
         style={{
@@ -181,7 +182,7 @@ function PricingTableRenderer({ props, style }: { readonly props: Record<string,
 
   return (
     <div style={{ ...style, display: "flex", justifyContent: "center" }}>
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${String(Math.min(plans.length, 3))}, 1fr)`, gap: "1.25rem", maxWidth: "980px", width: "100%" }}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(plans.length, 3)}, 1fr)`, gap: "1.25rem", maxWidth: "980px", width: "100%" }}>
         {plans.map((plan) => {
           const hi = plan.highlighted === true;
           return (
@@ -224,8 +225,8 @@ function PricingTableRenderer({ props, style }: { readonly props: Record<string,
                 {plan.period && <span style={{ color: c.m, fontSize: "0.8rem" }}>/{plan.period}</span>}
               </div>
               <ul style={{ listStyle: "none", padding: 0, margin: "1.5rem 0 1.75rem" }}>
-                {plan.features.map((f) => (
-                  <li key={f} style={{ color: c.t, fontSize: "0.85rem", padding: "7px 0", display: "flex", gap: "10px", alignItems: "flex-start", lineHeight: 1.4 }}>
+                {plan.features.map((f, fi) => (
+                  <li key={`${plan.name}-f${fi}`} style={{ color: c.t, fontSize: "0.85rem", padding: "7px 0", display: "flex", gap: "10px", alignItems: "flex-start", lineHeight: 1.4 }}>
                     <span style={{ color: accentColor, flexShrink: 0, fontSize: "0.75rem", marginTop: "2px" }}>&#10003;</span>
                     <span>{f}</span>
                   </li>
@@ -280,7 +281,7 @@ function TestimonialCarouselRenderer({ props, style }: { readonly props: Record<
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: isSingle ? "1fr" : `repeat(${String(count)}, 1fr)`,
+          gridTemplateColumns: isSingle ? "1fr" : `repeat(${count}, 1fr)`,
           gap: "1.25rem",
           maxWidth: isSingle ? "640px" : "960px",
           margin: "0 auto",
@@ -398,14 +399,14 @@ function ProgressBarRenderer({ props, style }: { readonly props: Record<string, 
       {(label || showPercentage) && (
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "0.85rem" }}>
           <span style={{ color: c.h, fontWeight: 500 }}>{label}</span>
-          {showPercentage && <span style={{ color: c.m, fontWeight: 600 }}>{String(value)}%</span>}
+          {showPercentage && <span style={{ color: c.m, fontWeight: 600 }}>{value}%</span>}
         </div>
       )}
       <div style={{ height: "8px", backgroundColor: c.dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)", borderRadius: "99px", overflow: "hidden" }}>
         <div
           style={{
             height: "100%",
-            width: `${String(value)}%`,
+            width: `${value}%`,
             background: `linear-gradient(90deg, ${color}, ${color}99)`,
             borderRadius: "99px",
             boxShadow: value > 0 ? `0 0 12px ${color}33` : "none",
@@ -460,12 +461,12 @@ function CurriculumAccordionRenderer({ props, style }: { readonly props: Record<
                   flexShrink: 0,
                 }}
               >
-                {String(i + 1)}
+                {i + 1}
               </div>
               <h4 style={{ color: c.h, fontWeight: 600, fontSize: "0.95rem", flex: 1 }}>
                 {mod.title}
               </h4>
-              <span style={{ color: c.m, fontSize: "0.75rem", flexShrink: 0 }}>{String(mod.lessons.length)} lessons</span>
+              <span style={{ color: c.m, fontSize: "0.75rem", flexShrink: 0 }}>{mod.lessons.length} lessons</span>
             </div>
 
             {/* Expand first module's lessons */}
@@ -506,7 +507,7 @@ function CurriculumAccordionRenderer({ props, style }: { readonly props: Record<
                 })}
                 {mod.lessons.length > 5 && (
                   <li style={{ padding: "6px 0 6px 40px", color: c.m, fontSize: "0.8rem" }}>
-                    +{String(mod.lessons.length - 5)} more
+                    +{mod.lessons.length - 5} more
                   </li>
                 )}
               </ul>
@@ -556,7 +557,7 @@ function InstructorBioRenderer({ props, style }: { readonly props: Record<string
             }}
           >
             {avatar ? (
-              <img src={avatar} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={avatar} alt={`Instructor ${name}`} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
               <span style={{ color: "#818CF8", fontWeight: 700, fontSize: "2.25rem", fontFamily: "Georgia, serif" }}>
                 {name.charAt(0)}
@@ -614,7 +615,7 @@ function CourseGridRenderer({ props, style }: { readonly props: Record<string, u
 
   return (
     <div style={{ ...style }}>
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${String(Math.min(columns, 4))}, 1fr)`, gap: "1.25rem" }}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(columns, 4)}, 1fr)`, gap: "1.25rem" }}>
         {courses.map((course) => (
           <div
             key={course.title}
@@ -728,10 +729,10 @@ function StreakCounterRenderer({ props, style }: { readonly props: Record<string
         }}
       >
         <div style={{ fontSize: "2.5rem", marginBottom: "0.25rem", lineHeight: 1 }}>&#128293;</div>
-        <div style={{ fontSize: "3rem", fontWeight: 800, color: "#FB923C", letterSpacing: "-0.03em", lineHeight: 1 }}>{String(currentStreak)}</div>
+        <div style={{ fontSize: "3rem", fontWeight: 800, color: "#FB923C", letterSpacing: "-0.03em", lineHeight: 1 }}>{currentStreak}</div>
         <div style={{ color: c.m, fontSize: "0.85rem", marginTop: "0.35rem", fontWeight: 500 }}>Day Streak</div>
         {longestStreak > 0 && (
-          <div style={{ color: c.f, fontSize: "0.75rem", marginTop: "0.5rem" }}>Best: {String(longestStreak)} days</div>
+          <div style={{ color: c.f, fontSize: "0.75rem", marginTop: "0.5rem" }}>Best: {longestStreak} days</div>
         )}
       </div>
     </div>
@@ -792,8 +793,8 @@ function CommunityFeedRenderer({ props, style }: { readonly props: Record<string
             </div>
             <p style={{ color: c.t, fontSize: "0.85rem", lineHeight: 1.65 }}>{post.content}</p>
             <div style={{ display: "flex", gap: "1.25rem", marginTop: "0.75rem", color: c.m, fontSize: "0.75rem" }}>
-              {typeof post.reactions === "number" && <span>&#10084;&#65039; {String(post.reactions)}</span>}
-              {typeof post.comments === "number" && <span>&#128172; {String(post.comments)}</span>}
+              {typeof post.reactions === "number" && <span>&#10084;&#65039; {post.reactions}</span>}
+              {typeof post.comments === "number" && <span>&#128172; {post.comments}</span>}
             </div>
           </div>
         ))}
@@ -997,11 +998,11 @@ function LeaderboardWidgetRenderer({ props, style }: { readonly props: Record<st
           >
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <span style={{ width: "28px", textAlign: "center", fontSize: i < 3 ? "1.2rem" : "0.85rem", color: c.m }}>
-                {i < 3 ? medals[i] : String(i + 1)}
+                {i < 3 ? medals[i] : i + 1}
               </span>
               <span style={{ color: c.h, fontSize: "0.85rem", fontWeight: i < 3 ? 600 : 400 }}>{entry.name}</span>
             </div>
-            <span style={{ color: c.dark ? "#A5B4FC" : "#6366F1", fontWeight: 600, fontSize: "0.8rem" }}>{String(entry.points.toLocaleString())} pts</span>
+            <span style={{ color: c.dark ? "#A5B4FC" : "#6366F1", fontWeight: 600, fontSize: "0.8rem" }}>{entry.points.toLocaleString()} pts</span>
           </div>
         ))}
       </div>
@@ -1033,7 +1034,7 @@ function ContentRowRenderer({ props, style }: { readonly props: Record<string, u
       <div style={{ display: "flex", gap: "0.75rem", overflowX: "auto" }}>
         {gradients.map((g, i) => (
           <div
-            key={`row-${String(i)}`}
+            key={`row-${i}`}
             style={{
               minWidth: "200px",
               height: "110px",
@@ -1096,7 +1097,7 @@ function LessonCardRenderer({ props, style }: { readonly props: Record<string, u
 function ImageBlockRenderer({ props, style }: { readonly props: Record<string, unknown>; readonly style: CSSProperties }) {
   const c = pal(style);
   const src = props.src as string | undefined;
-  const alt = (props.alt as string) ?? "";
+  const alt = (props.alt as string) ?? "Template image";
   const aspectRatio = (props.aspectRatio as string) ?? "16:9";
   const paddingBottom = aspectRatio === "4:3" ? "75%" : aspectRatio === "1:1" ? "100%" : "56.25%";
 
@@ -1137,7 +1138,7 @@ function QuizBlockRenderer({ props, style }: { readonly props: Record<string, un
       >
         <div style={{ fontSize: "1.75rem", marginBottom: "0.5rem" }}>&#x1F4DD;</div>
         <h4 style={{ color: c.h, fontWeight: 600 }}>{title}</h4>
-        {questionCount > 0 && <p style={{ color: c.m, fontSize: "0.8rem", marginTop: "0.35rem" }}>{String(questionCount)} questions</p>}
+        {questionCount > 0 && <p style={{ color: c.m, fontSize: "0.8rem", marginTop: "0.35rem" }}>{questionCount} questions</p>}
       </div>
     </div>
   );
@@ -1170,7 +1171,7 @@ function FallbackRenderer({ section }: { readonly section: SDUISection }) {
 /*  Renderer map                                                       */
 /* ================================================================== */
 
-type RendererFn = (p: { readonly props: Record<string, unknown>; readonly style: CSSProperties }) => React.JSX.Element;
+type RendererFn = (p: { readonly props: Record<string, unknown>; readonly style: CSSProperties }) => JSX.Element;
 
 const RENDERERS: Record<string, RendererFn> = {
   TextBlock: TextBlockRenderer,
