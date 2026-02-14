@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "bunVersion": "1.x",
   "installCommand": "bun install",
   "buildCommand": "cd apps/creator-dashboard && bun run build",
   "outputDirectory": "apps/creator-dashboard/.output"
