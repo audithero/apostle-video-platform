@@ -1,6 +1,7 @@
 import { type CSSProperties } from "react";
 import DOMPurify from "dompurify";
 import type { SDUIScreen, SDUISection } from "@platform/sdui-schema";
+import { BESPOKE_PREVIEWS } from "./template-previews";
 
 /* ================================================================== */
 /*  Helpers                                                            */
@@ -1291,6 +1292,13 @@ const RENDERERS: Record<string, RendererFn> = {
 /* ================================================================== */
 
 export function InlineSDUIPreview({ screen }: { readonly screen: SDUIScreen }) {
+  // Check for bespoke template-specific preview (matches superdesign HTML originals)
+  const BespokePreview = BESPOKE_PREVIEWS[screen.slug];
+  if (BespokePreview) {
+    return <BespokePreview />;
+  }
+
+  // Fallback: generic section-by-section rendering for custom templates
   // Detect primary font from template sections
   const primaryFont = screen.sections
     .map((s) => (s.style as Record<string, unknown> | undefined)?.fontFamily as string | undefined)
