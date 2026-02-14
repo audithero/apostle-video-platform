@@ -1,88 +1,121 @@
 import type { SDUIScreen } from "@platform/sdui-schema";
 
+/**
+ * Complete Web Dev Bootcamp — Checkout / Pricing page
+ *
+ * Design language: Developer-focused dark mode with high-contrast accents.
+ * Inspired by Vercel, Linear, and modern SaaS pricing pages.
+ *
+ * Typography: "Inter" system font stack for clean, technical readability
+ * Palette: Dark slate (#0F172A) base, electric cyan (#06B6D4),
+ *          lime (#84CC16), muted steel (#94A3B8) secondary text.
+ */
 export const checkoutTemplate: SDUIScreen = {
   id: "tpl-checkout",
   name: "Checkout Page",
   slug: "checkout",
-  description: "Pricing table, testimonials, guarantee badge, CTA",
+  description:
+    "Developer bootcamp checkout with tiered pricing, social proof from 8,500+ graduates, and 60-day code guarantee",
   sections: [
+    /* ---------------------------------------------------------------- */
+    /*  Page Heading                                                     */
+    /* ---------------------------------------------------------------- */
     {
       id: "heading",
       type: "TextBlock",
       props: {
         content:
-          "<h1>Choose Your Plan</h1><p>Get instant access to the full course. Pick the plan that works best for you.</p>",
+          '<h1 style="font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 2.75rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; background: linear-gradient(135deg, #F8FAFC 0%, #06B6D4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Invest in Your Developer Career</h1><p style="font-size: 1.15rem; color: #94A3B8; line-height: 1.7; max-width: 560px; margin: 0 auto;">Join <strong style="color: #06B6D4;">8,500+ graduates</strong> who transformed their careers with David Chen\'s Complete Web Dev Bootcamp. From first line of code to production deployment.</p>',
         alignment: "center",
-        maxWidth: "640px",
+        maxWidth: "720px",
       },
-      style: { padding: "3rem 1.5rem 1.5rem" },
+      style: {
+        padding: "5rem 1.5rem 2rem",
+        backgroundColor: "#0F172A",
+      },
     },
+
+    /* ---------------------------------------------------------------- */
+    /*  Pricing Table — 3 Tiers                                          */
+    /* ---------------------------------------------------------------- */
     {
       id: "pricing",
       type: "PricingTable",
       props: {
         plans: [
           {
-            name: "Starter",
+            name: "Explorer",
             price: "$0",
             period: "forever",
             features: [
-              "5 free preview lessons",
-              "Community access",
-              "Email newsletter",
+              "5 preview lessons (HTML, CSS, JS basics)",
+              "Community forum access",
+              "Weekly coding challenges",
+              "Course roadmap & syllabus PDF",
+              "Email newsletter with dev tips",
             ],
             ctaText: "Start Free",
             highlighted: false,
           },
           {
-            name: "Complete",
-            price: "$79",
+            name: "Developer",
+            price: "$129",
             period: "one-time",
             features: [
-              "All video lessons",
-              "Downloadable resources",
-              "Community access",
-              "Certificate of completion",
-              "Lifetime updates",
+              "All 180 video lessons",
+              "12 real-world portfolio projects",
+              "Certificate of Completion",
+              "Downloadable source code & assets",
+              "Community forum + study groups",
+              "Lifetime access + future updates",
             ],
-            ctaText: "Get Full Access",
+            ctaText: "Start Building",
             highlighted: true,
           },
           {
-            name: "VIP",
-            price: "$199",
+            name: "Pro",
+            price: "$299",
             period: "one-time",
             features: [
-              "Everything in Complete",
-              "1-on-1 coaching session",
-              "Priority support",
-              "Private group access",
-              "Bonus materials",
+              "Everything in Developer",
+              "4 one-on-one mentoring sessions",
+              "Resume & portfolio review",
+              "Job interview prep workshop",
+              "Private Slack with David & TAs",
+              "Priority code reviews on projects",
             ],
-            ctaText: "Go VIP",
+            ctaText: "Go Pro",
             highlighted: false,
           },
         ],
       },
-      style: { padding: "0 1.5rem 3rem" },
+      style: {
+        padding: "0 1.5rem 4rem",
+        backgroundColor: "#0F172A",
+      },
     },
+
+    /* ---------------------------------------------------------------- */
+    /*  60-Day Code Guarantee                                            */
+    /* ---------------------------------------------------------------- */
     {
       id: "guarantee",
       type: "TextBlock",
       props: {
         content:
-          "<div style=\"text-align:center\"><h3>30-Day Money-Back Guarantee</h3><p>Not satisfied? Get a full refund within 30 days, no questions asked. We're confident you'll love the course.</p></div>",
+          '<div style="text-align: center; max-width: 600px; margin: 0 auto; border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 16px; padding: 2.5rem 2rem; background: rgba(6, 182, 212, 0.04);"><div style="font-size: 2.5rem; margin-bottom: 0.75rem;">&#128274;</div><h3 style="font-family: Inter, system-ui, sans-serif; font-size: 1.4rem; color: #F1F5F9; font-weight: 700; margin-bottom: 0.75rem;">60-Day Money-Back Code Guarantee</h3><p style="color: #94A3B8; line-height: 1.7; font-size: 1rem;">Complete the first 30 lessons. If you can\'t build a working web app by then, we\'ll refund every penny. No hoops, no questions — just email us your progress and we\'ll process the refund within 48 hours.</p></div>',
         alignment: "center",
-        maxWidth: "600px",
+        maxWidth: "720px",
       },
       style: {
-        padding: "2rem 1.5rem",
-        backgroundColor: "var(--sdui-color-surface)",
-        borderRadius: "12px",
-        maxWidth: "640px",
-        margin: "0 auto",
+        padding: "0 1.5rem 4rem",
+        backgroundColor: "#0F172A",
       },
     },
+
+    /* ---------------------------------------------------------------- */
+    /*  Testimonials                                                     */
+    /* ---------------------------------------------------------------- */
     {
       id: "testimonials",
       type: "TestimonialCarousel",
@@ -91,38 +124,73 @@ export const checkoutTemplate: SDUIScreen = {
         interval: 6000,
         testimonials: [
           {
-            quote: "Worth every penny. The quality of instruction is outstanding.",
-            name: "Happy Student",
-            role: "Enrolled Student",
+            quote:
+              "I went from zero coding knowledge to landing a junior developer role in 5 months. David's project-based approach meant I had a portfolio ready before I even started applying. The bootcamp paid for itself 100 times over.",
+            name: "Priya Sharma",
+            role: "Junior Developer, Toronto",
             avatar: "",
           },
           {
-            quote: "I upgraded to VIP and the coaching call alone was worth the price difference.",
-            name: "VIP Member",
-            role: "VIP Student",
+            quote:
+              "After 8 years in retail management, I was terrified to switch careers. David breaks everything down so clearly that imposter syndrome never stood a chance. I'm now building React apps at a startup and loving every day.",
+            name: "Marcus Johnson",
+            role: "Career Changer, Austin",
             avatar: "",
           },
           {
-            quote: "Best online learning experience I've had. The community is incredibly supportive.",
-            name: "Active Learner",
-            role: "Community Member",
+            quote:
+              "The Pro tier mentoring sessions were a game-changer. David reviewed my freelance portfolio and helped me reposition myself. My rates doubled within two months of finishing the course.",
+            name: "Lisa Zhang",
+            role: "Freelance Developer, Singapore",
             avatar: "",
           },
         ],
       },
-      style: { padding: "3rem 1.5rem" },
+      style: {
+        padding: "0 1.5rem 4rem",
+        backgroundColor: "#0F172A",
+        borderTop: "1px solid rgba(6, 182, 212, 0.1)",
+        borderBottom: "1px solid rgba(6, 182, 212, 0.1)",
+      },
     },
+
+    /* ---------------------------------------------------------------- */
+    /*  Social Proof Stats                                               */
+    /* ---------------------------------------------------------------- */
+    {
+      id: "social-proof",
+      type: "TextBlock",
+      props: {
+        content:
+          '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 680px; margin: 0 auto; text-align: center;"><div><div style="font-size: 2.5rem; font-weight: 800; font-family: Inter, system-ui, sans-serif; color: #06B6D4; letter-spacing: -0.02em;">8,500+</div><div style="color: #64748B; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem;">Graduates</div></div><div><div style="font-size: 2.5rem; font-weight: 800; font-family: Inter, system-ui, sans-serif; color: #84CC16; letter-spacing: -0.02em;">4.9/5</div><div style="color: #64748B; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem;">Average Rating</div></div><div><div style="font-size: 2.5rem; font-weight: 800; font-family: Inter, system-ui, sans-serif; color: #06B6D4; letter-spacing: -0.02em;">94%</div><div style="color: #64748B; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem;">Job Placement</div></div></div>',
+        alignment: "center",
+        maxWidth: "780px",
+      },
+      style: {
+        padding: "4rem 1.5rem",
+        backgroundColor: "#0F172A",
+      },
+    },
+
+    /* ---------------------------------------------------------------- */
+    /*  Final CTA                                                        */
+    /* ---------------------------------------------------------------- */
     {
       id: "cta-bottom",
       type: "CTAButton",
       props: {
-        text: "Get Instant Access",
+        text: "Start Your Developer Journey",
         action: { type: "navigate", payload: { url: "/checkout" } },
         variant: "primary",
         size: "lg",
         fullWidth: false,
       },
-      style: { padding: "2rem 1.5rem 4rem", display: "flex", justifyContent: "center" },
+      style: {
+        padding: "1rem 1.5rem 5rem",
+        display: "flex",
+        justifyContent: "center",
+        backgroundColor: "#0F172A",
+      },
     },
   ],
 };

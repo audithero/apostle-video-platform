@@ -3,9 +3,19 @@ import type { SDUIScreen } from "@platform/sdui-schema";
 import { SDUIRenderer } from "./renderer/SDUIRenderer";
 import { ThemeProvider } from "./renderer/ThemeProvider";
 import { ActionProvider } from "./renderer/ActionHandler";
+import { PreviewPage } from "./pages/preview";
 import { sampleScreen } from "./pages/sample-screen";
 
 export function App() {
+  // Route to preview page when path is /preview
+  if (window.location.pathname === "/preview") {
+    return <PreviewPage />;
+  }
+
+  return <MainApp />;
+}
+
+function MainApp() {
   const [screen, setScreen] = useState<SDUIScreen | null>(null);
 
   useEffect(() => {

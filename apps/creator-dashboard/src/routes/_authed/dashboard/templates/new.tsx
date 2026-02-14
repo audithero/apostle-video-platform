@@ -3,11 +3,19 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTRPC } from "@/lib/trpc/react";
 import { STARTER_TEMPLATES } from "@/lib/sdui/starter-templates";
+import type { StarterTemplate } from "@/lib/sdui/starter-templates";
+import { InlineSDUIPreview } from "@/components/sdui/InlineSDUIPreview";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -34,7 +42,13 @@ import {
   Landmark,
   TrendingUp,
   Palette,
+  Eye,
+  Monitor,
+  Tablet,
+  Smartphone,
+  X,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authed/dashboard/templates/new")({
   component: NewTemplatePage,
@@ -65,6 +79,111 @@ function getIcon(iconName: string) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Breakpoint config                                                  */
+/* ------------------------------------------------------------------ */
+
+type Breakpoint = "desktop" | "tablet" | "mobile";
+
+const BREAKPOINTS: ReadonlyArray<{
+  id: Breakpoint;
+  icon: typeof Monitor;
+  label: string;
+  width: number;
+}> = [
+  { id: "desktop", icon: Monitor, label: "Desktop", width: 1280 },
+  { id: "tablet", icon: Tablet, label: "Tablet", width: 768 },
+  { id: "mobile", icon: Smartphone, label: "Mobile", width: 375 },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Preview Modal                                                      */
+/* ------------------------------------------------------------------ */
+
+function TemplatePreviewModal({
+  template,
+  open,
+  onOpenChange,
+}: {
+  readonly template: StarterTemplate | null;
+  readonly open: boolean;
+  readonly onOpenChange: (open: boolean) => void;
+}) {
+  const [breakpoint, setBreakpoint] = useState<Breakpoint>("desktop");
+
+  const activeBreakpoint = BREAKPOINTS.find((bp) => bp.id === breakpoint);
+  const previewWidth = activeBreakpoint?.width ?? 1280;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        showCloseButton={false}
+        className="flex h-[90vh] max-w-[95vw] flex-col gap-0 p-0 sm:max-w-[95vw]"
+      >
+        <div className="flex items-center justify-between border-b px-4 py-3">
+          <div className="flex items-center gap-3">
+            <DialogTitle className="text-base font-semibold">
+              {template?.name ?? "Preview"}
+            </DialogTitle>
+            {template && (
+              <Badge variant="secondary" className="text-[10px]">
+                {template.category}
+              </Badge>
+            )}
+          </div>
+
+          <div className="flex items-center gap-1 rounded-lg bg-neutral-100 p-0.5 dark:bg-neutral-800">
+            {BREAKPOINTS.map((bp) => {
+              const Icon = bp.icon;
+              const isActive = breakpoint === bp.id;
+              return (
+                <button
+                  key={bp.id}
+                  type="button"
+                  onClick={() => setBreakpoint(bp.id)}
+                  className={cn(
+                    "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
+                    isActive
+                      ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-700 dark:text-neutral-100"
+                      : "text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200",
+                  )}
+                  title={`${bp.label} (${String(bp.width)}px)`}
+                >
+                  <Icon className="h-4 w-4" />
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            className="rounded-sm opacity-70 transition-opacity hover:opacity-100"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </button>
+        </div>
+
+        <div className="relative flex flex-1 items-start justify-center overflow-auto bg-neutral-100 p-4 dark:bg-neutral-900">
+          {template && (
+            <div
+              className="rounded-lg border bg-white shadow-lg transition-all duration-300 dark:bg-neutral-950"
+              style={{
+                width: `${String(previewWidth)}px`,
+                maxWidth: "100%",
+                overflow: "hidden",
+              }}
+            >
+              <InlineSDUIPreview screen={template.screen} />
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  New Template Page                                                  */
 /* ------------------------------------------------------------------ */
 
@@ -77,6 +196,8 @@ function NewTemplatePage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("landing");
+  const [previewTemplate, setPreviewTemplate] = useState<StarterTemplate | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const createMutation = useMutation(
     trpc.sdui.templates.create.mutationOptions({
@@ -101,7 +222,7 @@ function NewTemplatePage() {
           description,
         }
       : {
-          id: `template-${Date.now()}`,
+          id: `template-${String(Date.now())}`,
           name,
           slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
           description,
@@ -114,6 +235,12 @@ function NewTemplatePage() {
       category: category as "landing" | "learning" | "community" | "commerce" | "dashboard" | "general",
       templateJson,
     });
+  };
+
+  const handlePreview = (e: React.MouseEvent, starter: StarterTemplate) => {
+    e.stopPropagation();
+    setPreviewTemplate(starter);
+    setPreviewOpen(true);
   };
 
   return (
@@ -172,43 +299,62 @@ function NewTemplatePage() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {STARTER_TEMPLATES.map((starter) => {
               const Icon = getIcon(starter.icon);
-              const sectionTypes = starter.screen.sections.map((s) => s.type);
               return (
                 <Card
                   key={starter.id}
-                  className={`cursor-pointer border-2 transition-colors ${
+                  className={`cursor-pointer border-2 overflow-hidden transition-colors ${
                     selectedStarter === starter.id
                       ? "border-[var(--color-primary,#6366f1)]"
                       : "border-transparent hover:border-neutral-200"
                   }`}
                   onClick={() => setSelectedStarter(starter.id)}
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-800">
-                        <Icon className="h-5 w-5 text-neutral-500" />
+                  <CardContent className="p-0">
+                    {/* Visual preview area */}
+                    <div
+                      className="relative flex h-24 flex-col justify-end overflow-hidden p-2.5"
+                      style={{ background: starter.preview.gradient }}
+                    >
+                      <Icon className="absolute right-2.5 top-2.5 h-5 w-5 text-white/20" />
+                      <p className="truncate text-[11px] font-bold text-white/90 drop-shadow-sm">
+                        {starter.preview.heroTitle}
+                      </p>
+                      <p className="mt-0.5 truncate text-[9px] text-white/60">
+                        {starter.preview.heroSubtitle}
+                      </p>
+                      <div className="mt-1.5 flex flex-wrap gap-0.5">
+                        {starter.preview.sectionPreview.slice(0, 3).map((section) => (
+                          <span
+                            key={section}
+                            className="rounded-full bg-white/15 px-1.5 py-0.5 text-[8px] font-medium text-white/70 backdrop-blur-sm"
+                          >
+                            {section}
+                          </span>
+                        ))}
+                        {starter.preview.sectionPreview.length > 3 && (
+                          <span className="rounded-full bg-white/15 px-1.5 py-0.5 text-[8px] font-medium text-white/70 backdrop-blur-sm">
+                            +{String(starter.preview.sectionPreview.length - 3)}
+                          </span>
+                        )}
                       </div>
+                    </div>
+                    {/* Info + Preview button */}
+                    <div className="flex items-start gap-3 p-3">
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-semibold">{starter.name}</div>
                         <p className="mt-0.5 text-xs text-neutral-500">
                           {starter.description}
                         </p>
-                        <div className="mt-2 flex flex-wrap gap-1">
-                          {sectionTypes.slice(0, 4).map((s, i) => (
-                            <span
-                              key={`${s}-${String(i)}`}
-                              className="rounded bg-neutral-100 px-1.5 py-0.5 text-[10px] text-neutral-500 dark:bg-neutral-800"
-                            >
-                              {s}
-                            </span>
-                          ))}
-                          {sectionTypes.length > 4 && (
-                            <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-[10px] text-neutral-500 dark:bg-neutral-800">
-                              +{String(sectionTypes.length - 4)} more
-                            </span>
-                          )}
-                        </div>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 flex-shrink-0"
+                        onClick={(e) => handlePreview(e, starter)}
+                        title="Preview template"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -299,6 +445,13 @@ function NewTemplatePage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Preview Modal */}
+      <TemplatePreviewModal
+        template={previewTemplate}
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+      />
     </div>
   );
 }
