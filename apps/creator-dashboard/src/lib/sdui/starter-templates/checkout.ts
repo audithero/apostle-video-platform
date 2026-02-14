@@ -6,7 +6,7 @@ import type { SDUIScreen } from "@platform/sdui-schema";
  * Design language: Developer-focused dark mode with high-contrast accents.
  * Inspired by Vercel, Linear, and modern SaaS pricing pages.
  *
- * Typography: "Inter" system font stack for clean, technical readability
+ * Typography: "Sora" for modern, trustworthy technical readability
  * Palette: Dark slate (#0F172A) base, electric cyan (#06B6D4),
  *          lime (#84CC16), muted steel (#94A3B8) secondary text.
  */
@@ -31,6 +31,7 @@ export const checkoutTemplate: SDUIScreen = {
       },
       style: {
         padding: "5rem 1.5rem 2rem",
+        fontFamily: '"Sora", sans-serif',
         backgroundColor: "#0F172A",
       },
     },
@@ -91,6 +92,7 @@ export const checkoutTemplate: SDUIScreen = {
       },
       style: {
         padding: "0 1.5rem 4rem",
+        fontFamily: '"Sora", sans-serif',
         backgroundColor: "#0F172A",
       },
     },
@@ -109,6 +111,7 @@ export const checkoutTemplate: SDUIScreen = {
       },
       style: {
         padding: "0 1.5rem 4rem",
+        fontFamily: '"Sora", sans-serif',
         backgroundColor: "#0F172A",
       },
     },
@@ -148,6 +151,7 @@ export const checkoutTemplate: SDUIScreen = {
       },
       style: {
         padding: "0 1.5rem 4rem",
+        fontFamily: '"Sora", sans-serif',
         backgroundColor: "#0F172A",
         borderTop: "1px solid rgba(6, 182, 212, 0.1)",
         borderBottom: "1px solid rgba(6, 182, 212, 0.1)",
@@ -168,6 +172,7 @@ export const checkoutTemplate: SDUIScreen = {
       },
       style: {
         padding: "4rem 1.5rem",
+        fontFamily: '"Sora", sans-serif',
         backgroundColor: "#0F172A",
       },
     },
@@ -189,6 +194,7 @@ export const checkoutTemplate: SDUIScreen = {
         padding: "1rem 1.5rem 5rem",
         display: "flex",
         justifyContent: "center",
+        fontFamily: '"Sora", sans-serif',
         backgroundColor: "#0F172A",
       },
     },

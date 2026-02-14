@@ -6,7 +6,7 @@ import type { SDUIScreen } from "@platform/sdui-schema";
  * Design language: Clean, motivational interface with progress-centric layout.
  * Inspired by Duolingo, Notion, and Linear dashboards.
  *
- * Typography: "Inter" system font stack for UI clarity
+ * Typography: "Plus Jakarta Sans" for warm, motivational UI clarity
  * Palette: Clean white (#FAFBFC) base, purple (#7C3AED) primary,
  *          green (#10B981) success/progress, slate (#64748B) muted text.
  */
@@ -31,6 +31,7 @@ export const studentDashboardTemplate: SDUIScreen = {
       },
       style: {
         padding: "2.5rem 2rem 1.5rem",
+        fontFamily: '"Plus Jakarta Sans", sans-serif',
         backgroundColor: "#FAFBFC",
         borderBottom: "1px solid #E2E8F0",
       },
@@ -50,6 +51,7 @@ export const studentDashboardTemplate: SDUIScreen = {
       style: {
         padding: "1.5rem 2rem 1.5rem",
         maxWidth: "420px",
+        fontFamily: '"Plus Jakarta Sans", sans-serif',
         backgroundColor: "#FAFBFC",
       },
     },
@@ -69,6 +71,7 @@ export const studentDashboardTemplate: SDUIScreen = {
       style: {
         padding: "0.5rem 2rem 1rem",
         maxWidth: "640px",
+        fontFamily: '"Plus Jakarta Sans", sans-serif',
         backgroundColor: "#FAFBFC",
       },
     },
@@ -88,6 +91,7 @@ export const studentDashboardTemplate: SDUIScreen = {
       style: {
         padding: "0 2rem 2.5rem",
         maxWidth: "640px",
+        fontFamily: '"Plus Jakarta Sans", sans-serif',
         backgroundColor: "#FAFBFC",
       },
     },
@@ -106,6 +110,7 @@ export const studentDashboardTemplate: SDUIScreen = {
       },
       style: {
         padding: "0 2rem 2.5rem",
+        fontFamily: '"Plus Jakarta Sans", sans-serif',
         backgroundColor: "#FAFBFC",
       },
     },
@@ -124,6 +129,7 @@ export const studentDashboardTemplate: SDUIScreen = {
       },
       style: {
         padding: "1rem 2rem 0.75rem",
+        fontFamily: '"Plus Jakarta Sans", sans-serif',
         backgroundColor: "#FAFBFC",
         borderTop: "1px solid #E2E8F0",
       },
@@ -143,6 +149,7 @@ export const studentDashboardTemplate: SDUIScreen = {
       },
       style: {
         padding: "0.5rem 2rem 4rem",
+        fontFamily: '"Plus Jakarta Sans", sans-serif',
         backgroundColor: "#FAFBFC",
       },
     },

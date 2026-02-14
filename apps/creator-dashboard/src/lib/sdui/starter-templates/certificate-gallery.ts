@@ -6,7 +6,7 @@ import type { SDUIScreen } from "@platform/sdui-schema";
  * Design language: Elegant, academic aesthetic with warm parchment tones.
  * Inspired by traditional diploma design, Credly, and Accredible.
  *
- * Typography: "Crimson Text" serif for headings + "Nunito Sans" body
+ * Typography: "Cormorant Garamond" serif for elegant, academic feel
  * Palette: Warm gold (#F5F0E8) base, deep green (#1B4332) primary,
  *          bronze (#CD7F32) accents, espresso (#3E2723) text.
  */
@@ -31,6 +31,7 @@ export const certificateGalleryTemplate: SDUIScreen = {
       },
       style: {
         padding: "4rem 1.5rem 3rem",
+        fontFamily: '"Cormorant Garamond", serif',
         backgroundColor: "#F5F0E8",
       },
     },
@@ -51,6 +52,7 @@ export const certificateGalleryTemplate: SDUIScreen = {
         maxWidth: "640px",
         margin: "0 auto",
         padding: "0 1.5rem 2rem",
+        fontFamily: '"Cormorant Garamond", serif',
         backgroundColor: "#F5F0E8",
       },
     },
@@ -71,6 +73,7 @@ export const certificateGalleryTemplate: SDUIScreen = {
         maxWidth: "640px",
         margin: "0 auto",
         padding: "0 1.5rem 2rem",
+        fontFamily: '"Cormorant Garamond", serif',
         backgroundColor: "#F5F0E8",
       },
     },
@@ -91,6 +94,7 @@ export const certificateGalleryTemplate: SDUIScreen = {
         maxWidth: "640px",
         margin: "0 auto",
         padding: "0 1.5rem 3rem",
+        fontFamily: '"Cormorant Garamond", serif',
         backgroundColor: "#F5F0E8",
         borderBottom: "1px solid rgba(205, 127, 50, 0.2)",
       },
@@ -110,6 +114,7 @@ export const certificateGalleryTemplate: SDUIScreen = {
       },
       style: {
         padding: "3rem 1.5rem 1.5rem",
+        fontFamily: '"Cormorant Garamond", serif',
         backgroundColor: "#F5F0E8",
       },
     },
@@ -164,6 +169,7 @@ export const certificateGalleryTemplate: SDUIScreen = {
         maxWidth: "820px",
         margin: "0 auto",
         padding: "0 1.5rem 2rem",
+        fontFamily: '"Cormorant Garamond", serif',
         backgroundColor: "#F5F0E8",
       },
     },
@@ -182,6 +188,7 @@ export const certificateGalleryTemplate: SDUIScreen = {
       },
       style: {
         padding: "1rem 1.5rem 4rem",
+        fontFamily: '"Cormorant Garamond", serif',
         backgroundColor: "#F5F0E8",
       },
     },

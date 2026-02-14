@@ -6,7 +6,7 @@ import type { SDUIScreen } from "@platform/sdui-schema";
  * Design language: Developer-focused dark mode with code-editor aesthetic.
  * Inspired by Twitch dev streams, VS Code Live Share, and Discord Stage.
  *
- * Typography: "JetBrains Mono" for code feel + "Inter" body text
+ * Typography: "Outfit" for contemporary tech-forward feel
  * Palette: Deep purple (#1E1033) base, electric violet (#8B5CF6),
  *          warm white (#F8F7FF) text, muted lavender (#A78BFA) secondary.
  */
@@ -32,6 +32,7 @@ export const liveEventTemplate: SDUIScreen = {
       },
       style: {
         padding: "0 0 1rem",
+        fontFamily: '"Outfit", sans-serif',
         backgroundColor: "#1E1033",
         borderBottom: "2px solid rgba(139, 92, 246, 0.3)",
       },
@@ -54,6 +55,7 @@ export const liveEventTemplate: SDUIScreen = {
         maxWidth: "960px",
         margin: "0 auto",
         padding: "1.5rem 1.5rem 2rem",
+        fontFamily: '"Outfit", sans-serif',
         backgroundColor: "#1E1033",
       },
     },
@@ -74,6 +76,7 @@ export const liveEventTemplate: SDUIScreen = {
         padding: "0 1.5rem 2.5rem",
         maxWidth: "960px",
         margin: "0 auto",
+        fontFamily: '"Outfit", sans-serif',
         backgroundColor: "#1E1033",
         borderBottom: "1px solid rgba(139, 92, 246, 0.15)",
       },
@@ -95,6 +98,7 @@ export const liveEventTemplate: SDUIScreen = {
         padding: "2.5rem 1.5rem 3rem",
         maxWidth: "960px",
         margin: "0 auto",
+        fontFamily: '"Outfit", sans-serif',
         backgroundColor: "#1E1033",
       },
     },
@@ -115,6 +119,7 @@ export const liveEventTemplate: SDUIScreen = {
         padding: "2rem 1.5rem 1rem",
         maxWidth: "960px",
         margin: "0 auto",
+        fontFamily: '"Outfit", sans-serif',
         backgroundColor: "#1E1033",
         borderTop: "1px solid rgba(139, 92, 246, 0.15)",
       },
@@ -136,6 +141,7 @@ export const liveEventTemplate: SDUIScreen = {
         maxWidth: "800px",
         margin: "0 auto",
         padding: "0 1.5rem 4rem",
+        fontFamily: '"Outfit", sans-serif',
         backgroundColor: "#1E1033",
       },
     },

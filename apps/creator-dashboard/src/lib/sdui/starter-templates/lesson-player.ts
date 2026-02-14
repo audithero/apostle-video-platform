@@ -6,7 +6,7 @@ import type { SDUIScreen } from "@platform/sdui-schema";
  * Design language: Distraction-free, reading-optimized. Content-first layout
  * with subtle structural cues. Inspired by Udemy player, Skillshare, Egghead.
  *
- * Typography: Clean sans (Inter) with monospace accents for durations
+ * Typography: DM Sans for clean reading with monospace accents for durations
  * Palette: Clean white (#FAFAFA), navy accents (#1E293B), soft border (#E2E8F0),
  *          progress blue (#3B82F6), muted text (#64748B), surface (#F8FAFC).
  */
@@ -33,6 +33,7 @@ export const lessonPlayerTemplate: SDUIScreen = {
         padding: "1rem 1.5rem",
         maxWidth: "960px",
         margin: "0 auto",
+        fontFamily: '"DM Sans", sans-serif',
         backgroundColor: "#FAFAFA",
         borderBottom: "1px solid #E2E8F0",
       },
@@ -55,6 +56,7 @@ export const lessonPlayerTemplate: SDUIScreen = {
         maxWidth: "960px",
         margin: "0 auto",
         padding: "1.5rem 1.5rem 0",
+        fontFamily: '"DM Sans", sans-serif',
         backgroundColor: "#FAFAFA",
       },
     },
@@ -75,6 +77,7 @@ export const lessonPlayerTemplate: SDUIScreen = {
         padding: "1.5rem",
         maxWidth: "960px",
         margin: "0 auto",
+        fontFamily: '"DM Sans", sans-serif',
         backgroundColor: "#FAFAFA",
         borderBottom: "1px solid #E2E8F0",
       },
@@ -229,6 +232,7 @@ export const lessonPlayerTemplate: SDUIScreen = {
       style: {
         maxWidth: "960px",
         margin: "0 auto",
+        fontFamily: '"DM Sans", sans-serif',
         padding: "1.5rem 1.5rem 3rem",
         backgroundColor: "#F8FAFC",
         borderTop: "1px solid #E2E8F0",

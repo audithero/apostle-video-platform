@@ -114,7 +114,6 @@ function HeroSectionRenderer({ props, style }: { readonly props: Record<string, 
           style={{
             fontSize: "clamp(2rem, 4vw, 3.25rem)",
             fontWeight: 800,
-            fontFamily: "inherit",
             color: "#fff",
             marginBottom: "1.25rem",
             letterSpacing: "-0.03em",
@@ -302,7 +301,7 @@ function TestimonialCarouselRenderer({ props, style }: { readonly props: Record<
               }}
             >
               {/* Quote mark */}
-              <div style={{ fontSize: "2.5rem", lineHeight: 1, color: c.bs, fontFamily: "Georgia, serif", marginBottom: "0.75rem", userSelect: "none" }}>&ldquo;</div>
+              <div style={{ fontSize: "2.5rem", lineHeight: 1, color: c.bs, fontFamily: '"Cormorant Garamond", Georgia, serif', marginBottom: "0.75rem", userSelect: "none" }}>&ldquo;</div>
 
               <p style={{ fontSize: "0.9rem", color: c.t, lineHeight: 1.75, flex: 1, fontStyle: "italic" }}>
                 {t.quote}
@@ -559,7 +558,7 @@ function InstructorBioRenderer({ props, style }: { readonly props: Record<string
             {avatar ? (
               <img src={avatar} alt={`Instructor ${name}`} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <span style={{ color: "#818CF8", fontWeight: 700, fontSize: "2.25rem", fontFamily: "Georgia, serif" }}>
+              <span style={{ color: "#818CF8", fontWeight: 700, fontSize: "2.25rem", fontFamily: '"Cormorant Garamond", Georgia, serif' }}>
                 {name.charAt(0)}
               </span>
             )}
@@ -912,7 +911,7 @@ function CertificateDisplayRenderer({ props, style }: { readonly props: Record<s
           <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>&#127942;</div>
           <div style={{ color: c.m, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: "0.5rem" }}>Certificate of Completion</div>
           <div style={{ width: "48px", height: "2px", background: "linear-gradient(90deg, transparent, #C4A35A, transparent)", margin: "0.75rem auto" }} />
-          <p style={{ color: "#C4A35A", fontSize: "1.2rem", fontWeight: 700, fontFamily: "Georgia, serif", marginTop: "0.5rem" }}>{courseName}</p>
+          <p style={{ color: "#C4A35A", fontSize: "1.2rem", fontWeight: 700, fontFamily: '"Cormorant Garamond", Georgia, serif', marginTop: "0.5rem" }}>{courseName}</p>
           <p style={{ color: c.t, fontSize: "0.9rem", marginTop: "0.75rem" }}>Awarded to <strong style={{ color: c.h }}>{studentName}</strong></p>
           {completedDate && <p style={{ color: c.m, fontSize: "0.75rem", marginTop: "0.35rem" }}>{completedDate}</p>}
         </div>
@@ -1201,8 +1200,13 @@ const RENDERERS: Record<string, RendererFn> = {
 /* ================================================================== */
 
 export function InlineSDUIPreview({ screen }: { readonly screen: SDUIScreen }) {
+  // Detect primary font from template sections — use first fontFamily found
+  const primaryFont = screen.sections
+    .map((s) => (s.style as Record<string, unknown> | undefined)?.fontFamily as string | undefined)
+    .find((f) => f) ?? '"Plus Jakarta Sans", sans-serif';
+
   return (
-    <div style={{ fontFamily: "'Inter', 'SF Pro Display', system-ui, -apple-system, sans-serif", WebkitFontSmoothing: "antialiased" }}>
+    <div style={{ fontFamily: primaryFont, WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale" }}>
       {screen.sections.map((section) => {
         const Renderer = RENDERERS[section.type];
         const style = sectionStyle(section);
