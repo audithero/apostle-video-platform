@@ -30,7 +30,8 @@ export const creativeStudioTemplate: SDUIScreen = {
         title: "Design With Purpose",
         subtitle:
           "A project-based course that takes you from blank canvas to portfolio-ready work. Learn brand identity, layout systems, and visual storytelling through hands-on creative projects.",
-        backgroundImage: "",
+        backgroundImage:
+          "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1920&q=80&auto=format&fit=crop",
         ctaText: "Create Something Amazing",
         ctaAction: { type: "navigate", payload: { url: "/enroll" } },
         alignment: "center",

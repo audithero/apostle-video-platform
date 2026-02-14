@@ -28,7 +28,8 @@ export const fitnessPerformanceTemplate: SDUIScreen = {
         title: "TRANSFORM YOUR BODY IN 8 WEEKS",
         subtitle:
           "A progressive training program designed by elite coaches. No gym required. Every level welcome.",
-        backgroundImage: "",
+        backgroundImage:
+          "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80&auto=format&fit=crop",
         ctaText: "Start Training",
         ctaAction: { type: "navigate", payload: { url: "/enroll" } },
         alignment: "center",

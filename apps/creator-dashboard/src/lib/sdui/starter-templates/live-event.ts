@@ -27,7 +27,8 @@ export const liveEventTemplate: SDUIScreen = {
         title: "Live Workshop: Building Your First API",
         startTime: "2025-03-15T14:00:00-05:00",
         hostName: "Ryan Park",
-        hostAvatar: "",
+        hostAvatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80&auto=format&fit=crop&crop=face",
         joinUrl: "",
       },
       style: {
@@ -48,7 +49,8 @@ export const liveEventTemplate: SDUIScreen = {
         videoUrl: "",
         autoplay: false,
         controls: true,
-        poster: "",
+        poster:
+          "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=960&q=80&auto=format&fit=crop",
         aspectRatio: "16:9",
       },
       style: {

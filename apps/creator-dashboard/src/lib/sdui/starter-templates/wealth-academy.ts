@@ -27,7 +27,8 @@ export const wealthAcademyTemplate: SDUIScreen = {
         title: "Build Generational Wealth With Confidence",
         subtitle:
           "A comprehensive, CFA-informed curriculum that takes you from financial fundamentals to advanced portfolio management. No jargon, no hype — just proven strategies.",
-        backgroundImage: "",
+        backgroundImage:
+          "https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=1920&q=80&auto=format&fit=crop",
         ctaText: "Start Learning",
         ctaAction: { type: "navigate", payload: { url: "/enroll" } },
         alignment: "left",
@@ -195,9 +196,9 @@ export const wealthAcademyTemplate: SDUIScreen = {
       type: "CertificateDisplay",
       props: {
         courseName: "Wealth Academy — Comprehensive Financial Education",
-        studentName: "Your Name Here",
-        date: "",
-        serial: "",
+        studentName: "Alex Rivera",
+        completedDate: "2025-06-15",
+        certificateUrl: "",
       },
       style: {
         maxWidth: "600px",

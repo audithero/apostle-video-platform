@@ -27,11 +27,12 @@ export const courseLandingTemplate: SDUIScreen = {
         title: "See the World Through a New Lens",
         subtitle:
           "From aperture to artistry — master the craft of digital photography with award-winning photographer Elena Vasquez. 32 lessons. Lifetime access. One transformative journey.",
-        backgroundImage: "",
+        backgroundImage:
+          "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1920&q=80&auto=format&fit=crop",
         ctaText: "Start Your Journey",
         ctaAction: { type: "navigate", payload: { url: "/enroll" } },
         alignment: "center",
-        overlayOpacity: 0.55,
+        overlayOpacity: 0.6,
       },
       style: {
         minHeight: "85vh",

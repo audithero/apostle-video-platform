@@ -46,7 +46,7 @@ export const certificateGalleryTemplate: SDUIScreen = {
         courseName: "Digital Photography Masterclass",
         studentName: "Jordan Mitchell",
         completedDate: "2025-01-15",
-        certificateUrl: "",
+        certificateUrl: "#",
       },
       style: {
         maxWidth: "640px",
@@ -67,7 +67,7 @@ export const certificateGalleryTemplate: SDUIScreen = {
         courseName: "Complete Web Dev Bootcamp",
         studentName: "Jordan Mitchell",
         completedDate: "2025-03-22",
-        certificateUrl: "",
+        certificateUrl: "#",
       },
       style: {
         maxWidth: "640px",
@@ -88,7 +88,7 @@ export const certificateGalleryTemplate: SDUIScreen = {
         courseName: "UX Design Foundations",
         studentName: "Jordan Mitchell",
         completedDate: "2024-11-08",
-        certificateUrl: "",
+        certificateUrl: "#",
       },
       style: {
         maxWidth: "640px",

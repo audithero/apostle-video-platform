@@ -49,7 +49,8 @@ export const lessonPlayerTemplate: SDUIScreen = {
         videoUrl: "",
         autoplay: false,
         controls: true,
-        poster: "",
+        poster:
+          "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=960&q=80&auto=format&fit=crop",
         aspectRatio: "16:9",
       },
       style: {

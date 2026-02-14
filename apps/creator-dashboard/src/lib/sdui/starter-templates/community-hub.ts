@@ -27,11 +27,12 @@ export const communityHubTemplate: SDUIScreen = {
         title: "Photographers' Corner",
         subtitle:
           "Welcome to the community. Share your shots, get honest feedback, celebrate each other's wins, and grow together. Whether you just picked up a camera or you're refining your style — this is your space.",
-        backgroundImage: "",
+        backgroundImage:
+          "https://images.unsplash.com/photo-1552168324-d612d77725e3?w=1920&q=80&auto=format&fit=crop",
         ctaText: "Share Your Work",
         ctaAction: { type: "showModal", payload: { modalId: "new-post" } },
         alignment: "center",
-        overlayOpacity: 0.45,
+        overlayOpacity: 0.6,
       },
       style: {
         minHeight: "50vh",

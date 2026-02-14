@@ -27,7 +27,8 @@ export const tradingMasteryTemplate: SDUIScreen = {
         title: "Master Options Trading",
         subtitle:
           "From covered calls to iron condors — learn systematic options strategies used by professional traders. Data-driven. Risk-managed. Consistently profitable.",
-        backgroundImage: "",
+        backgroundImage:
+          "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1920&q=80&auto=format&fit=crop",
         ctaText: "Start Trading Course",
         ctaAction: { type: "navigate", payload: { url: "/enroll" } },
         alignment: "left",

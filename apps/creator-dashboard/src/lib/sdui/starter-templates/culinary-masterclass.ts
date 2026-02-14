@@ -27,11 +27,12 @@ export const culinaryMasterclassTemplate: SDUIScreen = {
         title: "Master the Art of Italian Cooking",
         subtitle:
           "From handmade pasta to authentic regional sauces — learn the techniques behind Italy's most beloved dishes from a 3-star Michelin chef.",
-        backgroundImage: "",
+        backgroundImage:
+          "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1920&q=80&auto=format&fit=crop",
         ctaText: "Start Cooking",
         ctaAction: { type: "navigate", payload: { url: "/enroll" } },
         alignment: "center",
-        overlayOpacity: 0.55,
+        overlayOpacity: 0.65,
       },
       style: {
         minHeight: "85vh",

@@ -27,11 +27,12 @@ export const homepageTemplate: SDUIScreen = {
         title: "Your Journey to Mastery Starts Here",
         subtitle:
           "Horizon Academy brings together world-class instructors, hands-on projects, and a community of 12,000+ learners. Find the course that changes everything.",
-        backgroundImage: "",
+        backgroundImage:
+          "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&q=80&auto=format&fit=crop",
         ctaText: "Browse Courses",
         ctaAction: { type: "navigate", payload: { url: "/courses" } },
         alignment: "center",
-        overlayOpacity: 0.5,
+        overlayOpacity: 0.65,
       },
       style: {
         minHeight: "80vh",
