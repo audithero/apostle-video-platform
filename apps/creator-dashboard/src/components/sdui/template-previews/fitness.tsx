@@ -59,7 +59,7 @@ export default function FitnessPreview() {
           </div>
           <div style={{ position: "relative" }}>
             <div style={{ aspectRatio: "4/5", background: c.gray800, overflow: "hidden", borderRight: `6px solid ${c.neonGreen}`, borderBottom: `6px solid ${c.neonGreen}`, position: "relative" }}>
-              <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(1) contrast(1.25)", mixBlendMode: "overlay" }} />
+              <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800" alt="High-intensity gym training session" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(1) contrast(1.25)", mixBlendMode: "overlay" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)" }} />
               <div style={{ position: "absolute", bottom: 16, left: 16 }}>
                 <div style={{ padding: 12, background: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)", borderLeft: `3px solid ${c.electricCoral}` }}>
@@ -167,7 +167,7 @@ export default function FitnessPreview() {
         <div style={{ ...maxW, display: "grid", gridTemplateColumns: "5fr 7fr", gap: 32, alignItems: "center" }}>
           <div style={{ position: "relative" }}>
             <div style={{ aspectRatio: "1", background: c.gray800, border: `3px solid ${c.electricCoral}`, transform: "skewX(-3deg)", overflow: "hidden", position: "relative" }}>
-              <img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&q=80&w=600" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(1)" }} />
+              <img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&q=80&w=600" alt="Alex Rivera, fitness instructor" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(1)" }} />
               <div style={{ position: "absolute", inset: 0, background: "rgba(255,107,107,0.1)", mixBlendMode: "multiply" }} />
             </div>
             <div style={{ position: "absolute", bottom: -12, right: -12, width: 48, height: 48, border: `6px solid rgba(0,255,135,0.15)` }} />

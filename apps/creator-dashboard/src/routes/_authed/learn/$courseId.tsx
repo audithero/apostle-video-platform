@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import DOMPurify from "dompurify";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -925,7 +926,7 @@ function VideoLessonBody({
       {lesson.contentHtml && (
         <article
           className="prose prose-sm dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: lesson.contentHtml }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(lesson.contentHtml) }}
         />
       )}
 
@@ -960,7 +961,7 @@ function TextLessonBody({
       {lesson.contentHtml ? (
         <article
           className="prose prose-sm dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: lesson.contentHtml }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(lesson.contentHtml) }}
         />
       ) : (
         <p className="text-muted-foreground">

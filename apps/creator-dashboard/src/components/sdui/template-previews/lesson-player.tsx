@@ -404,7 +404,7 @@ export default function LessonPlayerPreview() {
           <div style={avatar}>
             <img
               src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-              alt="User avatar"
+              alt="Student profile"
               style={{ width: "100%", height: "100%" }}
             />
           </div>
@@ -419,7 +419,7 @@ export default function LessonPlayerPreview() {
           <div style={videoContainer}>
             <img
               src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=1440&auto=format&fit=crop"
-              alt="Lesson video thumbnail"
+              alt="Understanding light and shadow lesson preview"
               style={videoImage}
             />
             <div style={playButton}>

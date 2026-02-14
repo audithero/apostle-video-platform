@@ -91,7 +91,7 @@ export default function WealthPreview() {
           </div>
           <div style={{ position: "relative" }}>
             <div style={{ aspectRatio: "4/5", overflow: "hidden", borderLeft: `4px solid ${gold}`, borderBottom: `4px solid ${gold}`, position: "relative", zIndex: 20 }}>
-              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800&h=1000" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(100%)" }} />
+              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800&h=1000" alt="Victoria Chen, CFA and wealth management instructor" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(100%)" }} />
             </div>
             <div style={{ position: "absolute", bottom: -40, right: -40, width: "100%", height: "100%", border: `1px solid rgba(196,163,90,0.3)`, zIndex: -1 }} />
           </div>

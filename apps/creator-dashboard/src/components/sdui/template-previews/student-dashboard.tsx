@@ -403,7 +403,7 @@ export default function StudentDashboardPreview() {
               <span style={{ position: "absolute" as const, top: 0, right: 0, width: 6, height: 6, background: "#EF4444", borderRadius: "50%", border: "2px solid #fff" }} />
             </span>
             <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#E2E8F0", overflow: "hidden", marginLeft: 4 }}>
-              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" alt="User avatar" style={{ width: "100%", height: "100%" }} />
+              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" alt="Sarah, student" style={{ width: "100%", height: "100%" }} />
             </div>
           </div>
         </div>
@@ -602,7 +602,7 @@ export default function StudentDashboardPreview() {
               <div style={mentorGlow} />
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12, position: "relative" as const, zIndex: 1 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 14, border: "2px solid rgba(255,255,255,0.2)", overflow: "hidden" }}>
-                  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Elena" alt="Mentor avatar" style={{ width: "100%", height: "100%", background: "#fff" }} />
+                  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Elena" alt="Elena Vasquez, course mentor" style={{ width: "100%", height: "100%", background: "#fff" }} />
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 15 }}>Elena Vasquez</div>

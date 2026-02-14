@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth/auth";
 import { db } from "@/lib/db";
 import { creator } from "@/lib/db/schema/creator";
+import { isAdmin } from "@/lib/auth/permissions";
 import type { Language } from "../intl/i18n";
 
 export const createTRPCContext = async (opts: { headers: Headers; req: Request }) => {
@@ -71,7 +72,7 @@ export const adminProcedure = t.procedure.use(({ ctx, next }) => {
       message: "Authentication required",
     });
   }
-  if (ctx.session.user.role !== "admin") {
+  if (!isAdmin(ctx.session.user.role)) {
     throw new TRPCError({
       code: "FORBIDDEN",
       message: "Admin access required",

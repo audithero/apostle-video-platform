@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import DOMPurify from "dompurify";
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -736,7 +737,7 @@ function LessonPreview({ lesson }: { readonly lesson: LessonData }) {
       {lesson.contentHtml ? (
         <div
           className="prose prose-sm dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: lesson.contentHtml }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(lesson.contentHtml) }}
         />
       ) : (
         <p className="text-sm text-muted-foreground italic">

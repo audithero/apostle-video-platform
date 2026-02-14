@@ -485,7 +485,7 @@ export default function CertificatePreview() {
             <div style={rankValue}>Summa Cum Laude</div>
           </div>
           <div style={avatarCircle}>
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User avatar" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Julian Alexander Thorne, academy scholar" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
           </div>
         </div>
       </header>

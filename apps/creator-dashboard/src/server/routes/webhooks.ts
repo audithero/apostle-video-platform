@@ -1,9 +1,11 @@
 import { z } from "zod";
 import { eq, and, desc } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, creatorProcedure } from "@/lib/trpc/init";
 import { db } from "@/lib/db";
 import { webhookConfig, webhookLog } from "@/lib/db/schema/marketing";
 import { randomBytes } from "node:crypto";
+import { validateWebhookUrl } from "@/lib/integrations/webhook-url-validation";
 
 const WEBHOOK_EVENT_TYPES = [
   "enrollment.created",
@@ -36,6 +38,15 @@ export const webhooksRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      try {
+        validateWebhookUrl(input.url);
+      } catch (err) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: err instanceof Error ? err.message : "Invalid webhook URL",
+        });
+      }
+
       const secret = input.secret ?? randomBytes(32).toString("hex");
       const [config] = await db
         .insert(webhookConfig)
@@ -61,6 +72,17 @@ export const webhooksRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      if (input.url) {
+        try {
+          validateWebhookUrl(input.url);
+        } catch (err) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: err instanceof Error ? err.message : "Invalid webhook URL",
+          });
+        }
+      }
+
       const { id, ...updates } = input;
       const [updated] = await db
         .update(webhookConfig)

@@ -114,7 +114,7 @@ export default function CourseLandingPreview() {
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
           <div style={{ position: "relative" }}>
             <div style={{ position: "absolute", top: -24, left: -24, width: "100%", height: "100%", border: `1px solid ${gold}`, zIndex: 0 }} />
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1000" alt="" style={{ position: "relative", zIndex: 10, width: "100%", height: 560, objectFit: "cover", display: "block" }} />
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1000" alt="Elena Vasquez, editorial visual artist" style={{ position: "relative", zIndex: 10, width: "100%", height: 560, objectFit: "cover", display: "block" }} />
           </div>
           <div style={{ color: "#fff" }}>
             <h2 style={{ fontFamily: serifFont, fontSize: 44, marginBottom: 32, lineHeight: 1.15 }}>

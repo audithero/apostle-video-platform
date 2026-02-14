@@ -525,7 +525,7 @@ export default function LiveEventPreview() {
             LIVE
           </div>
           <div style={navAvatar}>
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user-dev" alt="User avatar" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user-dev" alt="Logged-in attendee" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
           </div>
         </div>
       </nav>

@@ -217,7 +217,7 @@ export default function HomepagePreview() {
             {courses.map((c) => (
               <div key={c.title} style={{ cursor: "pointer" }}>
                 <div style={{ position: "relative", marginBottom: 16, overflow: "hidden", borderRadius: 16, height: 180 }}>
-                  <img src={c.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img src={c.img} alt={c.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   {c.badge ? (
                     <div style={{ position: "absolute", top: 12, left: 12, backgroundColor: c.badgeBg, padding: "4px 8px", borderRadius: 8, fontSize: 11, fontWeight: 700, color: c.badgeColor, textTransform: "uppercase" }}>{c.badge}</div>
                   ) : null}
@@ -249,7 +249,7 @@ export default function HomepagePreview() {
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {communityPosts.map((p) => (
                 <div key={p.name} style={{ backgroundColor: "#fff", padding: 20, borderRadius: 16, border: "1px solid #e5e7eb", display: "flex", gap: 16 }}>
-                  <img src={p.avatar} alt="" style={{ width: 48, height: 48, borderRadius: "50%", objectFit: "cover" }} />
+                  <img src={p.avatar} alt={p.name} style={{ width: 48, height: 48, borderRadius: "50%", objectFit: "cover" }} />
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
                       <h4 style={{ fontWeight: 700, color: darkBg, fontSize: 14 }}>{p.name}</h4>
@@ -275,7 +275,7 @@ export default function HomepagePreview() {
                 {leaderboard.map((l) => (
                   <div key={l.rank} style={{ display: "flex", alignItems: "center", gap: 16 }}>
                     <span style={{ width: 24, fontSize: 13, fontWeight: 700, color: "#6b7280" }}>{l.rank}</span>
-                    <img src={l.avatar} alt="" style={{ width: 40, height: 40, borderRadius: "50%", border: l.rank === "01" ? "2px solid #f59e0b" : "1px solid rgba(255,255,255,0.1)" }} />
+                    <img src={l.avatar} alt={l.name} style={{ width: 40, height: 40, borderRadius: "50%", border: l.rank === "01" ? "2px solid #f59e0b" : "1px solid rgba(255,255,255,0.1)" }} />
                     <div style={{ flex: 1 }}>
                       <h5 style={{ fontSize: 13, fontWeight: 700 }}>{l.name}</h5>
                       <p style={{ fontSize: 10, color: "#6b7280" }}>{l.pts} points</p>

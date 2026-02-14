@@ -77,8 +77,12 @@ export default function CulinaryPreview() {
               <span style={{ background: c.terracotta, color: "#fff", padding: "14px 28px", fontWeight: 700, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em" }}>Start Your Journey</span>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div style={{ display: "flex" }}>
-                  {["https://randomuser.me/api/portraits/men/32.jpg", "https://randomuser.me/api/portraits/women/44.jpg", "https://randomuser.me/api/portraits/men/67.jpg"].map((src, i) => (
-                    <img key={i} src={src} alt="" style={{ width: 28, height: 28, borderRadius: "50%", border: `2px solid ${c.dark}`, marginLeft: i > 0 ? -8 : 0, objectFit: "cover" }} />
+                  {[
+                    { src: "https://randomuser.me/api/portraits/men/32.jpg", alt: "Enrolled student" },
+                    { src: "https://randomuser.me/api/portraits/women/44.jpg", alt: "Enrolled student" },
+                    { src: "https://randomuser.me/api/portraits/men/67.jpg", alt: "Enrolled student" },
+                  ].map((item, i) => (
+                    <img key={i} src={item.src} alt={item.alt} style={{ width: 28, height: 28, borderRadius: "50%", border: `2px solid ${c.dark}`, marginLeft: i > 0 ? -8 : 0, objectFit: "cover" }} />
                   ))}
                 </div>
                 <div style={{ fontSize: 9, color: "rgba(255,255,255,0.4)" }}>
@@ -91,7 +95,7 @@ export default function CulinaryPreview() {
           <div style={{ position: "relative" }}>
             <div style={{ position: "absolute", inset: -8, border: `1px solid rgba(212,146,58,0.2)`, transform: "rotate(-3deg)" }} />
             <div style={{ position: "absolute", inset: -8, border: `1px solid rgba(196,77,42,0.3)`, transform: "rotate(3deg)" }} />
-            <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=800" alt="" style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", display: "block", filter: "grayscale(20%)" }} />
+            <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=800" alt="Fresh pasta preparation on rustic table" style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", display: "block", filter: "grayscale(20%)" }} />
             <div style={{ position: "absolute", bottom: 16, left: -16, background: c.dark, padding: 16, border: "1px solid rgba(255,255,255,0.08)", maxWidth: 220, boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}>
               <p style={{ fontFamily: font.display, fontStyle: "italic", fontSize: 14, lineHeight: 1.4 }}>"Cooking is not a recipe, it's a conversation with history."</p>
               <p style={{ marginTop: 8, color: c.terracotta, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700 }}>-- Marco Rossi</p>
@@ -104,7 +108,7 @@ export default function CulinaryPreview() {
       <section style={{ ...section, background: c.darkAlt, borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
         <div style={{ ...maxW, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "center" }}>
           <div style={{ position: "relative" }}>
-            <img src="https://images.unsplash.com/photo-1577219491135-ce391730fbaf?auto=format&fit=crop&q=80&w=600" alt="" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", border: `6px solid rgba(255,255,255,0.04)` }} />
+            <img src="https://images.unsplash.com/photo-1577219491135-ce391730fbaf?auto=format&fit=crop&q=80&w=600" alt="Chef Marco Rossi in the kitchen" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", border: `6px solid rgba(255,255,255,0.04)` }} />
             <div style={{ position: "absolute", top: -20, right: -20, background: c.wine, color: "#fff", width: 64, height: 64, borderRadius: "50%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 16px rgba(0,0,0,0.4)" }}>
               <span style={{ fontSize: 18, fontWeight: 700 }}>25+</span>
               <span style={{ fontSize: 6, textTransform: "uppercase", letterSpacing: "-0.02em" }}>Years of Heritage</span>
@@ -140,7 +144,7 @@ export default function CulinaryPreview() {
             { ch: "04", time: "75 Minutes", title: "The Sweet Conclusion", desc: "Perfecting the Tiramisu (with a secret family twist) and crafting a light-as-air Panna Cotta with seasonal fruit coulis.", img: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&q=80&w=400" },
           ].map((item) => (
             <div key={item.ch} style={{ background: c.cardBg, border: "1px solid rgba(255,255,255,0.04)", padding: 24, display: "flex", gap: 24, alignItems: "center" }}>
-              <img src={item.img} alt="" style={{ width: 120, height: 90, objectFit: "cover", flexShrink: 0 }} />
+              <img src={item.img} alt={`Chapter ${item.ch}: ${item.title}`} style={{ width: 120, height: 90, objectFit: "cover", flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                   <span style={{ color: c.amber, fontWeight: 700, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em" }}>Chapter {item.ch}</span>

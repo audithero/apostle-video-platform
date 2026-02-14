@@ -2,6 +2,7 @@ import { createHmac } from "node:crypto";
 import { db } from "@/lib/db";
 import { webhookConfig, webhookLog } from "@/lib/db/schema/marketing";
 import { eq, and } from "drizzle-orm";
+import { validateWebhookUrl } from "@/lib/integrations/webhook-url-validation";
 
 type WebhookEventType =
   | "enrollment.created"
@@ -35,6 +36,22 @@ export async function dispatchWebhook(
   });
 
   for (const config of matchingConfigs) {
+    // Defense-in-depth: re-validate URL at dispatch time in case it was
+    // modified directly in the database or the validation rules changed
+    try {
+      validateWebhookUrl(config.url);
+    } catch {
+      // Log the blocked attempt and skip this webhook
+      await db.insert(webhookLog).values({
+        webhookConfigId: config.id,
+        event,
+        payload: data,
+        statusCode: 0,
+        responseBody: "Blocked: webhook URL failed SSRF validation",
+        attemptNumber: 1,
+      });
+      continue;
+    }
     await deliverWebhook(config, event, data);
   }
 }

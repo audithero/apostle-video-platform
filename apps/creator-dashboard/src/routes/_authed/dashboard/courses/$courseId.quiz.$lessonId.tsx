@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useCallback, useReducer, useRef } from "react";
+import DOMPurify from "dompurify";
 import {
   DndContext,
   closestCenter,
@@ -1964,7 +1965,7 @@ function QuizPreview({
                       </p>
                       <div
                         className="prose prose-sm dark:prose-invert max-w-none text-sm"
-                        dangerouslySetInnerHTML={{ __html: q.explanation }}
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(q.explanation) }}
                       />
                     </div>
                   )}
