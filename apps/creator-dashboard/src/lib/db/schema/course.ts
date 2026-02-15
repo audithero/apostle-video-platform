@@ -74,6 +74,7 @@ export const course = pgTable(
   (table) => [
     index("course_creator_id_idx").on(table.creatorId),
     uniqueIndex("course_creator_slug_idx").on(table.creatorId, table.slug),
+    index("course_status_idx").on(table.status),
   ],
 );
 

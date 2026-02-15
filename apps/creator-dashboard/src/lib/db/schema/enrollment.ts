@@ -52,6 +52,9 @@ export const enrollment = pgTable(
     uniqueIndex("enrollment_student_course_idx").on(table.studentId, table.courseId),
     index("enrollment_creator_id_idx").on(table.creatorId),
     index("enrollment_course_id_idx").on(table.courseId),
+    index("enrollment_creator_enrolled_idx").on(table.creatorId, table.enrolledAt),
+    index("enrollment_completed_at_idx").on(table.completedAt),
+    index("enrollment_student_id_idx").on(table.studentId),
   ],
 );
 
@@ -74,6 +77,8 @@ export const lessonProgress = pgTable(
   (table) => [
     uniqueIndex("lesson_progress_enrollment_lesson_idx").on(table.enrollmentId, table.lessonId),
     index("lesson_progress_enrollment_id_idx").on(table.enrollmentId),
+    index("lesson_progress_lesson_id_idx").on(table.lessonId),
+    index("lesson_progress_last_accessed_idx").on(table.lastAccessedAt),
   ],
 );
 

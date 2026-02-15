@@ -23,38 +23,14 @@ export const analyticsRouter = createTRPCRouter({
       const startDate = input?.startDate ? new Date(input.startDate) : undefined;
       const endDate = input?.endDate ? new Date(input.endDate) : undefined;
 
-      // Total published courses
-      const [courseStats] = await db
-        .select({ count: count() })
-        .from(course)
-        .where(and(eq(course.creatorId, creatorId), eq(course.status, "published")));
-
-      // Total enrollments (with optional date filter)
-      const enrollmentConditions = [eq(enrollment.creatorId, creatorId)];
-      if (startDate) { enrollmentConditions.push(gte(enrollment.enrolledAt, startDate)); }
-      if (endDate) { enrollmentConditions.push(lte(enrollment.enrolledAt, endDate)); }
-
-      const [enrollmentStats] = await db
-        .select({ count: count() })
-        .from(enrollment)
-        .where(and(...enrollmentConditions));
-
-      // Enrollments this month
       const monthStart = new Date();
       monthStart.setDate(1);
       monthStart.setHours(0, 0, 0, 0);
 
-      const [monthlyEnrollments] = await db
-        .select({ count: count() })
-        .from(enrollment)
-        .where(
-          and(
-            eq(enrollment.creatorId, creatorId),
-            gte(enrollment.enrolledAt, monthStart),
-          ),
-        );
+      const enrollmentConditions = [eq(enrollment.creatorId, creatorId)];
+      if (startDate) { enrollmentConditions.push(gte(enrollment.enrolledAt, startDate)); }
+      if (endDate) { enrollmentConditions.push(lte(enrollment.enrolledAt, endDate)); }
 
-      // Completed courses
       const completionConditions = [
         eq(enrollment.creatorId, creatorId),
         sql`${enrollment.completedAt} IS NOT NULL`,
@@ -62,16 +38,23 @@ export const analyticsRouter = createTRPCRouter({
       if (startDate) { completionConditions.push(gte(enrollment.enrolledAt, startDate)); }
       if (endDate) { completionConditions.push(lte(enrollment.enrolledAt, endDate)); }
 
-      const [completions] = await db
-        .select({ count: count() })
-        .from(enrollment)
-        .where(and(...completionConditions));
+      // Run all 4 queries in parallel instead of sequentially
+      const [courseStats, enrollmentStats, monthlyEnrollments, completions] = await Promise.all([
+        db.select({ count: count() }).from(course)
+          .where(and(eq(course.creatorId, creatorId), eq(course.status, "published"))),
+        db.select({ count: count() }).from(enrollment)
+          .where(and(...enrollmentConditions)),
+        db.select({ count: count() }).from(enrollment)
+          .where(and(eq(enrollment.creatorId, creatorId), gte(enrollment.enrolledAt, monthStart))),
+        db.select({ count: count() }).from(enrollment)
+          .where(and(...completionConditions)),
+      ]);
 
       return {
-        totalCourses: courseStats?.count ?? 0,
-        totalEnrollments: enrollmentStats?.count ?? 0,
-        monthlyEnrollments: monthlyEnrollments?.count ?? 0,
-        totalCompletions: completions?.count ?? 0,
+        totalCourses: courseStats.at(0)?.count ?? 0,
+        totalEnrollments: enrollmentStats.at(0)?.count ?? 0,
+        monthlyEnrollments: monthlyEnrollments.at(0)?.count ?? 0,
+        totalCompletions: completions.at(0)?.count ?? 0,
       };
     }),
 
@@ -196,7 +179,6 @@ export const analyticsRouter = createTRPCRouter({
       const startDate = input?.startDate ? new Date(input.startDate) : undefined;
       const endDate = input?.endDate ? new Date(input.endDate) : undefined;
 
-      // Get total revenue from courses with pricing
       const conditions = [
         eq(enrollment.creatorId, creatorId),
         sql`${course.priceCents} IS NOT NULL AND ${course.priceCents} > 0`,
@@ -204,58 +186,47 @@ export const analyticsRouter = createTRPCRouter({
       if (startDate) { conditions.push(gte(enrollment.enrolledAt, startDate)); }
       if (endDate) { conditions.push(lte(enrollment.enrolledAt, endDate)); }
 
-      const [revenueResult] = await db
-        .select({
+      // Build previous period query if date range is provided
+      const prevPeriodQuery = (startDate && endDate)
+        ? (() => {
+            const periodMs = endDate.getTime() - startDate.getTime();
+            const prevStart = new Date(startDate.getTime() - periodMs);
+            return db
+              .select({ totalRevenue: sql<number>`COALESCE(SUM(${course.priceCents}), 0)` })
+              .from(enrollment)
+              .innerJoin(course, eq(enrollment.courseId, course.id))
+              .where(and(
+                eq(enrollment.creatorId, creatorId),
+                sql`${course.priceCents} IS NOT NULL AND ${course.priceCents} > 0`,
+                gte(enrollment.enrolledAt, prevStart),
+                lte(enrollment.enrolledAt, startDate),
+              ));
+          })()
+        : Promise.resolve([{ totalRevenue: 0 }]);
+
+      // Run all 3 queries in parallel
+      const [revenueResults, prevResults, activeResults] = await Promise.all([
+        db.select({
           totalRevenue: sql<number>`COALESCE(SUM(${course.priceCents}), 0)`,
           totalTransactions: count(),
-        })
-        .from(enrollment)
-        .innerJoin(course, eq(enrollment.courseId, course.id))
-        .where(and(...conditions));
+        }).from(enrollment).innerJoin(course, eq(enrollment.courseId, course.id)).where(and(...conditions)),
+        prevPeriodQuery,
+        db.select({
+          count: sql<number>`COUNT(DISTINCT ${enrollment.studentId})`,
+        }).from(enrollment).where(and(
+          eq(enrollment.creatorId, creatorId),
+          ...(startDate ? [gte(enrollment.enrolledAt, startDate)] : []),
+          ...(endDate ? [lte(enrollment.enrolledAt, endDate)] : []),
+        )),
+      ]);
 
-      // Get previous period revenue for comparison
-      let prevRevenue = 0;
-      if (startDate && endDate) {
-        const periodMs = endDate.getTime() - startDate.getTime();
-        const prevStart = new Date(startDate.getTime() - periodMs);
-        const prevEnd = startDate;
-
-        const [prevResult] = await db
-          .select({
-            totalRevenue: sql<number>`COALESCE(SUM(${course.priceCents}), 0)`,
-          })
-          .from(enrollment)
-          .innerJoin(course, eq(enrollment.courseId, course.id))
-          .where(
-            and(
-              eq(enrollment.creatorId, creatorId),
-              sql`${course.priceCents} IS NOT NULL AND ${course.priceCents} > 0`,
-              gte(enrollment.enrolledAt, prevStart),
-              lte(enrollment.enrolledAt, prevEnd),
-            ),
-          );
-        prevRevenue = Number(prevResult?.totalRevenue ?? 0);
-      }
-
+      const revenueResult = revenueResults.at(0);
       const currentRevenue = Number(revenueResult?.totalRevenue ?? 0);
+      const prevRevenue = Number(prevResults.at(0)?.totalRevenue ?? 0);
       const revenueChange = prevRevenue > 0
         ? Math.round(((currentRevenue - prevRevenue) / prevRevenue) * 100 * 10) / 10
         : 0;
-
-      // Active students for ARPU
-      const [activeResult] = await db
-        .select({
-          count: sql<number>`COUNT(DISTINCT ${enrollment.studentId})`,
-        })
-        .from(enrollment)
-        .where(
-          and(
-            eq(enrollment.creatorId, creatorId),
-            ...(startDate ? [gte(enrollment.enrolledAt, startDate)] : []),
-            ...(endDate ? [lte(enrollment.enrolledAt, endDate)] : []),
-          ),
-        );
-      const activeStudents = Number(activeResult?.count ?? 0);
+      const activeStudents = Number(activeResults.at(0)?.count ?? 0);
 
       return {
         totalRevenueCents: currentRevenue,
@@ -386,29 +357,30 @@ export const analyticsRouter = createTRPCRouter({
     const periodStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const periodEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
-    // Get monthly usage for current period
-    const [usage] = await db
-      .select()
-      .from(monthlyUsage)
-      .where(
-        and(
+    // Run all 3 queries in parallel
+    const [usageResults, creditBalances, packs] = await Promise.all([
+      db.select().from(monthlyUsage)
+        .where(and(
           eq(monthlyUsage.creatorId, creatorId),
           gte(monthlyUsage.periodStart, periodStart),
           lte(monthlyUsage.periodEnd, periodEnd),
-        ),
-      )
-      .limit(1);
+        )).limit(1),
+      db.select({ creditType: creditLedger.creditType, balance: creditLedger.balanceAfter })
+        .from(creditLedger)
+        .where(eq(creditLedger.creatorId, creatorId))
+        .orderBy(desc(creditLedger.createdAt))
+        .limit(5),
+      db.select({
+        minutesTotal: sql<number>`COALESCE(SUM(${avatarPack.minutesTotal}), 0)`,
+        minutesUsed: sql<number>`COALESCE(SUM(${avatarPack.minutesUsed}), 0)`,
+      }).from(avatarPack)
+        .where(and(
+          eq(avatarPack.creatorId, creatorId),
+          sql`(${avatarPack.expiresAt} IS NULL OR ${avatarPack.expiresAt} > NOW())`,
+        )),
+    ]);
 
-    // Get latest credit balances per type
-    const creditBalances = await db
-      .select({
-        creditType: creditLedger.creditType,
-        balance: creditLedger.balanceAfter,
-      })
-      .from(creditLedger)
-      .where(eq(creditLedger.creatorId, creatorId))
-      .orderBy(desc(creditLedger.createdAt))
-      .limit(5);
+    const usage = usageResults.at(0);
 
     // Deduplicate to latest per type
     const creditMap = new Map<string, number>();
@@ -417,20 +389,6 @@ export const analyticsRouter = createTRPCRouter({
         creditMap.set(entry.creditType, entry.balance);
       }
     }
-
-    // Get active avatar packs
-    const packs = await db
-      .select({
-        minutesTotal: sql<number>`COALESCE(SUM(${avatarPack.minutesTotal}), 0)`,
-        minutesUsed: sql<number>`COALESCE(SUM(${avatarPack.minutesUsed}), 0)`,
-      })
-      .from(avatarPack)
-      .where(
-        and(
-          eq(avatarPack.creatorId, creatorId),
-          sql`(${avatarPack.expiresAt} IS NULL OR ${avatarPack.expiresAt} > NOW())`,
-        ),
-      );
 
     const avatarMinutes = {
       total: Number(packs.at(0)?.minutesTotal ?? 0),
@@ -1005,63 +963,39 @@ export const analyticsRouter = createTRPCRouter({
 
   // Engagement summary: overall engagement metrics
   engagementSummary: creatorProcedure.query(async ({ ctx }) => {
-    // Average completion rate across all courses
-    const [completionResult] = await db
-      .select({
-        totalEnrollments: count(),
-        completedCount: sql<number>`COUNT(CASE WHEN ${enrollment.completedAt} IS NOT NULL THEN 1 END)`,
-      })
-      .from(enrollment)
-      .where(eq(enrollment.creatorId, ctx.creator.id));
-
-    const totalEnrollments = completionResult?.totalEnrollments ?? 0;
-    const completedCount = Number(completionResult?.completedCount ?? 0);
-
-    // Average quiz score
-    const [quizResult] = await db
-      .select({
-        avgScore: sql<number>`COALESCE(AVG(${quizAttempt.scorePercent}), 0)`,
-        totalAttempts: count(),
-      })
-      .from(quizAttempt)
-      .innerJoin(enrollment, eq(quizAttempt.enrollmentId, enrollment.id))
-      .where(
-        and(
-          eq(enrollment.creatorId, ctx.creator.id),
-          sql`${quizAttempt.completedAt} IS NOT NULL`,
-        ),
-      );
-
-    // Average time to complete (days)
-    const [timeResult] = await db
-      .select({
-        avgDays: sql<number>`COALESCE(
-          AVG(EXTRACT(EPOCH FROM (${enrollment.completedAt} - ${enrollment.enrolledAt})) / 86400),
-          0
-        )`,
-      })
-      .from(enrollment)
-      .where(
-        and(
-          eq(enrollment.creatorId, ctx.creator.id),
-          sql`${enrollment.completedAt} IS NOT NULL`,
-        ),
-      );
-
-    // Lessons completed in last 30 days
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const [recentActivity] = await db
-      .select({ count: count() })
-      .from(lessonProgress)
-      .innerJoin(enrollment, eq(lessonProgress.enrollmentId, enrollment.id))
-      .where(
-        and(
+
+    // Run all 4 queries in parallel
+    const [completionResults, quizResults, timeResults, recentResults] = await Promise.all([
+      db.select({
+        totalEnrollments: count(),
+        completedCount: sql<number>`COUNT(CASE WHEN ${enrollment.completedAt} IS NOT NULL THEN 1 END)`,
+      }).from(enrollment).where(eq(enrollment.creatorId, ctx.creator.id)),
+      db.select({
+        avgScore: sql<number>`COALESCE(AVG(${quizAttempt.scorePercent}), 0)`,
+        totalAttempts: count(),
+      }).from(quizAttempt)
+        .innerJoin(enrollment, eq(quizAttempt.enrollmentId, enrollment.id))
+        .where(and(eq(enrollment.creatorId, ctx.creator.id), sql`${quizAttempt.completedAt} IS NOT NULL`)),
+      db.select({
+        avgDays: sql<number>`COALESCE(AVG(EXTRACT(EPOCH FROM (${enrollment.completedAt} - ${enrollment.enrolledAt})) / 86400), 0)`,
+      }).from(enrollment)
+        .where(and(eq(enrollment.creatorId, ctx.creator.id), sql`${enrollment.completedAt} IS NOT NULL`)),
+      db.select({ count: count() }).from(lessonProgress)
+        .innerJoin(enrollment, eq(lessonProgress.enrollmentId, enrollment.id))
+        .where(and(
           eq(enrollment.creatorId, ctx.creator.id),
           eq(lessonProgress.status, "completed"),
           gte(lessonProgress.completedAt, thirtyDaysAgo),
-        ),
-      );
+        )),
+    ]);
+
+    const completionResult = completionResults.at(0);
+    const totalEnrollments = completionResult?.totalEnrollments ?? 0;
+    const completedCount = Number(completionResult?.completedCount ?? 0);
+    const quizResult = quizResults.at(0);
+    const timeResult = timeResults.at(0);
 
     return {
       overallCompletionRate: totalEnrollments > 0
@@ -1070,7 +1004,7 @@ export const analyticsRouter = createTRPCRouter({
       avgQuizScore: Math.round(Number(quizResult?.avgScore ?? 0) * 10) / 10,
       totalQuizAttempts: quizResult?.totalAttempts ?? 0,
       avgTimeToCompleteDays: Math.round(Number(timeResult?.avgDays ?? 0) * 10) / 10,
-      lessonsCompletedLast30Days: recentActivity?.count ?? 0,
+      lessonsCompletedLast30Days: recentResults.at(0)?.count ?? 0,
     };
   }),
 });
