@@ -13,11 +13,33 @@ import { wealthAcademyTemplate } from "./wealth-academy";
 import { tradingMasteryTemplate } from "./trading-mastery";
 import { creativeStudioTemplate } from "./creative-studio";
 
+/** Visual layout type for mini-mockup in template cards */
+export type MockupBlock =
+  | { readonly type: "hero"; readonly height: number }
+  | { readonly type: "nav" }
+  | { readonly type: "grid"; readonly cols: number; readonly rows: number }
+  | { readonly type: "sidebar-layout" }
+  | { readonly type: "text-block"; readonly lines: number }
+  | { readonly type: "cta" }
+  | { readonly type: "cards"; readonly count: number }
+  | { readonly type: "video" }
+  | { readonly type: "pricing"; readonly tiers: number }
+  | { readonly type: "stats"; readonly count: number }
+  | { readonly type: "testimonials"; readonly count: number }
+  | { readonly type: "badges"; readonly count: number }
+  | { readonly type: "progress" }
+  | { readonly type: "chat" }
+  | { readonly type: "form" };
+
 export interface TemplatePreview {
   readonly gradient: string;
   readonly heroTitle: string;
   readonly heroSubtitle: string;
   readonly sectionPreview: ReadonlyArray<string>;
+  /** Miniature page mockup blocks for visual card thumbnail */
+  readonly mockup: ReadonlyArray<MockupBlock>;
+  /** Accent color for mockup highlights */
+  readonly accentColor: string;
 }
 
 export interface StarterTemplate {
@@ -40,10 +62,19 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "GraduationCap",
     screen: courseLandingTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #0D1B2A 0%, #D4A853 100%)",
+      gradient: "linear-gradient(135deg, #0D1B2A 0%, #1B3A5C 60%, #D4A853 100%)",
       heroTitle: "Master Digital Photography",
       heroSubtitle: "From camera basics to portfolio-ready shots",
       sectionPreview: ["Hero", "Curriculum", "Instructor", "Pricing", "Testimonials"],
+      accentColor: "#D4A853",
+      mockup: [
+        { type: "nav" },
+        { type: "hero", height: 40 },
+        { type: "stats", count: 3 },
+        { type: "text-block", lines: 2 },
+        { type: "cards", count: 3 },
+        { type: "testimonials", count: 2 },
+      ],
     },
   },
   {
@@ -55,10 +86,18 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "Home",
     screen: homepageTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #1a1a2e 0%, #0066FF 100%)",
+      gradient: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0066FF 100%)",
       heroTitle: "Your Journey to Mastery Starts Here",
       heroSubtitle: "Explore courses, connect with the community",
       sectionPreview: ["Hero", "Course Grid", "Community", "Leaderboard"],
+      accentColor: "#0066FF",
+      mockup: [
+        { type: "nav" },
+        { type: "hero", height: 36 },
+        { type: "grid", cols: 3, rows: 2 },
+        { type: "text-block", lines: 2 },
+        { type: "stats", count: 4 },
+      ],
     },
   },
   {
@@ -70,10 +109,18 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "Play",
     screen: lessonPlayerTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #1E293B 0%, #3B82F6 100%)",
+      gradient: "linear-gradient(135deg, #1E293B 0%, #1E3A5F 50%, #3B82F6 100%)",
       heroTitle: "Understanding Light & Shadow",
       heroSubtitle: "Module 2 of 4 — 42% complete",
       sectionPreview: ["Progress", "Video", "Lesson Info", "Curriculum"],
+      accentColor: "#3B82F6",
+      mockup: [
+        { type: "nav" },
+        { type: "progress" },
+        { type: "video" },
+        { type: "sidebar-layout" },
+        { type: "text-block", lines: 3 },
+      ],
     },
   },
   {
@@ -85,10 +132,18 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "Users",
     screen: communityHubTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #2D2D2D 0%, #F59E0B 100%)",
+      gradient: "linear-gradient(135deg, #2D2D2D 0%, #3D3520 50%, #F59E0B 100%)",
       heroTitle: "Photographers' Corner",
       heroSubtitle: "Share your work, get inspired",
       sectionPreview: ["Hero", "Feed", "Leaderboard", "Badges"],
+      accentColor: "#F59E0B",
+      mockup: [
+        { type: "nav" },
+        { type: "hero", height: 28 },
+        { type: "sidebar-layout" },
+        { type: "cards", count: 2 },
+        { type: "badges", count: 6 },
+      ],
     },
   },
   {
@@ -100,10 +155,18 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "DollarSign",
     screen: checkoutTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #0F172A 0%, #06B6D4 100%)",
+      gradient: "linear-gradient(135deg, #0F172A 0%, #0E2D3F 50%, #06B6D4 100%)",
       heroTitle: "Invest in Your Developer Career",
       heroSubtitle: "Join 8,500+ graduates building the web",
       sectionPreview: ["Heading", "Pricing", "Guarantee", "Testimonials"],
+      accentColor: "#06B6D4",
+      mockup: [
+        { type: "nav" },
+        { type: "text-block", lines: 2 },
+        { type: "pricing", tiers: 3 },
+        { type: "cta" },
+        { type: "testimonials", count: 3 },
+      ],
     },
   },
   {
@@ -115,10 +178,18 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "BarChart3",
     screen: studentDashboardTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #7C3AED 0%, #10B981 100%)",
+      gradient: "linear-gradient(135deg, #7C3AED 0%, #4C2889 50%, #10B981 100%)",
       heroTitle: "Welcome back, Alex!",
       heroSubtitle: "7-day streak — 65% overall progress",
       sectionPreview: ["Welcome", "Streak", "Progress", "Courses"],
+      accentColor: "#10B981",
+      mockup: [
+        { type: "nav" },
+        { type: "stats", count: 4 },
+        { type: "progress" },
+        { type: "cards", count: 3 },
+        { type: "badges", count: 4 },
+      ],
     },
   },
   {
@@ -130,10 +201,18 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "Trophy",
     screen: certificateGalleryTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #1B4332 0%, #CD7F32 100%)",
+      gradient: "linear-gradient(135deg, #1B4332 0%, #2D5A3D 50%, #CD7F32 100%)",
       heroTitle: "Your Achievements",
       heroSubtitle: "3 certificates earned, 4 badges unlocked",
       sectionPreview: ["Heading", "Certificates", "Badges"],
+      accentColor: "#CD7F32",
+      mockup: [
+        { type: "nav" },
+        { type: "text-block", lines: 2 },
+        { type: "grid", cols: 3, rows: 1 },
+        { type: "badges", count: 6 },
+        { type: "stats", count: 3 },
+      ],
     },
   },
   {
@@ -145,10 +224,18 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "Radio",
     screen: liveEventTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #1E1033 0%, #8B5CF6 100%)",
+      gradient: "linear-gradient(135deg, #1E1033 0%, #2D1B69 50%, #8B5CF6 100%)",
       heroTitle: "Building Your First API",
       heroSubtitle: "Live workshop with Ryan Park",
       sectionPreview: ["Event Banner", "Video", "Description", "Live Chat"],
+      accentColor: "#8B5CF6",
+      mockup: [
+        { type: "nav" },
+        { type: "hero", height: 32 },
+        { type: "video" },
+        { type: "chat" },
+        { type: "text-block", lines: 2 },
+      ],
     },
   },
   {
@@ -160,10 +247,19 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "ChefHat",
     screen: culinaryMasterclassTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #1A1008 0%, #C44D2A 100%)",
+      gradient: "linear-gradient(135deg, #1A1008 0%, #2D1A0A 50%, #C44D2A 100%)",
       heroTitle: "Master the Art of Italian Cooking",
       heroSubtitle: "From handmade pasta to authentic regional sauces",
       sectionPreview: ["Hero", "Overview", "Curriculum", "Chef Bio", "Testimonials", "Pricing"],
+      accentColor: "#C44D2A",
+      mockup: [
+        { type: "nav" },
+        { type: "hero", height: 44 },
+        { type: "stats", count: 3 },
+        { type: "cards", count: 3 },
+        { type: "testimonials", count: 2 },
+        { type: "pricing", tiers: 2 },
+      ],
     },
   },
   {
@@ -175,10 +271,19 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "Dumbbell",
     screen: fitnessPerformanceTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #0A0A0A 0%, #00FF87 100%)",
+      gradient: "linear-gradient(135deg, #0A0A0A 0%, #0A1A0A 50%, #00FF87 100%)",
       heroTitle: "TRANSFORM YOUR BODY IN 8 WEEKS",
       heroSubtitle: "A progressive training program by elite coaches",
       sectionPreview: ["Hero", "Overview", "Streak", "Progress", "Curriculum", "Testimonials"],
+      accentColor: "#00FF87",
+      mockup: [
+        { type: "nav" },
+        { type: "hero", height: 40 },
+        { type: "stats", count: 4 },
+        { type: "progress" },
+        { type: "cards", count: 3 },
+        { type: "cta" },
+      ],
     },
   },
   {
@@ -190,10 +295,19 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "Landmark",
     screen: wealthAcademyTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #0A1628 0%, #C4A35A 100%)",
+      gradient: "linear-gradient(135deg, #0A1628 0%, #152238 50%, #C4A35A 100%)",
       heroTitle: "Build Wealth That Lasts",
       heroSubtitle: "From budgeting basics to advanced portfolio strategy",
       sectionPreview: ["Hero", "Overview", "Curriculum", "Instructor", "Testimonials", "Pricing"],
+      accentColor: "#C4A35A",
+      mockup: [
+        { type: "nav" },
+        { type: "hero", height: 40 },
+        { type: "text-block", lines: 2 },
+        { type: "cards", count: 4 },
+        { type: "testimonials", count: 3 },
+        { type: "pricing", tiers: 3 },
+      ],
     },
   },
   {
@@ -205,10 +319,19 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "TrendingUp",
     screen: tradingMasteryTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #0D1117 0%, #00C853 100%)",
+      gradient: "linear-gradient(135deg, #0D1117 0%, #0D2117 50%, #00C853 100%)",
       heroTitle: "Master Options Trading",
       heroSubtitle: "Systematic strategies used by professional traders",
       sectionPreview: ["Hero", "Overview", "Curriculum", "Instructor", "Testimonials", "Pricing"],
+      accentColor: "#00C853",
+      mockup: [
+        { type: "nav" },
+        { type: "hero", height: 36 },
+        { type: "stats", count: 4 },
+        { type: "cards", count: 3 },
+        { type: "text-block", lines: 2 },
+        { type: "pricing", tiers: 3 },
+      ],
     },
   },
   {
@@ -220,10 +343,19 @@ export const STARTER_TEMPLATES: ReadonlyArray<StarterTemplate> = [
     icon: "Palette",
     screen: creativeStudioTemplate,
     preview: {
-      gradient: "linear-gradient(135deg, #1A1A1A 0%, #7B61FF 100%)",
+      gradient: "linear-gradient(135deg, #1A1A1A 0%, #2A1A3A 50%, #7B61FF 100%)",
       heroTitle: "Design With Purpose",
       heroSubtitle: "From blank canvas to portfolio-ready work",
       sectionPreview: ["Hero", "Overview", "Curriculum", "Instructor", "Gallery", "Pricing"],
+      accentColor: "#7B61FF",
+      mockup: [
+        { type: "nav" },
+        { type: "hero", height: 38 },
+        { type: "text-block", lines: 2 },
+        { type: "grid", cols: 3, rows: 2 },
+        { type: "testimonials", count: 2 },
+        { type: "cta" },
+      ],
     },
   },
 ];

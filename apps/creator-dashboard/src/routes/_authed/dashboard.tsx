@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { CompactThemeToggle } from "@/components/theme-toggle";
 import {
   Sheet,
   SheetContent,
@@ -133,6 +134,11 @@ function SidebarNav({ onNavigate }: { readonly onNavigate?: () => void }) {
           <SidebarNavLink key={item.to} item={item} onNavigate={onNavigate} />
         ))}
       </nav>
+
+      <div className="mt-auto px-0 pt-4">
+        <div className="mx-3 mb-3 h-px bg-border/60" />
+        <CompactThemeToggle />
+      </div>
     </div>
   );
 }

@@ -84,7 +84,7 @@ function RootDocument() {
         <HeadContent />
       </head>
       <body suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableSystem>
           <I18nextProvider defaultNS={"translation"} i18n={i18n}>
             <Outlet />
             <Toaster />

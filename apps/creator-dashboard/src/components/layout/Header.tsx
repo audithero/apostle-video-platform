@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { LayoutDashboard, LogOut, Menu, Shield, User, X } from "lucide-react";
+import { ModeToggle } from "@/components/theme-toggle";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -68,6 +69,7 @@ export function Header({ serverSession }: HeaderProps = {}) {
 
           {/* Desktop Auth */}
           <div className="hidden items-center gap-3 md:flex">
+            <ModeToggle />
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -199,6 +201,9 @@ export function Header({ serverSession }: HeaderProps = {}) {
                 </Link>
               ),
             )}
+            <div className="mt-4">
+              <ModeToggle />
+            </div>
             <div className="mt-6 w-56 border-t border-border/40 pt-8">
               {user ? (
                 <div className="flex flex-col items-center gap-5">

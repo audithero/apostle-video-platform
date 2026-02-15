@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useMemo, useRef, useCallback } from "react";
 import { useTRPC } from "@/lib/trpc/react";
 import { STARTER_TEMPLATES } from "@/lib/sdui/starter-templates";
-import type { StarterTemplate } from "@/lib/sdui/starter-templates";
+import type { StarterTemplate, MockupBlock } from "@/lib/sdui/starter-templates";
 import { InlineSDUIPreview } from "@/components/sdui/InlineSDUIPreview";
 import {
   Plus,
@@ -355,6 +355,222 @@ function TemplatePreviewModal({
 }
 
 /* ------------------------------------------------------------------ */
+/*  Mini Mockup Renderer — visual page layout thumbnail                */
+/* ------------------------------------------------------------------ */
+
+function MockupBlockRenderer({ block, accent }: { readonly block: MockupBlock; readonly accent: string }) {
+  const a20 = `${accent}33`;
+  const a40 = `${accent}66`;
+  const a60 = `${accent}99`;
+  const w = "rgba(255,255,255,";
+
+  switch (block.type) {
+    case "nav":
+      return (
+        <div className="flex items-center justify-between px-1.5 py-[2px]">
+          <div className="h-[3px] w-4 rounded-full" style={{ background: `${w}0.5)` }} />
+          <div className="flex gap-[2px]">
+            <div className="h-[2px] w-3 rounded-full" style={{ background: `${w}0.25)` }} />
+            <div className="h-[2px] w-3 rounded-full" style={{ background: `${w}0.25)` }} />
+            <div className="h-[2px] w-3 rounded-full" style={{ background: `${w}0.25)` }} />
+          </div>
+        </div>
+      );
+    case "hero":
+      return (
+        <div
+          className="relative mx-1 overflow-hidden rounded-[2px]"
+          style={{ height: `${String(block.height)}%`, background: `linear-gradient(180deg, ${a20} 0%, ${a40} 100%)` }}
+        >
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-[2px] px-2">
+            <div className="h-[3px] w-3/5 rounded-full" style={{ background: `${w}0.6)` }} />
+            <div className="h-[2px] w-2/5 rounded-full" style={{ background: `${w}0.3)` }} />
+            <div className="mt-[2px] h-[4px] w-6 rounded-full" style={{ background: accent }} />
+          </div>
+        </div>
+      );
+    case "stats":
+      return (
+        <div className="flex gap-[2px] px-1.5 py-[2px]">
+          {Array.from({ length: block.count }).map((_, i) => (
+            <div key={`s${String(i)}`} className="flex-1 rounded-[2px] p-[2px]" style={{ background: `${w}0.06)` }}>
+              <div className="h-[3px] w-2/3 rounded-full" style={{ background: a40 }} />
+              <div className="mt-[1px] h-[2px] w-1/2 rounded-full" style={{ background: `${w}0.2)` }} />
+            </div>
+          ))}
+        </div>
+      );
+    case "grid":
+      return (
+        <div className="px-1.5 py-[2px]">
+          {Array.from({ length: block.rows }).map((_, r) => (
+            <div key={`r${String(r)}`} className="mb-[2px] flex gap-[2px]">
+              {Array.from({ length: block.cols }).map((_, c) => (
+                <div key={`c${String(c)}`} className="flex-1 rounded-[2px]" style={{ background: `${w}0.08)`, height: 10 }}>
+                  <div className="h-[60%] rounded-t-[2px]" style={{ background: `${w}0.06)` }} />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      );
+    case "cards":
+      return (
+        <div className="flex gap-[2px] px-1.5 py-[2px]">
+          {Array.from({ length: block.count }).map((_, i) => (
+            <div key={`cd${String(i)}`} className="flex-1 rounded-[2px] overflow-hidden" style={{ background: `${w}0.06)` }}>
+              <div className="h-[6px]" style={{ background: i === 0 ? a20 : `${w}0.04)` }} />
+              <div className="p-[2px]">
+                <div className="h-[2px] w-3/4 rounded-full" style={{ background: `${w}0.3)` }} />
+                <div className="mt-[1px] h-[2px] w-1/2 rounded-full" style={{ background: `${w}0.15)` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    case "video":
+      return (
+        <div className="mx-1.5 my-[2px] flex items-center justify-center rounded-[2px]" style={{ background: `${w}0.08)`, height: 20 }}>
+          <div className="flex size-3 items-center justify-center rounded-full" style={{ background: a60 }}>
+            <div className="ml-[1px] border-[2px] border-transparent" style={{ borderLeftColor: "#fff", borderLeftWidth: 3, height: 0, width: 0 }} />
+          </div>
+        </div>
+      );
+    case "pricing":
+      return (
+        <div className="flex gap-[2px] px-1.5 py-[2px]">
+          {Array.from({ length: block.tiers }).map((_, i) => {
+            const isHighlighted = i === Math.floor(block.tiers / 2);
+            return (
+              <div
+                key={`p${String(i)}`}
+                className="flex-1 rounded-[2px] p-[2px]"
+                style={{ background: isHighlighted ? a20 : `${w}0.06)`, border: isHighlighted ? `1px solid ${a40}` : "1px solid transparent" }}
+              >
+                <div className="h-[2px] w-1/2 rounded-full mx-auto" style={{ background: `${w}0.4)` }} />
+                <div className="mt-[2px] h-[3px] w-2/3 rounded-full mx-auto" style={{ background: isHighlighted ? accent : `${w}0.3)` }} />
+                <div className="mt-[1px] h-[1px] w-3/4 rounded-full mx-auto" style={{ background: `${w}0.15)` }} />
+                <div className="mt-[1px] h-[1px] w-3/4 rounded-full mx-auto" style={{ background: `${w}0.15)` }} />
+              </div>
+            );
+          })}
+        </div>
+      );
+    case "testimonials":
+      return (
+        <div className="flex gap-[2px] px-1.5 py-[2px]">
+          {Array.from({ length: block.count }).map((_, i) => (
+            <div key={`t${String(i)}`} className="flex-1 rounded-[2px] p-[2px]" style={{ background: `${w}0.06)` }}>
+              <div className="flex items-center gap-[2px]">
+                <div className="size-[4px] rounded-full" style={{ background: a40 }} />
+                <div className="h-[2px] w-3/5 rounded-full" style={{ background: `${w}0.25)` }} />
+              </div>
+              <div className="mt-[1px] h-[2px] w-full rounded-full" style={{ background: `${w}0.12)` }} />
+              <div className="mt-[1px] h-[2px] w-2/3 rounded-full" style={{ background: `${w}0.08)` }} />
+            </div>
+          ))}
+        </div>
+      );
+    case "text-block":
+      return (
+        <div className="px-1.5 py-[2px]">
+          {Array.from({ length: block.lines }).map((_, i) => (
+            <div key={`tb${String(i)}`} className="mb-[1px] h-[2px] rounded-full" style={{ background: `${w}0.2)`, width: i === block.lines - 1 ? "60%" : "90%" }} />
+          ))}
+        </div>
+      );
+    case "cta":
+      return (
+        <div className="flex justify-center px-1.5 py-[3px]">
+          <div className="h-[5px] w-10 rounded-full" style={{ background: accent }} />
+        </div>
+      );
+    case "sidebar-layout":
+      return (
+        <div className="flex gap-[2px] px-1.5 py-[2px]" style={{ height: 16 }}>
+          <div className="w-1/4 rounded-[2px]" style={{ background: `${w}0.06)` }}>
+            <div className="space-y-[1px] p-[2px]">
+              <div className="h-[2px] w-full rounded-full" style={{ background: a20 }} />
+              <div className="h-[2px] w-3/4 rounded-full" style={{ background: `${w}0.15)` }} />
+              <div className="h-[2px] w-3/4 rounded-full" style={{ background: `${w}0.15)` }} />
+            </div>
+          </div>
+          <div className="flex-1 rounded-[2px]" style={{ background: `${w}0.04)` }}>
+            <div className="p-[2px]">
+              <div className="h-[2px] w-3/4 rounded-full" style={{ background: `${w}0.25)` }} />
+              <div className="mt-[1px] h-[2px] w-1/2 rounded-full" style={{ background: `${w}0.15)` }} />
+            </div>
+          </div>
+        </div>
+      );
+    case "badges":
+      return (
+        <div className="flex flex-wrap gap-[2px] px-1.5 py-[2px]">
+          {Array.from({ length: block.count }).map((_, i) => (
+            <div key={`b${String(i)}`} className="h-[4px] rounded-full px-1" style={{ background: i < 3 ? a20 : `${w}0.08)`, minWidth: 8 }} />
+          ))}
+        </div>
+      );
+    case "progress":
+      return (
+        <div className="px-1.5 py-[2px]">
+          <div className="h-[3px] w-full rounded-full overflow-hidden" style={{ background: `${w}0.1)` }}>
+            <div className="h-full rounded-full" style={{ background: accent, width: "65%" }} />
+          </div>
+        </div>
+      );
+    case "chat":
+      return (
+        <div className="mx-1.5 my-[2px] rounded-[2px] p-[2px]" style={{ background: `${w}0.06)`, height: 14 }}>
+          <div className="space-y-[2px]">
+            <div className="flex items-start gap-[2px]">
+              <div className="size-[3px] rounded-full" style={{ background: a40 }} />
+              <div className="h-[2px] w-2/5 rounded-full" style={{ background: `${w}0.2)` }} />
+            </div>
+            <div className="flex items-start gap-[2px] justify-end">
+              <div className="h-[2px] w-1/3 rounded-full" style={{ background: a20 }} />
+              <div className="size-[3px] rounded-full" style={{ background: `${w}0.3)` }} />
+            </div>
+          </div>
+        </div>
+      );
+    case "form":
+      return (
+        <div className="px-1.5 py-[2px] space-y-[2px]">
+          <div className="h-[4px] w-full rounded-[1px]" style={{ background: `${w}0.08)`, border: `0.5px solid ${w}0.15)` }} />
+          <div className="h-[4px] w-full rounded-[1px]" style={{ background: `${w}0.08)`, border: `0.5px solid ${w}0.15)` }} />
+          <div className="h-[4px] w-12 rounded-full" style={{ background: accent }} />
+        </div>
+      );
+    default:
+      return null;
+  }
+}
+
+function TemplateMockupCard({ mockup, accent, gradient }: {
+  readonly mockup: ReadonlyArray<MockupBlock>;
+  readonly accent: string;
+  readonly gradient: string;
+}) {
+  return (
+    <div className="relative h-full w-full overflow-hidden" style={{ background: gradient }}>
+      {/* Subtle noise texture overlay */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")" }} />
+
+      {/* Miniature page wireframe */}
+      <div className="relative flex h-full flex-col">
+        {mockup.map((block, i) => (
+          <MockupBlockRenderer key={`${block.type}-${String(i)}`} block={block} accent={accent} />
+        ))}
+      </div>
+
+      {/* Bottom gradient fade for smooth transition to info area */}
+      <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-black/30 to-transparent" />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -480,54 +696,29 @@ function TemplatesPage() {
               return (
                 <Card
                   key={starter.id}
-                  className="group cursor-pointer overflow-hidden transition-shadow hover:shadow-md"
+                  className="group cursor-pointer overflow-hidden border-border/60 transition-all duration-300 hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-black/30"
                   onClick={() => handlePreviewTemplate(starter)}
                 >
                   <CardContent className="p-0">
-                    {/* Visual preview area */}
-                    <div
-                      className="relative flex h-36 flex-col justify-end overflow-hidden p-3"
-                      style={{ background: starter.preview.gradient }}
-                    >
-                      {/* Faint icon watermark */}
-                      <Icon className="absolute right-3 top-3 h-6 w-6 text-white/20" />
-                      {/* Mini hero text */}
-                      <div className="relative z-10">
-                        <p className="truncate text-xs font-bold text-white/90 drop-shadow-sm">
-                          {starter.preview.heroTitle}
-                        </p>
-                        <p className="mt-0.5 truncate text-[10px] text-white/60">
-                          {starter.preview.heroSubtitle}
-                        </p>
-                      </div>
-                      {/* Section wireframe pills */}
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {starter.preview.sectionPreview.slice(0, 4).map((section) => (
-                          <span
-                            key={section}
-                            className="rounded-full bg-white/15 px-1.5 py-0.5 text-[9px] font-medium text-white/70 backdrop-blur-sm"
-                          >
-                            {section}
-                          </span>
-                        ))}
-                        {starter.preview.sectionPreview.length > 4 && (
-                          <span className="rounded-full bg-white/15 px-1.5 py-0.5 text-[9px] font-medium text-white/70 backdrop-blur-sm">
-                            +{String(starter.preview.sectionPreview.length - 4)}
-                          </span>
-                        )}
-                      </div>
+                    {/* Visual mockup preview */}
+                    <div className="relative h-40 overflow-hidden">
+                      <TemplateMockupCard
+                        mockup={starter.preview.mockup}
+                        accent={starter.preview.accentColor}
+                        gradient={starter.preview.gradient}
+                      />
                       {/* Starter badge */}
-                      <div className="absolute right-2 top-2">
+                      <div className="absolute right-2 top-2 z-10">
                         <Badge
                           variant="secondary"
-                          className="bg-white/20 text-[10px] text-white backdrop-blur-sm"
+                          className="bg-white/20 text-[10px] text-white backdrop-blur-sm border-white/10"
                         >
-                          starter
+                          Starter
                         </Badge>
                       </div>
                       {/* Preview hover overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/30">
-                        <div className="flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-medium text-neutral-800 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                      <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/0 transition-colors duration-300 group-hover:bg-black/40">
+                        <div className="flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-neutral-800 opacity-0 shadow-xl transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 scale-90">
                           <Eye className="h-3.5 w-3.5" />
                           Preview
                         </div>
@@ -537,14 +728,17 @@ function TemplatesPage() {
                     <div className="p-3">
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0 flex-1">
-                          <div className="truncate text-sm font-semibold">
-                            {starter.name}
+                          <div className="flex items-center gap-2">
+                            <Icon className="size-3.5 shrink-0 text-muted-foreground" />
+                            <span className="truncate text-sm font-semibold">
+                              {starter.name}
+                            </span>
                           </div>
-                          <p className="mt-0.5 line-clamp-2 text-xs text-neutral-500">
+                          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
                             {starter.description}
                           </p>
                         </div>
-                        <ArrowRight className="mt-0.5 h-4 w-4 flex-shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-neutral-500" />
+                        <ArrowRight className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground/40 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-foreground/60" />
                       </div>
                     </div>
                   </CardContent>
