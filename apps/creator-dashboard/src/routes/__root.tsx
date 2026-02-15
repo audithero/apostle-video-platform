@@ -42,11 +42,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: "black-translucent",
       },
       ...seo({
-        title: "Apostle - Premium Cooking Shows",
+        title: "Apostle - Create & Sell Online Courses",
         description:
-          "Stream exclusive cooking shows and culinary masterclasses from world-class chefs.",
+          "The all-in-one platform for creators to build, sell, and scale online courses. Landing pages, email marketing, community, and more.",
         keywords:
-          "cooking shows, culinary, streaming, recipes, chef, masterclass, cooking videos",
+          "online courses, course platform, creator tools, sell courses, e-learning, LMS, course builder",
       }),
     ],
     links: [

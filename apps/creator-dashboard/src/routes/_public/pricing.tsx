@@ -381,7 +381,7 @@ function TierCard({ tier, isAnnual, isLoggedIn, onSubscribe }: TierCardProps) {
         "relative flex h-full flex-col overflow-hidden rounded-2xl border-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl",
         tier.gasparBg,
         isPopular && "ring-2 ring-primary shadow-xl shadow-primary/10",
-        isNavy && "text-white",
+        isNavy ? "text-white" : "text-[oklch(0.15_0.02_280)]",
       )}
     >
       {isPopular && (
@@ -394,22 +394,22 @@ function TierCard({ tier, isAnnual, isLoggedIn, onSubscribe }: TierCardProps) {
 
       <CardHeader className={cn(isPopular && "pt-10")}>
         <CardTitle className={cn("text-lg", isNavy && "text-white")}>{tier.name}</CardTitle>
-        <CardDescription className={cn("min-h-[40px]", isNavy && "text-white/70")}>
+        <CardDescription className={cn("min-h-[40px]", isNavy ? "text-white/70" : "text-[oklch(0.15_0.02_280)]/70")}>
           {tier.description}
         </CardDescription>
         <div className="mt-4">
-          <span className={cn("text-4xl font-bold", isNavy && "text-white")}>{`$${String(price)}`}</span>
-          <span className={cn("text-muted-foreground", isNavy && "text-white/60")}>{`/${period}`}</span>
+          <span className="text-4xl font-bold">{`$${String(price)}`}</span>
+          <span className={cn(isNavy ? "text-white/60" : "text-[oklch(0.15_0.02_280)]/60")}>{`/${period}`}</span>
         </div>
         {isAnnual && (
-          <p className={cn("text-sm", isNavy ? "text-emerald-300" : "text-emerald-600")}>
+          <p className={cn("text-sm", isNavy ? "text-emerald-300" : "text-emerald-700")}>
             {`Save $${String(tier.monthlyPrice * 12 - tier.annualPrice)}/year`}
           </p>
         )}
       </CardHeader>
 
       <CardContent className="flex-1">
-        <Separator className={cn("mb-4", isNavy && "bg-white/20")} />
+        <Separator className={cn("mb-4", isNavy ? "bg-white/20" : "bg-[oklch(0.15_0.02_280)]/15")} />
         <ul className="space-y-3">
           {tier.highlights.map((highlight) => (
             <li key={highlight} className="flex items-start gap-2.5 text-sm">

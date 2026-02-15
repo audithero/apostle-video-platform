@@ -1,11 +1,19 @@
 import { adminClient } from "better-auth/client/plugins";
 import { stripeClient } from "@better-auth/stripe/client";
 import { createAuthClient } from "better-auth/react";
-import { env } from "@/lib/env.client";
 import { ac, admin as adminRole, user as userRole } from "./permissions";
 
+/**
+ * Use the current origin in the browser (same-origin auth), or fall back to
+ * VITE_SERVER_URL for SSR / dev where window isn't available.
+ */
+const authBaseURL =
+  typeof window !== "undefined"
+    ? window.location.origin
+    : (import.meta.env.VITE_SERVER_URL as string | undefined) ?? "";
+
 export const authClient = createAuthClient({
-  baseURL: env.VITE_SERVER_URL,
+  baseURL: authBaseURL,
   plugins: [
     adminClient({
       ac,

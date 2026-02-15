@@ -1,6 +1,10 @@
 import { Link } from "@tanstack/react-router";
+import { useSession } from "@/features/auth/auth-hooks";
 
 export function Footer() {
+  const { data: session } = useSession();
+  const user = session?.user;
+
   return (
     <footer className="border-t border-border/30 bg-background">
       <div className="container py-16 md:py-20">
@@ -11,8 +15,8 @@ export function Footer() {
               Apostle
             </span>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Premium culinary experiences. Stream exclusive cooking shows and
-              masterclasses from world-class chefs.
+              The all-in-one platform for creators to build, sell, and scale
+              online courses. From landing pages to email marketing.
             </p>
           </div>
 
@@ -26,12 +30,12 @@ export function Footer() {
             </h3>
             <ul className="mt-5 space-y-3">
               <li>
-                <Link
-                  to="/shows"
+                <a
+                  href="/#courses"
                   className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
                 >
-                  Shows
-                </Link>
+                  Courses
+                </a>
               </li>
               <li>
                 <Link
@@ -50,22 +54,35 @@ export function Footer() {
               Account
             </h3>
             <ul className="mt-5 space-y-3">
-              <li>
-                <Link
-                  to="/login"
-                  className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
-                >
-                  Sign In
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/register"
-                  className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
-                >
-                  Create Account
-                </Link>
-              </li>
+              {user ? (
+                <li>
+                  <Link
+                    to="/dashboard"
+                    className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      to="/login"
+                      className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                    >
+                      Sign In
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/register"
+                      className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                    >
+                      Create Account
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>

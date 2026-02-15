@@ -158,7 +158,7 @@ function EmailManagement() {
           </p>
           <p className="mt-1 text-xs font-semibold uppercase tracking-wider opacity-60">Click Rate</p>
         </div>
-        <div className="rounded-2xl border border-border/50 bg-base-100 p-6">
+        <div className="gaspar-card-navy rounded-2xl p-6">
           <p className="text-3xl font-bold tracking-tight">
             {isLoading ? "-" : String(activeSequences)}
           </p>

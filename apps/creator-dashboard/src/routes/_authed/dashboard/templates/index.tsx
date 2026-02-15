@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import { useTRPC } from "@/lib/trpc/react";
 import { STARTER_TEMPLATES } from "@/lib/sdui/starter-templates";
 import type { StarterTemplate } from "@/lib/sdui/starter-templates";
@@ -168,15 +168,39 @@ function TemplatePreviewModal({
 }) {
   const navigate = useNavigate();
   const [breakpoint, setBreakpoint] = useState<Breakpoint>("desktop");
+  const [containerWidth, setContainerWidth] = useState(0);
+  const observerRef = useRef<ResizeObserver | null>(null);
+
+  // Callback ref: fires when the DOM element mounts (works with Radix Dialog portals)
+  const containerRef = useCallback((node: HTMLDivElement | null) => {
+    observerRef.current?.disconnect();
+    if (!node) {
+      setContainerWidth(0);
+      return;
+    }
+    setContainerWidth(node.clientWidth);
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width);
+      }
+    });
+    observer.observe(node);
+    observerRef.current = observer;
+  }, []);
 
   const activeBreakpoint = BREAKPOINTS.find((bp) => bp.id === breakpoint);
   const previewWidth = activeBreakpoint?.width ?? 1280;
   const previewHeight = activeBreakpoint?.height ?? 800;
   const frame = DEVICE_FRAMES[breakpoint];
 
-  // Scale TV and large screens to fit in the modal viewport
-  const needsScale = breakpoint === "tv";
-  const scaleFactor = needsScale ? 0.55 : 1;
+  // Dynamically scale preview to fit available container width
+  // Account for padding (32px = 16px each side) and device bezel (~16px)
+  const availableWidth = containerWidth - 48;
+  const scaleFactor = availableWidth > 0 && previewWidth > availableWidth
+    ? availableWidth / previewWidth
+    : 1;
+  // When significantly scaled, show full template page instead of clipping to device height
+  const isMinified = scaleFactor < 0.5;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -184,107 +208,125 @@ function TemplatePreviewModal({
         showCloseButton={false}
         className="flex h-[90vh] max-w-[95vw] flex-col gap-0 p-0 sm:max-w-[95vw]"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b px-4 py-3">
-          <div className="flex items-center gap-3">
-            <DialogTitle className="text-base font-semibold">
-              {template?.name ?? "Preview"}
-            </DialogTitle>
-            {template && (
-              <Badge variant="secondary" className="text-[10px]">
-                {template.category}
-              </Badge>
-            )}
-          </div>
-
-          {/* Breakpoint switcher with labels */}
-          <div className="flex items-center gap-0.5 rounded-lg bg-neutral-100 p-0.5 dark:bg-neutral-800">
-            {BREAKPOINTS.map((bp) => {
-              const Icon = bp.icon;
-              const isActive = breakpoint === bp.id;
-              return (
-                <button
-                  key={bp.id}
-                  type="button"
-                  onClick={() => setBreakpoint(bp.id)}
-                  className={cn(
-                    "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
-                    isActive
-                      ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-700 dark:text-neutral-100"
-                      : "text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200",
-                  )}
-                  title={`${bp.subtitle} (${String(bp.width)}x${String(bp.height)})`}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{bp.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center gap-2">
-            <span className="hidden text-[10px] text-neutral-400 md:inline">
-              {String(previewWidth)}x{String(previewHeight)}
-            </span>
-            <Button
-              size="sm"
-              className="h-8 gap-1.5"
-              onClick={() => {
-                onOpenChange(false);
-                navigate({ to: "/dashboard/templates/new" });
-              }}
-            >
-              Use This Template
-            </Button>
+        {/* Header — stacks on mobile */}
+        <div className="flex flex-col gap-2 border-b px-3 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3">
+          {/* Top row: title + close */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <DialogTitle className="text-sm font-semibold sm:text-base">
+                {template?.name ?? "Preview"}
+              </DialogTitle>
+              {template && (
+                <Badge variant="secondary" className="hidden text-[10px] sm:inline-flex">
+                  {template.category}
+                </Badge>
+              )}
+            </div>
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="rounded-sm opacity-70 transition-opacity hover:opacity-100"
+              className="rounded-sm opacity-70 transition-opacity hover:opacity-100 sm:hidden"
             >
               <X className="h-4 w-4" />
               <span className="sr-only">Close</span>
             </button>
           </div>
+
+          {/* Bottom row: breakpoint switcher + actions */}
+          <div className="flex items-center justify-between gap-2 sm:justify-end">
+            {/* Breakpoint switcher */}
+            <div className="flex items-center gap-0.5 rounded-lg bg-neutral-100 p-0.5 dark:bg-neutral-800">
+              {BREAKPOINTS.map((bp) => {
+                const Icon = bp.icon;
+                const isActive = breakpoint === bp.id;
+                return (
+                  <button
+                    key={bp.id}
+                    type="button"
+                    onClick={() => setBreakpoint(bp.id)}
+                    className={cn(
+                      "flex items-center gap-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors",
+                      isActive
+                        ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-700 dark:text-neutral-100"
+                        : "text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200",
+                    )}
+                    title={`${bp.subtitle} (${String(bp.width)}x${String(bp.height)})`}
+                  >
+                    <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">{bp.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                className="h-7 gap-1 text-xs sm:h-8 sm:gap-1.5 sm:text-sm"
+                onClick={() => {
+                  onOpenChange(false);
+                  navigate({ to: "/dashboard/templates/new" });
+                }}
+              >
+                <span className="hidden sm:inline">Use This Template</span>
+                <span className="sm:hidden">Use Template</span>
+              </Button>
+              <button
+                type="button"
+                onClick={() => onOpenChange(false)}
+                className="hidden rounded-sm opacity-70 transition-opacity hover:opacity-100 sm:block"
+              >
+                <X className="h-4 w-4" />
+                <span className="sr-only">Close</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Preview with device frame */}
-        <div className="relative flex flex-1 flex-col items-center justify-start overflow-auto bg-neutral-100 p-4 dark:bg-neutral-900">
+        <div ref={containerRef} className="relative flex flex-1 flex-col items-center justify-start overflow-auto bg-neutral-100 p-4 dark:bg-neutral-900">
           {/* Device info label */}
           <div className="mb-3 flex items-center gap-2 text-xs text-neutral-400">
             <span className="font-medium">{activeBreakpoint?.subtitle}</span>
-            <span>-</span>
+            <span className="select-none">-</span>
             <span>{String(previewWidth)} x {String(previewHeight)}</span>
+            {scaleFactor < 1 && (
+              <span className="text-neutral-500">({String(Math.round(scaleFactor * 100))}%)</span>
+            )}
           </div>
 
           {template && (
             <div
               className="flex flex-col items-center"
-              style={{
-                transform: needsScale ? `scale(${String(scaleFactor)})` : undefined,
-                transformOrigin: "top center",
-              }}
+              style={scaleFactor < 1 ? {
+                zoom: scaleFactor,
+              } : undefined}
             >
               {/* Device frame */}
-              <div className={cn("relative overflow-hidden bg-white dark:bg-neutral-950", frame.bezel, frame.borderRadius)}>
-                {/* Phone notch */}
-                {frame.showNotch && (
+              <div className={cn(
+                "relative overflow-hidden bg-white dark:bg-neutral-950",
+                frame.bezel,
+                isMinified ? "rounded-lg" : frame.borderRadius,
+              )}>
+                {/* Phone notch (hide when minified for cleaner look) */}
+                {frame.showNotch && !isMinified && (
                   <div className="absolute left-1/2 top-0 z-10 h-5 w-28 -translate-x-1/2 rounded-b-2xl bg-neutral-900 dark:bg-neutral-500" />
                 )}
                 {/* Content */}
                 <div
-                  className={cn("overflow-auto", frame.padding)}
+                  className={cn("overflow-hidden", !isMinified && frame.padding)}
                   style={{
                     width: `${String(previewWidth)}px`,
-                    maxHeight: `${String(previewHeight)}px`,
+                    maxHeight: isMinified ? undefined : `${String(previewHeight)}px`,
                   }}
                 >
                   <InlineSDUIPreview screen={template.screen} />
                 </div>
               </div>
 
-              {/* Monitor/TV stand */}
-              {frame.showStand && (
+              {/* Monitor/TV stand (hide when minified) */}
+              {frame.showStand && !isMinified && (
                 <div className="flex flex-col items-center">
                   <div
                     className={cn(

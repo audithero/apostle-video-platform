@@ -68,6 +68,8 @@ const secondaryNavItems: ReadonlyArray<NavItem> = [
   { label: "Settings", to: "/dashboard/settings", icon: Settings },
 ];
 
+const allNavItems = [...primaryNavItems, ...secondaryNavItems];
+
 function SidebarNavLink({
   item,
   onNavigate,
@@ -79,7 +81,13 @@ function SidebarNavLink({
   const isActive =
     item.to === "/dashboard"
       ? location.pathname === "/dashboard"
-      : location.pathname.startsWith(item.to);
+      : location.pathname.startsWith(item.to) &&
+        !allNavItems.some(
+          (other) =>
+            other.to !== item.to &&
+            other.to.length > item.to.length &&
+            location.pathname.startsWith(other.to),
+        );
 
   const Icon = item.icon;
 
@@ -91,7 +99,7 @@ function SidebarNavLink({
         "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200",
         isActive
           ? "bg-primary text-primary-foreground shadow-sm"
-          : "text-muted-foreground hover:bg-base-100 hover:text-foreground",
+          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
       )}
     >
       <Icon className="size-[18px] shrink-0" />

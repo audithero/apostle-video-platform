@@ -114,7 +114,7 @@ function CreatorDashboard() {
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {isLoading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="rounded-2xl bg-base-100 p-6">
+            <div key={i} className="rounded-2xl bg-muted p-6">
               <Skeleton className="mb-4 h-4 w-24" />
               <Skeleton className="h-9 w-20" />
             </div>
@@ -306,7 +306,7 @@ function CreatorDashboard() {
             <Link
               to="/dashboard/courses/ai-wizard"
               aria-label="Create a new course"
-              className="group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-base-100"
+              className="group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-accent"
             >
               <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gaspar-cream">
                 <BookPlus className="size-4 text-foreground/70" />
@@ -317,7 +317,7 @@ function CreatorDashboard() {
             <Link
               to="/dashboard/emails"
               aria-label="Send an email to students"
-              className="group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-base-100"
+              className="group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-accent"
             >
               <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gaspar-blue">
                 <Send className="size-4 text-foreground/70" />
@@ -328,7 +328,7 @@ function CreatorDashboard() {
             <Link
               to="/dashboard/usage"
               aria-label="View usage details"
-              className="group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-base-100"
+              className="group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-accent"
             >
               <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gaspar-pink">
                 <BarChart3 className="size-4 text-foreground/70" />
@@ -422,7 +422,7 @@ function UsageMeter({ label, used, limit, unit }: UsageMeterProps) {
         </span>
       </div>
       <div
-        className="relative mt-2 h-2 overflow-hidden rounded-full bg-base-100"
+        className="relative mt-2 h-2 overflow-hidden rounded-full bg-muted"
         aria-label={`${label}: ${formattedUsed} of ${formattedLimit}${suffix} used`}
       >
         <div
